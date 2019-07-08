@@ -9,7 +9,12 @@ import java.io.PrintWriter;
 import java.lang.management.ThreadInfo;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
@@ -27,7 +32,7 @@ public class CommandWorker implements Runnable
 {
 
     public static final String newLine = System.getProperty("line.separator");
-    public static final String CMD_PROMPT = newLine + "agentmgr> ";
+    public static final String CMD_PROMPT = newLine + "smart> ";
     public static final String showAgentFormat = "%-36s %-6s %-7s";
     public static final String showThreadFormat = "%-4d %-32s %-13s";
     private Socket socket = null;
@@ -46,10 +51,21 @@ public class CommandWorker implements Runnable
 
     private void printHeader() throws IOException
     {
-        sendLine("");
-        sendLine("---------------------------------------------------");
-        sendLine("             AGENT MANAGEMENT CONSOLE              ");
-        sendLine("---------------------------------------------------");
+        log.fine("Searching for custom header file...");
+        try
+        {
+            URL headerFileURL = CommandWorker.class.getClassLoader().getResource("header.txt");
+            if (headerFileURL == null)
+            {
+                log.warning("Unable to find header.txt file");
+                return;
+            }
+            sendLines(Files.readAllLines(Paths.get(headerFileURL.toURI())));
+        }
+        catch (URISyntaxException e)
+        {
+            log.warning("Unable to find header.txt file");
+        }
     }
 
     public void run()
@@ -175,25 +191,17 @@ public class CommandWorker implements Runnable
         catch (SocketTimeoutException e)
         {
             log.info("Sesion closed due to inactivity.");
-            try
-            {
-                sendLine(newLine + "Session timed-out due to inactivity.");
-            }
-            catch (IOException ex)
-            {
-                log.severe(e.getClass().getName() + ": " + e.getMessage());
-            }
+            sendLine(newLine + "Session timed-out due to inactivity.");
         }
         catch (Exception e)
         {
             log.severe(e.getClass().getName() + ": " + e.getMessage());
-
         }
         finally
         {
             if (socket != null)
             {
-                log.info("Management Console session closed.");
+                log.info("SMART Console session closed.");
                 try
                 {
                     socket.close();
@@ -415,13 +423,19 @@ public class CommandWorker implements Runnable
         }
     }
 
-    public void sendLine(String message) throws IOException
+    public void sendLine(String message)
     {
         out.println(message);
         out.flush();
     }
 
-    public void send(String message) throws IOException
+    public void sendLines(List<String> lines)
+    {
+        lines.forEach(line -> out.println(line));
+        out.flush();
+    }
+    
+    public void send(String message)
     {
         out.print(message);
         out.flush();
