@@ -52,6 +52,15 @@ public enum Command
             }
         }
     },
+    
+    UPTIME("uptime")
+    {
+        @Override
+        public void execute(String[] parameters, PrintWriter out)
+        {
+            out.println(SystemUtil.getSystemUptime() + " milliseconds");
+        }
+    },
 
     START("start")
     {
@@ -76,14 +85,15 @@ public enum Command
                     }
                     catch (IllegalStateException e)
                     {
-                        log.warning("Illegal state: " + e.getMessage());
-                        out.println(e.getMessage());
+                        String warningMessage = e.getClass().getName() + ": " + e.getMessage();
+                        log.warning(warningMessage);
+                        out.println(warningMessage);
                     }
                     catch (IllegalArgumentException e)
                     {
                         log.warning(e.getMessage());
                         out.println(e.getMessage());
-                    }
+                    }                    
                 }
             }
             else
@@ -98,7 +108,42 @@ public enum Command
         @Override
         public void execute(String[] parameters, PrintWriter out)
         {
-            // TODO Auto-generated method stub
+            if (parameters.length == 2)
+            {
+                log.log(Level.INFO, "Command received: %s", parameters);
+                String agent = parameters[1];
+                if (agent == null || agent.equals(""))
+                {
+                    out.println("Missing parameter: <agent-class>");
+                }
+                else
+                {
+                    String message = String.format("Running %s...", agent);
+                    out.println(message);
+                    log.info(message);
+                    try
+                    {
+                        AgentManager.getInstance().runNow(agent);
+                        out.println("Agent task finished. See agent logs for details.");
+                    }
+                    catch (IllegalStateException | UnsupportedOperationException e)
+                    {
+                        String warningMessage = e.getClass().getName() + ": " + e.getMessage();
+                        log.warning(warningMessage);
+                        out.println(warningMessage);
+                    }
+                    catch (IllegalArgumentException e)
+                    {
+                        log.warning(e.getMessage());
+                        out.println(e.getMessage());
+                    }
+                    
+                }
+            }
+            else
+            {
+                out.println("Missing parameter: <agent-name>");
+            }
         }
     },
 
@@ -144,7 +189,7 @@ public enum Command
         public void execute(String[] parameters, PrintWriter out)
         {
             out.println("Available commands:");
-            Arrays.stream(values()).forEach(command -> out.println(" - " + command.getString()));
+            Arrays.stream(values()).forEachOrdered(command -> out.println(" - " + command.getString()));
         }
     },
 
@@ -157,10 +202,10 @@ public enum Command
         }
     };
 
+    private final static Logger log = Logger.getLogger("smart");
+
     private final String string;
 
-    private final static Logger log = Logger.getLogger("smart");
-    
     private Command(String string)
     {
         this.string = string;

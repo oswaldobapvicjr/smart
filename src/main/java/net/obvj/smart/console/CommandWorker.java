@@ -85,19 +85,6 @@ public class CommandWorker implements Runnable
                     {
                         return;
                     }
-                    else if (command.equalsIgnoreCase(RUN.getString()))
-                    {
-                        if (arguments.length >= 2)
-                        {
-                            log.info("Command received: " + commandLine);
-                            runAgent(arguments[1]);
-                        }
-                        else
-                        {
-                            sendLine("Missing parameter: <agent-class>");
-                        }
-
-                    }
                     else if (command.equalsIgnoreCase(STOP.getString()))
                     {
                         if (arguments.length >= 2)
@@ -180,40 +167,6 @@ public class CommandWorker implements Runnable
         catch (IllegalArgumentException ile)
         {
             sendLine(ile.getMessage());
-        }
-    }
-
-    private void runAgent(String agent)
-    {
-        if (agent == null || agent.equals(""))
-        {
-            sendLine("Missing parameter: <agent-class>");
-        }
-        else
-        {
-            String message = String.format("Running %s...", agent);
-            sendLine(message);
-            log.info(message);
-            try
-            {
-                manager.runNow(agent);
-                sendLine("Agent task finished. See agent log for details.");
-            }
-            catch (IllegalStateException e)
-            {
-                log.warning("Illegal state: " + e.getMessage());
-                sendLine(e.getMessage());
-            }
-            catch (IllegalArgumentException e)
-            {
-                log.warning(e.getMessage());
-                sendLine(e.getMessage());
-            }
-            catch (UnsupportedOperationException e)
-            {
-                log.warning("Unsupported operation: " + e.getMessage());
-                sendLine("Unsupported operation: " + e.getMessage());
-            }
         }
     }
 
