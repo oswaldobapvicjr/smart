@@ -1,6 +1,7 @@
 package net.obvj.smart.main;
 
 import java.lang.management.ManagementFactory;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.management.MBeanRegistrationException;
@@ -51,9 +52,9 @@ public class Main
             mBeanServer.registerMBean(mBean, name);
 
         }
-        catch (OperationsException | MBeanRegistrationException e)
+        catch (OperationsException | MBeanRegistrationException exception)
         {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Unable to register JMX bean", exception);
         }
 
         /*

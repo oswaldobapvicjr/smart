@@ -147,7 +147,6 @@ public abstract class TimerAgent extends Agent
             {
                 throw new TimeoutException("Unable to stop agent task.");
             }
-            // timer.cancel();
             schedule.shutdown();
             currentState = State.STOPPED;
             startDate = null;
@@ -162,7 +161,7 @@ public abstract class TimerAgent extends Agent
     public String getStatusString()
     {
 
-        return new StringBuilder(name).append(" {").append(LINE_SEPARATOR).append("   type:       ").append("TIMER")
+        return new StringBuilder(name).append(" {").append(LINE_SEPARATOR).append("   type:       ").append(type)
                 .append(LINE_SEPARATOR).append("   status:     ").append(currentState).append(LINE_SEPARATOR)
                 .append("   startDate:  ").append(startDate != null ? DateUtil.formatDate(startDate.getTime()) : "null")
                 .append(LINE_SEPARATOR).append("   lastRun:    ")

@@ -85,19 +85,6 @@ public class CommandWorker implements Runnable
                     {
                         return;
                     }
-                    else if (command.equalsIgnoreCase(START.getString()))
-                    {
-                        if (arguments.length >= 2)
-                        {
-                            log.info("Command received: " + commandLine);
-                            startAgent(arguments[1]);
-                        }
-                        else
-                        {
-                            sendLine("Missing parameter: <agent-class>");
-                        }
-
-                    }
                     else if (command.equalsIgnoreCase(RUN.getString()))
                     {
                         if (arguments.length >= 2)
@@ -196,36 +183,6 @@ public class CommandWorker implements Runnable
         }
     }
 
-    private void startAgent(String agent) throws IOException
-    {
-        if (agent == null || agent.equals(""))
-        {
-            sendLine("Missing parameter: <agent-class>");
-        }
-        else
-        {
-            sendLine(String.format("Starting %s...", agent));
-            try
-            {
-                manager.startAgent(agent);
-                sendLine("");
-                status(agent);
-            }
-            catch (IllegalStateException e)
-            {
-                log.warning("Illegal state: " + e.getMessage());
-                sendLine(e.getMessage());
-                sendLine("");
-                status(agent);
-            }
-            catch (IllegalArgumentException e)
-            {
-                log.warning(e.getMessage());
-                sendLine(e.getMessage());
-            }
-        }
-    }
-
     private void runAgent(String agent)
     {
         if (agent == null || agent.equals(""))
@@ -310,7 +267,7 @@ public class CommandWorker implements Runnable
         }
     }
 
-    private void resetAgent(String agent) throws IOException
+    private void resetAgent(String agent)
     {
         if (agent == null || agent.equals(""))
         {

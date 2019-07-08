@@ -4,6 +4,8 @@ import java.io.PrintWriter;
 import java.lang.management.ThreadInfo;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.obvj.smart.agents.api.Agent;
 import net.obvj.smart.manager.AgentManager;
@@ -23,7 +25,7 @@ public enum Command
                 out.println("No agent found");
                 return;
             }
-            out.println(CommandWorker.LINE_SEPARATOR);
+            out.println("");
             out.println("NAME                                 TYPE   STATE  ");
             out.println("------------------------------------ ------ -------");
 
@@ -39,7 +41,7 @@ public enum Command
         @Override
         public void execute(String[] parameters, PrintWriter out)
         {
-            out.println(CommandWorker.LINE_SEPARATOR);
+            out.println("");
             out.println("ID   NAME                             STATE        ");
             out.println("---- -------------------------------- -------------");
 
@@ -56,7 +58,38 @@ public enum Command
         @Override
         public void execute(String[] parameters, PrintWriter out)
         {
-            // TODO Auto-generated method stub
+            if (parameters.length == 2)
+            {
+                log.log(Level.INFO, "Command received: %s", parameters);
+                String agent = parameters[1];
+                if (agent == null || agent.equals(""))
+                {
+                    out.println("Missing parameter: <agent-class>");
+                }
+                else
+                {
+                    out.println(String.format("Starting %s...", agent));
+                    try
+                    {
+                        AgentManager.getInstance().startAgent(agent);
+                        out.println(String.format("%s started", agent));
+                    }
+                    catch (IllegalStateException e)
+                    {
+                        log.warning("Illegal state: " + e.getMessage());
+                        out.println(e.getMessage());
+                    }
+                    catch (IllegalArgumentException e)
+                    {
+                        log.warning(e.getMessage());
+                        out.println(e.getMessage());
+                    }
+                }
+            }
+            else
+            {
+                out.println("Missing parameter: <agent-name>");
+            }
         }
     },
 
@@ -124,8 +157,10 @@ public enum Command
         }
     };
 
-    private String string;
+    private final String string;
 
+    private final static Logger log = Logger.getLogger("smart");
+    
     private Command(String string)
     {
         this.string = string;
