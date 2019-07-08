@@ -1,5 +1,6 @@
 package net.obvj.smart.console;
 
+import java.io.PrintWriter;
 import java.lang.management.ThreadInfo;
 import java.util.Arrays;
 import java.util.Collection;
@@ -14,123 +15,112 @@ public enum Command
     SHOW_AGENTS("show-agents")
     {
         @Override
-        public CommandOutput execute(String... parameters)
+        public void execute(String[] parameters, PrintWriter out)
         {
             Collection<Agent> agents = AgentManager.getInstance().getAgents();
             if (agents.isEmpty())
             {
-                return new CommandOutput("No agent found", true);
+                out.println("No agent found");
+                return;
             }
-            StringBuilder output = new StringBuilder();
-            output.append(CommandWorker.LINE_SEPARATOR);
-            output.append("NAME                                 TYPE   STATE  ").append(CommandWorker.LINE_SEPARATOR);
-            output.append("------------------------------------ ------ -------").append(CommandWorker.LINE_SEPARATOR);
+            out.println(CommandWorker.LINE_SEPARATOR);
+            out.println("NAME                                 TYPE   STATE  ");
+            out.println("------------------------------------ ------ -------");
 
             for (Agent agent : agents)
             {
-                output.append(String.format("%-36s %-6s %-7s%n", agent.getName(), agent.getType(), agent.getState()));
+                out.println(String.format("%-36s %-6s %-7s", agent.getName(), agent.getType(), agent.getState()));
             }
-            return new CommandOutput(output.toString(), false);
         }
     },
 
     SHOW_THREADS("show-threads")
     {
         @Override
-        public CommandOutput execute(String... parameters)
+        public void execute(String[] parameters, PrintWriter out)
         {
-            StringBuilder output = new StringBuilder();
-            output.append(CommandWorker.LINE_SEPARATOR);
-            output.append("ID   NAME                             STATE        ").append(CommandWorker.LINE_SEPARATOR);
-            output.append("---- -------------------------------- -------------").append(CommandWorker.LINE_SEPARATOR);
+            out.println(CommandWorker.LINE_SEPARATOR);
+            out.println("ID   NAME                             STATE        ");
+            out.println("---- -------------------------------- -------------");
 
             for (ThreadInfo thread : SystemUtil.getAllSystemTheadsInfo())
             {
-                output.append(String.format("%-4d %-32s %-13s%n", thread.getThreadId(), thread.getThreadName(),
+                out.println(String.format("%-4d %-32s %-13s", thread.getThreadId(), thread.getThreadName(),
                         thread.getThreadState()));
             }
-            return new CommandOutput(output.toString(), false);
         }
     },
 
     START("start")
     {
         @Override
-        public CommandOutput execute(String... parameters)
+        public void execute(String[] parameters, PrintWriter out)
         {
             // TODO Auto-generated method stub
-            return null;
         }
     },
 
     RUN("run")
     {
         @Override
-        public CommandOutput execute(String... parameters)
+        public void execute(String[] parameters, PrintWriter out)
         {
             // TODO Auto-generated method stub
-            return null;
         }
     },
 
     STOP("stop")
     {
         @Override
-        public CommandOutput execute(String... parameters)
+        public void execute(String[] parameters, PrintWriter out)
         {
             // TODO Auto-generated method stub
-            return null;
         }
     },
 
     STATUS("status")
     {
         @Override
-        public CommandOutput execute(String... parameters)
+        public void execute(String[] parameters, PrintWriter out)
         {
             // TODO Auto-generated method stub
-            return null;
         }
     },
 
     RESET("reset")
     {
         @Override
-        public CommandOutput execute(String... parameters)
+        public void execute(String[] parameters, PrintWriter out)
         {
             // TODO Auto-generated method stub
-            return null;
         }
     },
 
     DATE("date")
     {
         @Override
-        public CommandOutput execute(String... parameters)
+        public void execute(String[] parameters, PrintWriter out)
         {
-            return new CommandOutput(DateUtil.now(), false);
+            out.println(DateUtil.now());
         }
     },
 
     HELP("help")
     {
         @Override
-        public CommandOutput execute(String... parameters)
+        public void execute(String[] parameters, PrintWriter out)
         {
-            StringBuilder output = new StringBuilder();
-            output.append("Available commands:").append(CommandWorker.LINE_SEPARATOR);
-            Arrays.stream(values()).forEach(
-                    command -> output.append(" - ").append(command.getString()).append(CommandWorker.LINE_SEPARATOR));
-            return new CommandOutput(output.toString(), false);
+            out.println("Available commands:");
+            Arrays.stream(values()).forEach(command -> out.println(" - " + command.getString()));
         }
     },
 
     EXIT("exit")
     {
         @Override
-        public CommandOutput execute(String... parameters)
+        public void execute(String[] parameters, PrintWriter out)
         {
-            return new CommandOutput("", false);
+            // Do nothing...
         }
     };
 
@@ -146,7 +136,7 @@ public enum Command
         return string;
     }
 
-    public abstract CommandOutput execute(String... parameters);
+    public abstract void execute(String[] parameters, PrintWriter out);
 
     public static Command getCommandByString(String string)
     {

@@ -67,24 +67,23 @@ public class CommandWorker implements Runnable
         try
         {
             printHeader();
-            READ_COMMANDS: while (true)
+            while (true)
             {
                 send(CMD_PROMPT);
                 String commandLine = readLine();
                 if (commandLine == null)
                 {
-                    break READ_COMMANDS;
-
+                    return;
                 }
-                else if (!commandLine.equals(""))
+                commandLine = commandLine.trim();
+                if (!commandLine.equals(""))
                 {
-                    String[] arguments = commandLine.trim().split(" ");
+                    String[] arguments = commandLine.split(" ");
                     String command = arguments[0];
 
                     if (command.equalsIgnoreCase(EXIT.getString()))
                     {
-                        break READ_COMMANDS;
-
+                        return;
                     }
                     else if (command.equalsIgnoreCase(START.getString()))
                     {
@@ -189,7 +188,7 @@ public class CommandWorker implements Runnable
         try
         {
             Command command = getCommandByString(arguments[0]);
-            sendLine(command.execute(arguments).getOutput());
+            command.execute(arguments, out);
         }
         catch (IllegalArgumentException ile)
         {
