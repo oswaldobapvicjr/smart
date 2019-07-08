@@ -39,6 +39,7 @@ public abstract class TimerAgent extends Agent
     public TimerAgent(String name, int intervalInMinutes)
     {
         this.name = (name == null ? this.getClass().getSimpleName() : name);
+        this.type = "TIMER";
         this.intervalInMinutes = intervalInMinutes;
         this.currentState = State.SET;
         this.runLock = new Object();

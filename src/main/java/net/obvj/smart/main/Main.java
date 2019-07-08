@@ -46,7 +46,7 @@ public class Main
         try
         {
             AgentManagerJMXMBean mBean = new AgentManagerJMX();
-            ObjectName name = new ObjectName("com.agent.jmx:type=AgentManagerJMX");
+            ObjectName name = new ObjectName("net.obvj.smart.jmx:type=AgentManagerJMX");
             MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
             mBeanServer.registerMBean(mBean, name);
 

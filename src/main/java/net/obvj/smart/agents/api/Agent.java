@@ -19,6 +19,7 @@ public abstract class Agent implements Runnable
 
     protected State currentState;
     protected String name;
+    protected String type;
     protected ThreadFactory threadFactory;
     protected ScheduledExecutorService schedule;
 
@@ -43,6 +44,14 @@ public abstract class Agent implements Runnable
     public String getName()
     {
         return name;
+    }
+    
+    /**
+     * @return This agent's type
+     */
+    public String getType()
+    {
+        return type;
     }
 
     /**

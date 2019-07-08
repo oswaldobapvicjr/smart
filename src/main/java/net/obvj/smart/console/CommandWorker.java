@@ -6,24 +6,17 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.lang.management.ThreadInfo;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
-import net.obvj.smart.agents.api.Agent;
-import net.obvj.smart.agents.api.DaemonAgent;
-import net.obvj.smart.agents.api.TimerAgent;
 import net.obvj.smart.manager.AgentManager;
-import net.obvj.smart.util.DateUtil;
-import net.obvj.smart.util.SystemUtil;
 
 /**
  * A Runnable object for handling of user commands via Management Console
@@ -31,14 +24,15 @@ import net.obvj.smart.util.SystemUtil;
 public class CommandWorker implements Runnable
 {
 
-    public static final String newLine = System.getProperty("line.separator");
-    public static final String CMD_PROMPT = newLine + "smart> ";
-    public static final String showAgentFormat = "%-36s %-6s %-7s";
-    public static final String showThreadFormat = "%-4d %-32s %-13s";
-    private Socket socket = null;
-    private BufferedReader in = null;
-    private PrintWriter out = null;
-    private AgentManager manager = null;
+    public static final String LINE_SEPARATOR = System.getProperty("line.separator");
+
+    private static final String CMD_PROMPT = LINE_SEPARATOR + "smart> ";
+
+    private Socket socket;
+    private BufferedReader in;
+    private PrintWriter out;
+    private AgentManager manager;
+
     private final Logger log = Logger.getLogger(this.getClass().getName());
 
     public CommandWorker(Socket socket) throws IOException
@@ -84,8 +78,8 @@ public class CommandWorker implements Runnable
                 }
                 else if (!commandLine.equals(""))
                 {
-                    String[] commands = commandLine.trim().split(" ");
-                    String command = commands[0];
+                    String[] arguments = commandLine.trim().split(" ");
+                    String command = arguments[0];
 
                     if (command.equalsIgnoreCase(EXIT.getString()))
                     {
@@ -94,10 +88,10 @@ public class CommandWorker implements Runnable
                     }
                     else if (command.equalsIgnoreCase(START.getString()))
                     {
-                        if (commands.length >= 2)
+                        if (arguments.length >= 2)
                         {
                             log.info("Command received: " + commandLine);
-                            startAgent(commands[1]);
+                            startAgent(arguments[1]);
                         }
                         else
                         {
@@ -107,10 +101,10 @@ public class CommandWorker implements Runnable
                     }
                     else if (command.equalsIgnoreCase(RUN.getString()))
                     {
-                        if (commands.length >= 2)
+                        if (arguments.length >= 2)
                         {
                             log.info("Command received: " + commandLine);
-                            runAgent(commands[1]);
+                            runAgent(arguments[1]);
                         }
                         else
                         {
@@ -120,10 +114,10 @@ public class CommandWorker implements Runnable
                     }
                     else if (command.equalsIgnoreCase(STOP.getString()))
                     {
-                        if (commands.length >= 2)
+                        if (arguments.length >= 2)
                         {
                             log.info("Command received: " + commandLine);
-                            stopAgent(commands[1]);
+                            stopAgent(arguments[1]);
                         }
                         else
                         {
@@ -133,9 +127,9 @@ public class CommandWorker implements Runnable
                     }
                     else if (command.equalsIgnoreCase(STATUS.getString()))
                     {
-                        if (commands.length >= 2)
+                        if (arguments.length >= 2)
                         {
-                            status(commands[1]);
+                            status(arguments[1]);
                         }
                         else
                         {
@@ -145,10 +139,10 @@ public class CommandWorker implements Runnable
                     }
                     else if (command.equalsIgnoreCase(RESET.getString()))
                     {
-                        if (commands.length >= 2)
+                        if (arguments.length >= 2)
                         {
                             log.info("Command received: " + commandLine);
-                            resetAgent(commands[1]);
+                            resetAgent(arguments[1]);
                         }
                         else
                         {
@@ -156,33 +150,9 @@ public class CommandWorker implements Runnable
                         }
 
                     }
-                    else if (command.equalsIgnoreCase(SHOW_AGENTS.getString()))
-                    {
-                        showAgents();
-
-                    }
-                    else if (command.equalsIgnoreCase(SHOW_THREADS.getString()))
-                    {
-                        showThreads();
-
-                    }
-                    else if (command.equalsIgnoreCase(DATE.getString()))
-                    {
-                        sendLine(DateUtil.now());
-
-                    }
-                    else if (command.equalsIgnoreCase(HELP.getString()))
-                    {
-                        sendLine("Available commands: ");
-                        for (Command cmd : Command.values())
-                        {
-                            sendLine("   " + cmd.getString());
-                        }
-
-                    }
                     else
                     {
-                        sendLine("'" + command + "' is not recognized as an operation.");
+                        handleUserInput(arguments);
                     }
                 }
             } // EO while
@@ -191,7 +161,7 @@ public class CommandWorker implements Runnable
         catch (SocketTimeoutException e)
         {
             log.info("Sesion closed due to inactivity.");
-            sendLine(newLine + "Session timed-out due to inactivity.");
+            sendLine(LINE_SEPARATOR + "Session timed-out due to inactivity.");
         }
         catch (Exception e)
         {
@@ -201,7 +171,7 @@ public class CommandWorker implements Runnable
         {
             if (socket != null)
             {
-                log.info("SMART Console session closed.");
+                log.info("Closing console session...");
                 try
                 {
                     socket.close();
@@ -211,6 +181,19 @@ public class CommandWorker implements Runnable
                     log.severe("Error closing client socket connected to port " + ManagementConsole.PORT);
                 }
             }
+        }
+    }
+
+    private void handleUserInput(String[] arguments)
+    {
+        try
+        {
+            Command command = getCommandByString(arguments[0]);
+            sendLine(command.execute(arguments).getOutput());
+        }
+        catch (IllegalArgumentException ile)
+        {
+            sendLine(ile.getMessage());
         }
     }
 
@@ -244,7 +227,7 @@ public class CommandWorker implements Runnable
         }
     }
 
-    private void runAgent(String agent) throws IOException
+    private void runAgent(String agent)
     {
         if (agent == null || agent.equals(""))
         {
@@ -278,7 +261,7 @@ public class CommandWorker implements Runnable
         }
     }
 
-    private void stopAgent(String agent) throws IOException
+    private void stopAgent(String agent)
     {
         if (agent == null || agent.equals(""))
         {
@@ -362,7 +345,7 @@ public class CommandWorker implements Runnable
         }
     }
 
-    private void status(String agent) throws IOException
+    private void status(String agent)
     {
         if (agent == null || agent.equals(""))
         {
@@ -379,47 +362,6 @@ public class CommandWorker implements Runnable
                 log.warning(e.getMessage());
                 sendLine(e.getMessage());
             }
-        }
-    }
-
-    private void showAgents() throws IOException
-    {
-        Collection<Agent> allAgents = manager.getAgents();
-        if (allAgents.size() > 0)
-        {
-            sendLine("");
-            sendLine("NAME                                 TYPE   STATE  ");
-            sendLine("------------------------------------ ------ -------");
-
-            for (Agent a : allAgents)
-            {
-                String type = "";
-                if (a instanceof DaemonAgent)
-                {
-                    type = "DAEMON";
-                }
-                else if (a instanceof TimerAgent)
-                {
-                    type = "TIMER";
-                }
-                sendLine(String.format(showAgentFormat, a.getName(), type, a.getState()));
-            }
-        }
-        else
-        {
-            sendLine("No agent found.");
-        }
-    }
-
-    private void showThreads() throws IOException
-    {
-        sendLine("");
-        sendLine("ID   NAME                             STATE        ");
-        sendLine("---- -------------------------------- -------------");
-
-        for (ThreadInfo i : SystemUtil.getAllSystemTheadsInfo())
-        {
-            sendLine(String.format(showThreadFormat, i.getThreadId(), i.getThreadName(), i.getThreadState()));
         }
     }
 

@@ -29,6 +29,7 @@ public abstract class DaemonAgent extends Agent
     public DaemonAgent(String name)
     {
         this.name = (name == null ? this.getClass().getSimpleName() : name);
+        this.type = "DAEMON";
         this.currentState = State.SET;
     }
 
