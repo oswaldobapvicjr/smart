@@ -1,8 +1,6 @@
 package net.obvj.smart.console;
 
 import static net.obvj.smart.console.Command.EXIT;
-import static net.obvj.smart.console.Command.RESET;
-import static net.obvj.smart.console.Command.STATUS;
 import static net.obvj.smart.console.Command.getCommandByString;
 
 import java.io.BufferedReader;
@@ -18,8 +16,6 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.logging.Logger;
 
-import net.obvj.smart.manager.AgentManager;
-
 /**
  * A Runnable object for handling of user commands via Management Console
  */
@@ -28,12 +24,11 @@ public class CommandWorker implements Runnable
 
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
-    private static final String CMD_PROMPT = LINE_SEPARATOR + "smart> ";
+    private static final String CMD_PROMPT = "smart> ";
 
     private Socket socket;
     private BufferedReader in;
     private PrintWriter out;
-    private AgentManager manager;
 
     private final Logger log = Logger.getLogger(this.getClass().getName());
 
@@ -42,7 +37,6 @@ public class CommandWorker implements Runnable
         this.socket = socket;
         this.in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
         this.out = new PrintWriter(this.socket.getOutputStream(), true);
-        this.manager = AgentManager.getInstance();
     }
 
     private void printHeader() throws IOException
@@ -71,14 +65,11 @@ public class CommandWorker implements Runnable
             printHeader();
             while (true)
             {
+                out.println();
                 send(CMD_PROMPT);
                 String commandLine = readLine();
-                if (commandLine == null)
-                {
-                    return;
-                }
-                commandLine = commandLine.trim();
-                if (!commandLine.equals(""))
+
+                if (!"".equals(commandLine))
                 {
                     String[] arguments = commandLine.split(" ");
                     String command = arguments[0];
@@ -87,38 +78,12 @@ public class CommandWorker implements Runnable
                     {
                         return;
                     }
-                    else if (command.equalsIgnoreCase(STATUS.getString()))
-                    {
-                        if (arguments.length >= 2)
-                        {
-                            status(arguments[1]);
-                        }
-                        else
-                        {
-                            sendLine("Missing parameter: <agent-class>");
-                        }
-
-                    }
-                    else if (command.equalsIgnoreCase(RESET.getString()))
-                    {
-                        if (arguments.length >= 2)
-                        {
-                            log.info("Command received: " + commandLine);
-                            resetAgent(arguments[1]);
-                        }
-                        else
-                        {
-                            sendLine("Missing parameter: <agent-class>");
-                        }
-
-                    }
                     else
                     {
                         handleUserInput(arguments);
                     }
                 }
-            } // EO while
-
+            }
         }
         catch (SocketTimeoutException e)
         {
@@ -159,60 +124,6 @@ public class CommandWorker implements Runnable
         }
     }
 
-    private void resetAgent(String agent)
-    {
-        if (agent == null || agent.equals(""))
-        {
-            sendLine("Missing parameter: <agent-class>");
-        }
-        else
-        {
-            String message = String.format("Resetting %s...", agent);
-            sendLine(message);
-            log.info(message);
-
-            try
-            {
-                manager.resetAgent(agent);
-                sendLine("Success.");
-                sendLine("");
-                status(agent);
-            }
-            catch (IllegalStateException e)
-            {
-                log.warning("Illegal state: " + e.getMessage());
-                sendLine(e.getMessage());
-                sendLine("");
-                status(agent);
-            }
-            catch (IllegalArgumentException e)
-            {
-                log.warning(e.getMessage());
-                sendLine(e.getMessage());
-            }
-        }
-    }
-
-    private void status(String agent)
-    {
-        if (agent == null || agent.equals(""))
-        {
-            sendLine("Missing parameter: <agent-class>");
-        }
-        else
-        {
-            try
-            {
-                sendLine(manager.getAgentStatusStr(agent));
-            }
-            catch (IllegalArgumentException e)
-            {
-                log.warning(e.getMessage());
-                sendLine(e.getMessage());
-            }
-        }
-    }
-
     public void sendLine(String message)
     {
         out.println(message);
@@ -224,7 +135,7 @@ public class CommandWorker implements Runnable
         lines.forEach(line -> out.println(line));
         out.flush();
     }
-    
+
     public void send(String message)
     {
         out.print(message);
@@ -235,13 +146,19 @@ public class CommandWorker implements Runnable
     {
         return sanitizeUserInput(in.readLine());
     }
-    
+
     private String sanitizeUserInput(String source)
     {
-        String string = eraseBackspaces(source);
-        return string.replaceAll("\\p{Cntrl}", "");
+        String string = "";
+        if (source != null)
+        {
+            string = source.trim();
+            string = eraseBackspaces(string);
+            string = string.replaceAll("\\p{Cntrl}", "");
+        }
+        return string;
     }
-    
+
     private String eraseBackspaces(String source)
     {
         String str = source;

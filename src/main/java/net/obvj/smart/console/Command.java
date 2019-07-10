@@ -207,7 +207,31 @@ public enum Command
         @Override
         public void execute(String[] parameters, PrintWriter out)
         {
-            // TODO Auto-generated method stub
+            if (parameters.length == 2)
+            {
+                log.log(Level.INFO, "Command received: %s", parameters);
+                String agent = parameters[1];
+                if (agent == null || agent.equals(""))
+                {
+                    out.println("Missing parameter: <agent-name>");
+                }
+                else
+                {
+                    try
+                    {
+                        out.println(AgentManager.getInstance().getAgentStatusStr(agent));
+                    }
+                    catch (IllegalArgumentException e)
+                    {
+                        log.warning(e.getMessage());
+                        out.println(e.getMessage());
+                    }
+                }
+            }
+            else
+            {
+                out.println("Missing parameter: <agent-name>");
+            }
         }
     },
 
@@ -216,7 +240,40 @@ public enum Command
         @Override
         public void execute(String[] parameters, PrintWriter out)
         {
-            // TODO Auto-generated method stub
+            if (parameters.length == 2)
+            {
+                log.log(Level.INFO, "Command received: %s", parameters);
+                String agent = parameters[1];
+                if (agent == null || agent.equals(""))
+                {
+                    out.println("Missing parameter: <agent-name>");
+                }
+                else
+                {
+                    String message = String.format("Resetting %s...", agent);
+                    out.println(message);
+                    log.info(message);
+                    try
+                    {
+                        AgentManager.getInstance().resetAgent(agent);
+                        out.println("Success.");
+                    }
+                    catch (IllegalStateException e)
+                    {
+                        log.warning("Illegal state: " + e.getMessage());
+                        out.println(e.getMessage());
+                    }
+                    catch (IllegalArgumentException e)
+                    {
+                        log.warning(e.getMessage());
+                        out.println(e.getMessage());
+                    }
+                }
+            }
+            else
+            {
+                out.println("Missing parameter: <agent-name>");
+            }
         }
     },
 
