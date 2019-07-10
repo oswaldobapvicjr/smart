@@ -23,7 +23,7 @@ public class ManagementConsole implements Runnable
     public static final int PORT = 1910;
     public static final int SESSION_TIMEOUT_MILIS = 60000;
     private static ManagementConsole instance = new ManagementConsole();
-    private boolean itShouldRun;
+    private boolean started;
     private Thread serverThread;
     private ExecutorService sessionExecutor;
     private ServerSocket server;
@@ -59,7 +59,7 @@ public class ManagementConsole implements Runnable
 
     public void run()
     {
-        while (itShouldRun)
+        while (started)
         {
             try
             {
@@ -93,7 +93,7 @@ public class ManagementConsole implements Runnable
      */
     public void start()
     {
-        itShouldRun = true;
+        started = true;
         serverThread.start();
     }
 
@@ -102,7 +102,7 @@ public class ManagementConsole implements Runnable
      */
     public void stop()
     {
-        itShouldRun = false;
+        started = false;
         sessionExecutor.shutdown();
         if (server != null && !server.isClosed())
         {

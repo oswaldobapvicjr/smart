@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.lang.management.ThreadInfo;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -73,7 +74,7 @@ public enum Command
                 String agent = parameters[1];
                 if (agent == null || agent.equals(""))
                 {
-                    out.println("Missing parameter: <agent-class>");
+                    out.println("Missing parameter: <agent-name>");
                 }
                 else
                 {
@@ -114,7 +115,7 @@ public enum Command
                 String agent = parameters[1];
                 if (agent == null || agent.equals(""))
                 {
-                    out.println("Missing parameter: <agent-class>");
+                    out.println("Missing parameter: <agent-name>");
                 }
                 else
                 {
@@ -152,7 +153,52 @@ public enum Command
         @Override
         public void execute(String[] parameters, PrintWriter out)
         {
-            // TODO Auto-generated method stub
+            if (parameters.length == 2)
+            {
+                log.log(Level.INFO, "Command received: %s", parameters);
+                String agent = parameters[1];
+                if (agent == null || agent.equals(""))
+                {
+                    out.println("Missing parameter: <agent-name>");
+                }
+                else
+                {
+                    String message = String.format("Stopping %s...", agent);
+                    out.println(message);
+                    log.info(message);
+                    try
+                    {
+                        AgentManager.getInstance().stopAgent(agent);
+                        out.println("Success.");
+                    }
+                    catch (IllegalStateException e)
+                    {
+                        log.warning("Illegal state: " + e.getMessage());
+                        out.println(e.getMessage());
+                    }
+                    catch (IllegalArgumentException e)
+                    {
+                        log.warning(e.getMessage());
+                        out.println(e.getMessage());
+                    }
+                    catch (TimeoutException ex)
+                    {
+                        String errMessage = String.format("Timeout waiting for agent task to complete: %s", agent);
+                        out.println(errMessage);
+                        log.warning(errMessage);
+                    }
+                    catch (UnsupportedOperationException e)
+                    {
+                        String errMessage = String.format("Unsupported operation: %s", e.getMessage());
+                        out.println(errMessage);
+                        log.warning(errMessage);
+                    }
+                }
+            }
+            else
+            {
+                out.println("Missing parameter: <agent-name>");
+            }
         }
     },
 

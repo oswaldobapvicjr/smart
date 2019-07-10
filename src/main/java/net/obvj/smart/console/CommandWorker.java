@@ -1,6 +1,9 @@
 package net.obvj.smart.console;
 
-import static net.obvj.smart.console.Command.*;
+import static net.obvj.smart.console.Command.EXIT;
+import static net.obvj.smart.console.Command.RESET;
+import static net.obvj.smart.console.Command.STATUS;
+import static net.obvj.smart.console.Command.getCommandByString;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,7 +16,6 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
 import net.obvj.smart.manager.AgentManager;
@@ -85,19 +87,6 @@ public class CommandWorker implements Runnable
                     {
                         return;
                     }
-                    else if (command.equalsIgnoreCase(STOP.getString()))
-                    {
-                        if (arguments.length >= 2)
-                        {
-                            log.info("Command received: " + commandLine);
-                            stopAgent(arguments[1]);
-                        }
-                        else
-                        {
-                            sendLine("Missing parameter: <agent-class>");
-                        }
-
-                    }
                     else if (command.equalsIgnoreCase(STATUS.getString()))
                     {
                         if (arguments.length >= 2)
@@ -167,56 +156,6 @@ public class CommandWorker implements Runnable
         catch (IllegalArgumentException ile)
         {
             sendLine(ile.getMessage());
-        }
-    }
-
-    private void stopAgent(String agent)
-    {
-        if (agent == null || agent.equals(""))
-        {
-            sendLine("Missing parameter: <agent-class>");
-        }
-        else
-        {
-            String message = String.format("Stopping %s...", agent);
-            sendLine(message);
-            log.info(message);
-
-            try
-            {
-                manager.stopAgent(agent);
-                sendLine("Success.");
-                sendLine("");
-                status(agent);
-            }
-            catch (IllegalStateException e)
-            {
-                log.warning("Illegal state: " + e.getMessage());
-                sendLine(e.getMessage());
-                sendLine("");
-                status(agent);
-            }
-            catch (IllegalArgumentException e)
-            {
-                log.warning(e.getMessage());
-                sendLine(e.getMessage());
-            }
-            catch (TimeoutException ex)
-            {
-                String errMessage = String.format("Timeout waiting for agent task to complete: %s", agent);
-                sendLine(errMessage);
-                log.warning(errMessage);
-                sendLine("");
-                status(agent);
-            }
-            catch (UnsupportedOperationException e)
-            {
-                String errMessage = String.format("Unsupported operation: %s", e.getMessage());
-                sendLine(errMessage);
-                log.warning(errMessage);
-                sendLine("");
-                status(agent);
-            }
         }
     }
 
@@ -294,7 +233,23 @@ public class CommandWorker implements Runnable
 
     private String readLine() throws IOException
     {
-        return in.readLine();
+        return sanitizeUserInput(in.readLine());
+    }
+    
+    private String sanitizeUserInput(String source)
+    {
+        String string = eraseBackspaces(source);
+        return string.replaceAll("\\p{Cntrl}", "");
+    }
+    
+    private String eraseBackspaces(String source)
+    {
+        String str = source;
+        while (str.contains("\b"))
+        {
+            str = str.replaceAll("^\b+|[^\b]\b", "");
+        }
+        return str;
     }
 
 }
