@@ -104,7 +104,7 @@ public abstract class TimerAgent extends Agent
             Date start = DateUtil.getExactStartDateEveryMinute(intervalInMinutes);
 
             schedule.scheduleAtFixedRate(this, (start.getTime() - System.currentTimeMillis()),
-                    intervalInMinutes * 60 * 1000, TimeUnit.MILLISECONDS);
+                    intervalInMinutes * 60 * 1000l, TimeUnit.MILLISECONDS);
 
             logger.log(Level.INFO, "Agent {0} scheduled to run every {1} minute(s). Start programmed to {2}",
                     new Object[] { name, intervalInMinutes, DateUtil.formatDate(start) });
@@ -137,11 +137,13 @@ public abstract class TimerAgent extends Agent
                 try
                 {
                     logger.info("Agent task in execution. Waiting for its completion.");
-                    Thread.sleep(sleepSeconds * 1000);
+                    wait(sleepSeconds * 1000l);
                 }
                 catch (InterruptedException e)
                 {
-                    logger.severe("InterruptedException: " + e.getMessage());
+                    logger.log(Level.WARNING, "Thread was interrupted.", e);
+                    // Restore interrupted state
+                    Thread.currentThread().interrupt();
                 }
             }
             if (currentState == State.RUNNING)

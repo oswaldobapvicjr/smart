@@ -92,8 +92,9 @@ public abstract class DaemonAgent extends Agent
     }
 
     /**
-     * Terminates this agent timer gracefully. Does not interfere with a currently executing
-     * task, if it exists.
+     * Tries to stop this agent timer gracefully, within a given stop timeout configuration in
+     * seconds. If the agent execution is still on-going after the stop timeout, the stop
+     * request is cancelled.
      */
     public final void stop() throws TimeoutException
     {
@@ -118,11 +119,13 @@ public abstract class DaemonAgent extends Agent
                 try
                 {
                     logger.info("Agent task in execution. Waiting for its completion.");
-                    Thread.sleep(sleepSeconds * 1000);
+                    wait(sleepSeconds * 1000l);
                 }
                 catch (InterruptedException e)
                 {
-                    logger.severe("InterruptedException: " + e.getMessage());
+                    logger.log(Level.WARNING, "Thread was interrupted.", e);
+                    // Restore interrupted state
+                    Thread.currentThread().interrupt();
                 }
             }
             if (currentState == State.RUNNING)

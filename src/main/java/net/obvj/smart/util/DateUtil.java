@@ -30,7 +30,7 @@ public class DateUtil
         }
     }
 
-    private static final ThreadLocal<DateFormat> simpleFormat = ThreadLocal
+    private static final ThreadLocal<DateFormat> SIMPLE_FORMAT = ThreadLocal
             .withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
 
     public static String now()
@@ -40,7 +40,7 @@ public class DateUtil
 
     public static String formatDate(Date date)
     {
-        return simpleFormat.get().format(date);
+        return SIMPLE_FORMAT.get().format(date);
     }
 
     public static Date getExactStartDateEveryMinute(int intervalInMinutes)
@@ -82,10 +82,13 @@ public class DateUtil
         {
         case HOURS:
             start.set(Calendar.MINUTE, 0);
+            break;
         case MINUTES:
             start.set(Calendar.SECOND, 0);
+            break;
         case SECONDS:
             start.set(Calendar.MILLISECOND, 0);
+            break;
         }
 
         return start.getTime();

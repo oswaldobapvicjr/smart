@@ -10,7 +10,11 @@ import java.lang.management.ThreadMXBean;
  */
 public class SystemUtil
 {
-
+    private SystemUtil()
+    {
+        throw new IllegalStateException("Utility class");
+    }
+    
     public static long getSystemUptime()
     {
         RuntimeMXBean rMXBean = ManagementFactory.getRuntimeMXBean();
