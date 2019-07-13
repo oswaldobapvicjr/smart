@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.obvj.smart.util.DateUtil;
@@ -61,7 +62,7 @@ public abstract class TimerAgent extends Agent
                 State previousState = currentState;
                 currentState = State.RUNNING;
                 lastRunDate = Calendar.getInstance();
-                logger.info(String.format("%s - Agent task started.", DateUtil.formatDate(lastRunDate.getTime())));
+                logger.log(Level.INFO, "{0} - Agent task started.", DateUtil.formatDate(lastRunDate.getTime()));
                 try
                 {
                     runTask();
@@ -73,7 +74,7 @@ public abstract class TimerAgent extends Agent
                 finally
                 {
                     currentState = previousState;
-                    logger.info(String.format("%s - Agent task complete.", DateUtil.now()));
+                    logger.log(Level.INFO, "{0} - Agent task complete.", DateUtil.now());
                 }
             }
         }
@@ -99,14 +100,14 @@ public abstract class TimerAgent extends Agent
             {
                 throw new IllegalStateException("Agent already started");
             }
-            logger.info("Starting agent...");
+            logger.log(Level.INFO, "Starting agent: {0}", name);
             Date start = DateUtil.getExactStartDateEveryMinute(intervalInMinutes);
 
             schedule.scheduleAtFixedRate(this, (start.getTime() - System.currentTimeMillis()),
                     intervalInMinutes * 60 * 1000, TimeUnit.MILLISECONDS);
 
-            logger.info(String.format("Agent scheduled to run every %d minute(s). Start programmed to %s",
-                    intervalInMinutes, DateUtil.formatDate(start)));
+            logger.log(Level.INFO, "Agent {0} scheduled to run every {1} minute(s). Start programmed to {2}",
+                    new Object[] { name, intervalInMinutes, DateUtil.formatDate(start) });
             currentState = State.STARTED;
             startDate = Calendar.getInstance();
         }

@@ -3,6 +3,7 @@ package net.obvj.smart.agents.api;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.obvj.smart.util.DateUtil;
@@ -48,7 +49,7 @@ public abstract class DaemonAgent extends Agent
             {
                 currentState = State.RUNNING;
                 lastRunDate = Calendar.getInstance();
-                logger.info(String.format("%s - Agent task started.", DateUtil.formatDate(lastRunDate.getTime())));
+                logger.log(Level.INFO, "{0} - Agent task started.", DateUtil.formatDate(lastRunDate.getTime()));
                 try
                 {
                     runTask();
@@ -83,7 +84,6 @@ public abstract class DaemonAgent extends Agent
                 throw new IllegalStateException("Agent already started");
             }
             logger.info("Starting agent...");
-            // timer.schedule(this, 0);
             schedule.schedule(this, 0, TimeUnit.SECONDS);
             logger.info("Daemon agent started");
             currentState = State.STARTED;

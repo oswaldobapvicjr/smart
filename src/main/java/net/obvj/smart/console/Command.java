@@ -5,7 +5,6 @@ import java.lang.management.ThreadInfo;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.obvj.smart.agents.api.Agent;
@@ -70,11 +69,10 @@ public enum Command
         {
             if (parameters.length == 2)
             {
-                log.log(Level.INFO, "Command received: %s", parameters);
                 String agent = parameters[1];
                 if (agent == null || agent.equals(""))
                 {
-                    out.println("Missing parameter: <agent-name>");
+                    out.println(MISSING_PARAMETER_AGENT_NAME);
                 }
                 else
                 {
@@ -99,7 +97,7 @@ public enum Command
             }
             else
             {
-                out.println("Missing parameter: <agent-name>");
+                out.println(MISSING_PARAMETER_AGENT_NAME);
             }
         }
     },
@@ -111,11 +109,10 @@ public enum Command
         {
             if (parameters.length == 2)
             {
-                log.log(Level.INFO, "Command received: %s", parameters);
                 String agent = parameters[1];
                 if (agent == null || agent.equals(""))
                 {
-                    out.println("Missing parameter: <agent-name>");
+                    out.println(MISSING_PARAMETER_AGENT_NAME);
                 }
                 else
                 {
@@ -143,7 +140,7 @@ public enum Command
             }
             else
             {
-                out.println("Missing parameter: <agent-name>");
+                out.println(MISSING_PARAMETER_AGENT_NAME);
             }
         }
     },
@@ -155,11 +152,10 @@ public enum Command
         {
             if (parameters.length == 2)
             {
-                log.log(Level.INFO, "Command received: %s", parameters);
                 String agent = parameters[1];
                 if (agent == null || agent.equals(""))
                 {
-                    out.println("Missing parameter: <agent-name>");
+                    out.println(MISSING_PARAMETER_AGENT_NAME);
                 }
                 else
                 {
@@ -197,7 +193,7 @@ public enum Command
             }
             else
             {
-                out.println("Missing parameter: <agent-name>");
+                out.println(MISSING_PARAMETER_AGENT_NAME);
             }
         }
     },
@@ -209,11 +205,10 @@ public enum Command
         {
             if (parameters.length == 2)
             {
-                log.log(Level.INFO, "Command received: %s", parameters);
                 String agent = parameters[1];
                 if (agent == null || agent.equals(""))
                 {
-                    out.println("Missing parameter: <agent-name>");
+                    out.println(MISSING_PARAMETER_AGENT_NAME);
                 }
                 else
                 {
@@ -230,7 +225,7 @@ public enum Command
             }
             else
             {
-                out.println("Missing parameter: <agent-name>");
+                out.println(MISSING_PARAMETER_AGENT_NAME);
             }
         }
     },
@@ -242,11 +237,10 @@ public enum Command
         {
             if (parameters.length == 2)
             {
-                log.log(Level.INFO, "Command received: %s", parameters);
                 String agent = parameters[1];
                 if (agent == null || agent.equals(""))
                 {
-                    out.println("Missing parameter: <agent-name>");
+                    out.println(MISSING_PARAMETER_AGENT_NAME);
                 }
                 else
                 {
@@ -272,7 +266,7 @@ public enum Command
             }
             else
             {
-                out.println("Missing parameter: <agent-name>");
+                out.println(MISSING_PARAMETER_AGENT_NAME);
             }
         }
     },
@@ -305,7 +299,8 @@ public enum Command
         }
     };
 
-    private final static Logger log = Logger.getLogger("smart");
+    private static final String MISSING_PARAMETER_AGENT_NAME = "Missing parameter: <agent-name>";
+    private static final Logger log = Logger.getLogger("smart");
 
     private final String string;
 

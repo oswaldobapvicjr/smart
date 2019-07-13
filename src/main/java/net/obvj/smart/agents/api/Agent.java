@@ -15,7 +15,7 @@ public abstract class Agent implements Runnable
     public enum State
     {
         SET, STARTED, RUNNING, STOPPED, ERROR;
-    };
+    }
 
     protected State currentState;
     protected String name;
@@ -107,20 +107,12 @@ public abstract class Agent implements Runnable
 
     class AgentThreadFactory implements ThreadFactory
     {
-        static final String namePrefix = "Agent-";
-        final ThreadGroup group;
-
-        AgentThreadFactory()
-        {
-            SecurityManager s = System.getSecurityManager();
-            group = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
-        }
+        static final String AGENT_NAME_PREFIX = "Agent-";
 
         public Thread newThread(Runnable runnable)
         {
-            String name = namePrefix;
-            name += getName();
-            Thread thread = new Thread(group, runnable, name);
+            String threadName = AGENT_NAME_PREFIX + getName();
+            Thread thread = new Thread(runnable, threadName);
             thread.setPriority(Thread.NORM_PRIORITY);
             if (thread.isDaemon())
             {

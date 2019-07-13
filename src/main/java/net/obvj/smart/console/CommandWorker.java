@@ -14,6 +14,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -71,6 +72,8 @@ public class CommandWorker implements Runnable
 
                 if (!"".equals(commandLine))
                 {
+                    log.log(Level.INFO, "Command received: {0}", commandLine);
+                    
                     String[] arguments = commandLine.split(" ");
                     String command = arguments[0];
 

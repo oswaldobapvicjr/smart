@@ -11,6 +11,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -49,7 +50,7 @@ public class ManagementConsole implements Runnable
         }
         catch (BindException e)
         {
-            log.severe("Unable to open system port " + PORT + ". Please make sure this port is not in use.");
+            log.log(Level.SEVERE, "Unable to open system port {0}. Please make sure this port is not in use.", PORT);
         }
         catch (IOException e)
         {
@@ -112,7 +113,7 @@ public class ManagementConsole implements Runnable
             }
             catch (IOException e)
             {
-                log.severe("Error closing server socket on port " + PORT);
+                log.log(Level.SEVERE, "Error closing server socket on port {0}", PORT);
             }
         }
     }
@@ -120,20 +121,13 @@ public class ManagementConsole implements Runnable
     static class MgmtConsoleSessionThreadFactory implements ThreadFactory
     {
 
-        static final String namePrefix = "MgmtConsoleWorker-T";
-        static final AtomicInteger threadNumber = new AtomicInteger(1);
-        final ThreadGroup group;
-
-        MgmtConsoleSessionThreadFactory()
-        {
-            SecurityManager s = System.getSecurityManager();
-            group = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
-        }
+        static final String THREAD_NAME_PREFIX = "MgmtConsoleWorker-T";
+        static final AtomicInteger THREAD_NUMBER = new AtomicInteger(1);
 
         public Thread newThread(Runnable runnable)
         {
-            String name = namePrefix + threadNumber.getAndIncrement();
-            Thread thread = new Thread(group, runnable, name);
+            String name = THREAD_NAME_PREFIX + THREAD_NUMBER.getAndIncrement();
+            Thread thread = new Thread(runnable, name);
             thread.setPriority(Thread.MIN_PRIORITY);
             if (thread.isDaemon())
             {

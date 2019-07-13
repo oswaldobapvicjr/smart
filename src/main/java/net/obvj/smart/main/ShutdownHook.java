@@ -48,7 +48,6 @@ public class ShutdownHook implements Runnable
         logger.info("Closing Agent Management Console...");
         ManagementConsole.getInstance().stop();
 
-        logger.info("Shutdown complete.");
-        // System.runFinalization();
+        logger.info("Shutdown sequence complete.");
     }
 }

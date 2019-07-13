@@ -12,7 +12,10 @@ import net.obvj.smart.agents.api.DaemonAgent;
 public final class AgentManager
 {
 
+    private static final String MSG_PATTERN_INVALID_AGENT = "Invalid agent: %s";
+
     private static final AgentManager instance = new AgentManager();
+    
     private Map<String, Agent> agents = new TreeMap<>();
     private final Logger logger = Logger.getLogger(this.getClass().getName());
 
@@ -50,7 +53,7 @@ public final class AgentManager
         }
         else
         {
-            throw new IllegalArgumentException("Invalid agent: " + name);
+            throw new IllegalArgumentException(String.format(MSG_PATTERN_INVALID_AGENT, name));
         }
     }
 
@@ -90,7 +93,7 @@ public final class AgentManager
         }
         else
         {
-            throw new IllegalArgumentException("Invalid agent: " + name);
+            throw new IllegalArgumentException(String.format(MSG_PATTERN_INVALID_AGENT, name));
         }
     }
 
@@ -102,7 +105,7 @@ public final class AgentManager
         }
         else
         {
-            throw new IllegalArgumentException("Invalid agent: " + name);
+            throw new IllegalArgumentException(String.format(MSG_PATTERN_INVALID_AGENT, name));
         }
     }
 
@@ -119,7 +122,7 @@ public final class AgentManager
         }
         else
         {
-            throw new IllegalArgumentException("Invalid agent: " + name);
+            throw new IllegalArgumentException(String.format(MSG_PATTERN_INVALID_AGENT, name));
         }
     }
 
@@ -132,7 +135,7 @@ public final class AgentManager
         }
         else
         {
-            throw new IllegalArgumentException("Invalid agent: " + name);
+            throw new IllegalArgumentException(String.format(MSG_PATTERN_INVALID_AGENT, name));
         }
     }
 
@@ -149,7 +152,7 @@ public final class AgentManager
         }
         else
         {
-            throw new IllegalArgumentException("Invalid agent: " + name);
+            throw new IllegalArgumentException(String.format(MSG_PATTERN_INVALID_AGENT, name));
         }
     }
 
@@ -161,7 +164,7 @@ public final class AgentManager
         }
         else
         {
-            throw new IllegalArgumentException("Invalid agent: " + name);
+            throw new IllegalArgumentException(String.format(MSG_PATTERN_INVALID_AGENT, name));
         }
     }
 
@@ -173,7 +176,7 @@ public final class AgentManager
         }
         else
         {
-            throw new IllegalArgumentException("Invalid agent: " + name);
+            throw new IllegalArgumentException(String.format(MSG_PATTERN_INVALID_AGENT, name));
         }
     }
 
