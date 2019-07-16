@@ -121,7 +121,7 @@ public class ManagementConsole implements Runnable
     static class MgmtConsoleSessionThreadFactory implements ThreadFactory
     {
 
-        static final String THREAD_NAME_PREFIX = "MgmtConsoleWorker-T";
+        static final String THREAD_NAME_PREFIX = "MgmtConsoleWorker(classic)-T";
         static final AtomicInteger THREAD_NUMBER = new AtomicInteger(1);
 
         public Thread newThread(Runnable runnable)

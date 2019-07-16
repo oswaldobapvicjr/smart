@@ -5,15 +5,26 @@
 
 	<groupId>net.obvj</groupId>
 	<artifactId>smart</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>2.0</version>
 
 	<name>S.M.A.R.T.</name>
 	<description>A runtime management engine for Java agents</description>
 
-    <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+	<properties>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<dependencies>
+
+		<!-- https://mvnrepository.com/artifact/info.picocli/picocli-shell-jline2 -->
+		<dependency>
+			<groupId>info.picocli</groupId>
+			<artifactId>picocli-shell-jline2</artifactId>
+			<version>3.9.6</version>
+		</dependency>
+
+	</dependencies>
 
 </project>
