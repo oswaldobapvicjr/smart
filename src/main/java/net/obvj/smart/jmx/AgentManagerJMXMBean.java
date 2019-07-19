@@ -3,6 +3,8 @@ package net.obvj.smart.jmx;
 import java.util.Collection;
 import java.util.concurrent.TimeoutException;
 
+import net.obvj.smart.agents.api.dto.AgentDTO;
+
 public interface AgentManagerJMXMBean
 {
 
@@ -14,7 +16,9 @@ public interface AgentManagerJMXMBean
 
     boolean resetAgent(String name);
 
-    Collection<String> getAgents();
+    String[] getAgentNames();
+
+    Collection<AgentDTO> getAgentsDTO();
 
     boolean isAgentRunning(String name);
 

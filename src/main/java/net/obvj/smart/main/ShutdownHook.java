@@ -29,7 +29,6 @@ public class ShutdownHook implements Runnable
             try
             {
                 agent.stop();
-
             }
             catch (IllegalStateException | TimeoutException | UnsupportedOperationException ex)
             {

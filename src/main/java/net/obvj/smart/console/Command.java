@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
-import net.obvj.smart.agents.api.Agent;
+import net.obvj.smart.agents.api.dto.AgentDTO;
 import net.obvj.smart.manager.AgentManager;
 import net.obvj.smart.util.DateUtil;
 import net.obvj.smart.util.SystemUtil;
@@ -19,7 +19,7 @@ public enum Command
         @Override
         public void execute(String[] parameters, PrintWriter out)
         {
-            Collection<Agent> agents = AgentManager.getInstance().getAgents();
+            Collection<AgentDTO> agents = AgentManager.getInstance().getAgentDTOs();
             if (agents.isEmpty())
             {
                 out.println("No agent found");
@@ -29,9 +29,9 @@ public enum Command
             out.println("NAME                                 TYPE   STATE  ");
             out.println("------------------------------------ ------ -------");
 
-            for (Agent agent : agents)
+            for (AgentDTO agent : agents)
             {
-                out.println(String.format("%-36s %-6s %-7s", agent.getName(), agent.getType(), agent.getState()));
+                out.println(String.format("%-36s %-6s %-7s", agent.name, agent.type, agent.state));
             }
         }
     },

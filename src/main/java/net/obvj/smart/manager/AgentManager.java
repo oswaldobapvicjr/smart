@@ -1,13 +1,13 @@
 package net.obvj.smart.manager;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
 import net.obvj.smart.agents.api.Agent;
 import net.obvj.smart.agents.api.DaemonAgent;
+import net.obvj.smart.agents.api.dto.AgentDTO;
+import net.obvj.smart.agents.dummy.DummyAgent;
 
 public final class AgentManager
 {
@@ -15,7 +15,7 @@ public final class AgentManager
     private static final String MSG_PATTERN_INVALID_AGENT = "Invalid agent: %s";
 
     private static final AgentManager instance = new AgentManager();
-    
+
     private Map<String, Agent> agents = new TreeMap<>();
     private final Logger logger = Logger.getLogger(this.getClass().getName());
 
@@ -144,6 +144,19 @@ public final class AgentManager
         return agents.values();
     }
 
+    public String[] getAgentNames()
+    {
+        return agents.keySet().toArray(new String[] {});
+    }
+
+    public Collection<AgentDTO> getAgentDTOs()
+    {
+        List<AgentDTO> agentDTOs = new ArrayList<>(agents.size());
+        agents.values().forEach(
+                agent -> agentDTOs.add(new AgentDTO(agent.getName(), agent.getType(), agent.getState().toString())));
+        return agentDTOs;
+    }
+
     public boolean isAgentRunning(String name)
     {
         if (agents.containsKey(name))
@@ -178,6 +191,12 @@ public final class AgentManager
         {
             throw new IllegalArgumentException(String.format(MSG_PATTERN_INVALID_AGENT, name));
         }
+    }
+
+    public static void main(String[] args)
+    {
+        AgentManager.getInstance().addAgent(new DummyAgent("dummyAgent"));
+        System.out.println(AgentManager.getInstance().getAgentDTOs());
     }
 
 }

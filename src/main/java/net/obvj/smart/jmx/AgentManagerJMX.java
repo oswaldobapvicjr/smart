@@ -1,11 +1,10 @@
 package net.obvj.smart.jmx;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
-import net.obvj.smart.agents.api.Agent;
+import net.obvj.smart.agents.api.dto.AgentDTO;
 import net.obvj.smart.manager.AgentManager;
 
 public class AgentManagerJMX implements AgentManagerJMXMBean
@@ -31,14 +30,14 @@ public class AgentManagerJMX implements AgentManagerJMXMBean
         return AgentManager.getInstance().stopAgent(name);
     }
 
-    public Collection<String> getAgents()
+    public String[] getAgentNames()
     {
-        List<String> agentsList = new ArrayList<>();
-        for (Agent agent : AgentManager.getInstance().getAgents())
-        {
-            agentsList.add(agent.getName());
-        }
-        return agentsList;
+        return AgentManager.getInstance().getAgentNames();
+    }
+
+    public Collection<AgentDTO> getAgentsDTO()
+    {
+        return AgentManager.getInstance().getAgentDTOs();
     }
 
     public boolean isAgentRunning(String name)

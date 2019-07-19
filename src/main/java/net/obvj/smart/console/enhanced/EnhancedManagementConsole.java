@@ -8,7 +8,6 @@ import jline.console.ConsoleReader;
 import jline.console.completer.ArgumentCompleter.ArgumentList;
 import jline.console.completer.ArgumentCompleter.WhitespaceArgumentDelimiter;
 import net.obvj.smart.console.enhanced.commands.Commands;
-import net.obvj.smart.jmx.AgentManagerJMXMBean;
 import net.obvj.smart.jmx.client.AgentManagerJMXClient;
 import picocli.CommandLine;
 import picocli.shell.jline2.PicocliJLineCompleter;
@@ -16,7 +15,13 @@ import picocli.shell.jline2.PicocliJLineCompleter;
 public class EnhancedManagementConsole implements Runnable
 {
     private static final Logger LOG = Logger.getLogger("smart");
+    private String[] args;
 
+    public EnhancedManagementConsole(String[] args)
+    {
+        this.args = args;
+    }
+    
     @Override
     public void run()
     {
@@ -33,7 +38,7 @@ public class EnhancedManagementConsole implements Runnable
 
             // Start the shell and process input until the user quits with Ctl+D
             String line;
-            while ((line = reader.readLine()) != null)
+            while ((line = args !=null && args.length > 0 ? args[0] : reader.readLine()) != null)
             {
                 line = line.trim();
                 if (!"".equals(line))
@@ -58,6 +63,6 @@ public class EnhancedManagementConsole implements Runnable
 
     public static void main(String[] args)
     {
-        new EnhancedManagementConsole().run();
+        new EnhancedManagementConsole(args).run();
     }
 }
