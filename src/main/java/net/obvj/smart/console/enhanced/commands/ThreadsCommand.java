@@ -1,29 +1,28 @@
 package net.obvj.smart.console.enhanced.commands;
 
 import java.io.IOException;
-import java.util.concurrent.TimeoutException;
+import java.util.Collection;
 
 import net.obvj.smart.jmx.client.AgentManagerJMXClient;
+import net.obvj.smart.jmx.dto.ThreadDTO;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
-import picocli.CommandLine.Parameters;
 import picocli.CommandLine.ParentCommand;
 
-@Command(name = "stop",
+@Command(name = "threads",
          headerHeading = "@|bold,underline Usage|@:%n%n",
-         header = "Stops an agent",
+         header = "List server threads",
          synopsisHeading = "%n",
          descriptionHeading = "%n@|bold,underline Description|@:%n%n",
-         description = "Gracefully stop the agent identified with the given name.",
+         description = "Display all currently active threads and their states in the server.",
          parameterListHeading = "%n@|bold,underline Parameters|@:%n",
          optionListHeading = "%n@|bold,underline Options|@:%n")
-public class StopCommand implements Runnable
+public class ThreadsCommand implements Runnable
 {
+    private static final String ID_NAME_STATE_PATTERN = "%-4d %-38s %-13s%n";
+
     @Option(names = {"-h", "--help"}, usageHelp = true, description = "Display this help message.")
     boolean usageHelpRequested;
-    
-    @Parameters(paramLabel = "<agent>", description = "The agent to be stopped.")
-    private String agent;
     
     @ParentCommand
     private Commands parent;
@@ -31,20 +30,16 @@ public class StopCommand implements Runnable
     @Override
     public void run()
     {
+        parent.out.println("Listing active server threads...");
+        parent.out.flush();
         try
         {
-            parent.out.printf("Stopping %s...%n", agent);
-            parent.out.flush();
-            AgentManagerJMXClient.getMBeanProxy().stopAgent(agent);
-            parent.out.println("Success");
-        }
-        catch (IllegalStateException | IllegalArgumentException e)
-        {
-            parent.out.println(e.getMessage());
-        }
-        catch (TimeoutException e)
-        {
-            parent.out.println("Operation timed-out. The agent is still running. Try again later.");
+            Collection<ThreadDTO> allThreads = AgentManagerJMXClient.getMBeanProxy().getAllThreadsInfo();
+
+            parent.out.println();
+            parent.out.println("ID   Name                                   State");
+            parent.out.println("---- -------------------------------------- -------------");
+            allThreads.forEach(thread -> parent.out.printf(ID_NAME_STATE_PATTERN, thread.id, thread.name, thread.state));
         }
         catch (IOException e)
         {

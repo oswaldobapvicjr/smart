@@ -21,7 +21,7 @@ import picocli.CommandLine.ParentCommand;
          optionListHeading = "%n@|bold,underline Options|@:%n")
 public class AgentsCommand implements Runnable
 {
-    private static final String NAME_TYPE_STATE_PATTERN = "%-39s %-6s %-7s%n";
+    private static final String NAME_TYPE_STATE_PATTERN = "%-42s %-6s %-7s%n";
 
     @Option(names = {"-h", "--help"}, usageHelp = true, description = "Display this help message.")
     boolean usageHelpRequested;
@@ -50,8 +50,8 @@ public class AgentsCommand implements Runnable
                 return;
             }
             parent.out.println();
-            parent.out.println("Name                                    Type   State");
-            parent.out.println("--------------------------------------- ------ -------");
+            parent.out.println("Name                                       Type   State");
+            parent.out.println("------------------------------------------ ------ -------");
             
             agents.forEach(agent -> parent.out
                     .printf(String.format(NAME_TYPE_STATE_PATTERN, agent.name, agent.type, agent.state)));

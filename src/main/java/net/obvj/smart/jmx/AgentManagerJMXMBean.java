@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.concurrent.TimeoutException;
 
 import net.obvj.smart.agents.api.dto.AgentDTO;
+import net.obvj.smart.jmx.dto.ThreadDTO;
 
 public interface AgentManagerJMXMBean
 {
@@ -27,5 +28,8 @@ public interface AgentManagerJMXMBean
     String getAgentStatusStr(String name);
     
     String getServerDate();
-
+    
+    long getServerUptime();
+    
+    Collection<ThreadDTO> getAllThreadsInfo();
 }
