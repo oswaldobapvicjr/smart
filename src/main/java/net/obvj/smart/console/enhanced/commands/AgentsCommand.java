@@ -35,6 +35,8 @@ public class AgentsCommand implements Runnable
     @Override
     public void run()
     {
+        parent.out.println("Listing agents...");
+        parent.out.flush();
         try
         {
             Collection<AgentDTO> agents = AgentManagerJMXClient.getMBeanProxy().getAgentsDTO();

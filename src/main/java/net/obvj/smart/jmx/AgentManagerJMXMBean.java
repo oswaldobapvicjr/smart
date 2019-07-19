@@ -25,5 +25,7 @@ public interface AgentManagerJMXMBean
     boolean isAgentStarted(String name);
 
     String getAgentStatusStr(String name);
+    
+    String getServerDate();
 
 }

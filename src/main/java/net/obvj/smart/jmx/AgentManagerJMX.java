@@ -5,6 +5,7 @@ import java.util.concurrent.TimeoutException;
 
 import net.obvj.smart.agents.api.dto.AgentDTO;
 import net.obvj.smart.manager.AgentManager;
+import net.obvj.smart.util.DateUtil;
 
 public class AgentManagerJMX implements AgentManagerJMXMBean
 {
@@ -52,6 +53,11 @@ public class AgentManagerJMX implements AgentManagerJMXMBean
     public String getAgentStatusStr(String name)
     {
         return AgentManager.getInstance().getAgentStatusStr(name);
+    }
+    
+    public String getServerDate()
+    {
+        return DateUtil.now();
     }
 
 }

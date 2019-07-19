@@ -33,7 +33,6 @@ public class AgentManagerJMXClient
         {
             JMXConnector jmxc = JMXConnectorFactory.connect(new JMXServiceURL(SERVICE_JMX_RMI_URL));
             MBeanServerConnection mbsc = jmxc.getMBeanServerConnection();
-
             ObjectName mbeanName = new ObjectName("net.obvj.smart.jmx:type=AgentManagerJMX");
             return JMX.newMBeanProxy(mbsc, mbeanName, AgentManagerJMXMBean.class, true);
         }

@@ -65,7 +65,7 @@ public class EnhancedManagementConsole implements Runnable
         try
         {
             ArgumentList list = new WhitespaceArgumentDelimiter().delimit(line, line.length());
-            CommandLine.run(commands, list.getArguments());
+            new CommandLine(commands).execute(list.getArguments());
             reader.println();
         }
         catch (Exception e) {

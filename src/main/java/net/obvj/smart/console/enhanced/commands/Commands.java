@@ -6,10 +6,16 @@ import jline.console.ConsoleReader;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
-@Command(name = "",
-         description = "",
-         footer = { "", "Press Ctl+D to exit." },
-         subcommands = { AgentsCommand.class, StartCommand.class })
+@Command(name = "", header = "",
+         commandListHeading = "Available commands:%n%n",
+         subcommands = { AgentsCommand.class,
+                         DateCommand.class,
+                         StatusCommand.class,
+                         StartCommand.class,
+                         StopCommand.class,
+                         ResetCommand.class,
+                         RunCommand.class },
+         footer = { "", "Press Ctl+D to exit." })
 public class Commands implements Runnable
 {
     protected final ConsoleReader reader;

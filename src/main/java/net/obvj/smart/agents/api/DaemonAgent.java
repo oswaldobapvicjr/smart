@@ -73,7 +73,7 @@ public abstract class DaemonAgent extends Agent
         case STARTED:
             throw new IllegalStateException("Agent already started");
         case STOPPED:
-            throw new IllegalStateException("Illegal state: agent task already cancelled");
+            throw new IllegalStateException("Agent has been stopped. Try to reset this agent before restarting");
         default:
             break;
         }
@@ -107,7 +107,7 @@ public abstract class DaemonAgent extends Agent
             if (currentState == State.STOPPED)
             {
                 throw new IllegalStateException("Agent already stopped");
-            }
+            } 
             stopTask();
             schedule.shutdown();
 
