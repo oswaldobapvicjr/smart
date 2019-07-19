@@ -69,8 +69,6 @@ public class Main
         logger.info("Loading agents...");
         manager.addAgent(new DummyAgent("DummyAgent"));
         manager.addAgent(new PMReporter("PMReporter"));
-        manager.startAgent("DummyAgent");
-        manager.startAgent("PMReporter");
 
         logger.info("Ready.");
 

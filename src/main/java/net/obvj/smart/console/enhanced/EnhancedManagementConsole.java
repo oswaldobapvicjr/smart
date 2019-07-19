@@ -25,9 +25,9 @@ public class EnhancedManagementConsole implements Runnable
     @Override
     public void run()
     {
-        AgentManagerJMXClient.getInstance();
         try
         {
+            // Setting-up the console
             ConsoleReader reader = new ConsoleReader();
             reader.setPrompt("smart> ");
 
@@ -36,6 +36,9 @@ public class EnhancedManagementConsole implements Runnable
             CommandLine cmd = new CommandLine(commands);
             reader.addCompleter(new PicocliJLineCompleter(cmd.getCommandSpec()));
 
+            // Set up connection to JMX
+            AgentManagerJMXClient.getMBeanProxy();
+            
             // Start the shell and process input until the user quits with Ctl+D
             String line;
             while ((line = args !=null && args.length > 0 ? args[0] : reader.readLine()) != null)
@@ -47,17 +50,26 @@ public class EnhancedManagementConsole implements Runnable
                     {
                         break;
                     }
-
-                    // Handle command line
-                    ArgumentList list = new WhitespaceArgumentDelimiter().delimit(line, line.length());
-                    CommandLine.run(commands, list.getArguments());
-                    reader.println();
+                    handleCommandLine(reader, commands, line);
                 }
             }
         }
         catch (IOException e)
         {
             LOG.log(Level.SEVERE, "Enhanced Management Console service ended unexpectedly", e);
+        }
+    }
+
+    private void handleCommandLine(ConsoleReader reader, Commands commands, String line) throws IOException
+    {
+        try
+        {
+            ArgumentList list = new WhitespaceArgumentDelimiter().delimit(line, line.length());
+            CommandLine.run(commands, list.getArguments());
+            reader.println();
+        }
+        catch (Exception e) {
+            reader.println(e.getClass().getName() + ": " + e.getMessage() + "\n");
         }
     }
 

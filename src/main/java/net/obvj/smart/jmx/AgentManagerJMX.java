@@ -1,7 +1,6 @@
 package net.obvj.smart.jmx;
 
 import java.util.Collection;
-import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
 import net.obvj.smart.agents.api.dto.AgentDTO;

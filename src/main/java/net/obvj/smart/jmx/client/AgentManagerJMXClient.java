@@ -1,7 +1,9 @@
 package net.obvj.smart.jmx.client;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.management.JMX;
 import javax.management.MBeanServerConnection;
 import javax.management.MalformedObjectNameException;
@@ -14,47 +16,41 @@ import net.obvj.smart.jmx.AgentManagerJMXMBean;
 
 public class AgentManagerJMXClient
 {
-    private static final String SERVICE_JMX_RMI_URL = "service:jmx:rmi:///jndi/rmi://:9999/jmxrmi";
+    private static final Logger LOG = Logger.getLogger("smart");
 
-    private static final AgentManagerJMXClient instance = new AgentManagerJMXClient();
+    private static final String SERVICE_JMX_RMI_URL = "service:jmx:rmi:///jndi/rmi://:9999/jmxrmi";
     
-    private AgentManagerJMXMBean mbeanProxy;
+    private static AgentManagerJMXMBean mbeanProxy;
     
     private AgentManagerJMXClient()
     {
+        // No instances allowed
+    }
+    
+    private static AgentManagerJMXMBean createMBeanProxy() throws IOException
+    {
         try
         {
-            JMXConnector jmxc = JMXConnectorFactory.connect(getUrl());
+            JMXConnector jmxc = JMXConnectorFactory.connect(new JMXServiceURL(SERVICE_JMX_RMI_URL));
             MBeanServerConnection mbsc = jmxc.getMBeanServerConnection();
 
             ObjectName mbeanName = new ObjectName("net.obvj.smart.jmx:type=AgentManagerJMX");
-            mbeanProxy = JMX.newMBeanProxy(mbsc, mbeanName, AgentManagerJMXMBean.class, true);
-        }
-        catch (IOException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            return JMX.newMBeanProxy(mbsc, mbeanName, AgentManagerJMXMBean.class, true);
         }
         catch (MalformedObjectNameException e)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, "Unable to find remote agent manager stub", e);
+            return null;
         }
     }
-
-    private JMXServiceURL getUrl() throws MalformedURLException
-    {
-        return new JMXServiceURL(SERVICE_JMX_RMI_URL);
-    }
     
-    public AgentManagerJMXMBean getMBeanProxy()
+    public static AgentManagerJMXMBean getMBeanProxy() throws IOException
     {
+        if (mbeanProxy == null)
+        {
+            mbeanProxy = createMBeanProxy();
+        }
         return mbeanProxy;
-    }
-    
-    public static AgentManagerJMXClient getInstance()
-    {
-        return instance;
     }
 
 }

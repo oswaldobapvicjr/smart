@@ -9,7 +9,7 @@ import picocli.CommandLine.Command;
 @Command(name = "",
          description = "",
          footer = { "", "Press Ctl+D to exit." },
-         subcommands = { AgentsCommand.class })
+         subcommands = { AgentsCommand.class, StartCommand.class })
 public class Commands implements Runnable
 {
     protected final ConsoleReader reader;

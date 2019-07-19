@@ -1,5 +1,6 @@
 package net.obvj.smart.console.enhanced.commands;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -34,22 +35,29 @@ public class AgentsCommand implements Runnable
     @Override
     public void run()
     {
-        Collection<AgentDTO> agents = AgentManagerJMXClient.getInstance().getMBeanProxy().getAgentsDTO();
+        try
+        {
+            Collection<AgentDTO> agents = AgentManagerJMXClient.getMBeanProxy().getAgentsDTO();
+            if (!type.isEmpty())
+            {
+                agents = agents.stream().filter(a -> a.type.equalsIgnoreCase(this.type)).collect(Collectors.toSet());
+            }
+            if (agents.isEmpty())
+            {
+                parent.out.println("No agent found");
+                return;
+            }
+            parent.out.println();
+            parent.out.println("Name                                    Type   State");
+            parent.out.println("--------------------------------------- ------ -------");
+            
+            agents.forEach(agent -> parent.out
+                    .printf(String.format(NAME_TYPE_STATE_PATTERN, agent.name, agent.type, agent.state)));
+        }
+        catch (IOException e)
+        {
+            parent.out.println("Unable to connect to the agent manager. Please make sure the service is running.");
+        }
         
-        if (!type.isEmpty())
-        {
-            agents = agents.stream().filter(a -> a.type.equalsIgnoreCase(this.type)).collect(Collectors.toSet());
-        }
-        if (agents.isEmpty())
-        {
-            parent.out.println("No agent found");
-            return;
-        }
-        parent.out.println();
-        parent.out.println("Name                                    Type   State");
-        parent.out.println("--------------------------------------- ------ -------");
-
-        agents.forEach(agent -> parent.out
-                .printf(String.format(NAME_TYPE_STATE_PATTERN, agent.name, agent.type, agent.state)));
     }
 }
