@@ -10,11 +10,14 @@ import net.obvj.smart.manager.AgentManager;
 /**
  * A Runnable object that may be executed before JVM termination for graceful system
  * shutdown. The logic herein is ignored if JVM receives a kill -9 (FORCE) signal.
+ * 
+ * @author oswaldo.bapvic.jr
+ * @since 1.0
  */
 public class ShutdownHook implements Runnable
 {
 
-    private final Logger logger = Logger.getLogger(this.getClass().getName());
+    private final Logger logger = Logger.getLogger("smart-server");
 
     public void run()
     {

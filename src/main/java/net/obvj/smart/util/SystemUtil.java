@@ -7,6 +7,9 @@ import java.lang.management.ThreadMXBean;
 
 /**
  * Utility class with facilities for gathering of system information
+ * 
+ * @author oswaldo.bapvic.jr
+ * @since 1.0
  */
 public class SystemUtil
 {

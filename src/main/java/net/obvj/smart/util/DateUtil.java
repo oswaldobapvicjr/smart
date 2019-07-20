@@ -5,13 +5,21 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+/**
+ * Utility methods for working with dates
+ * 
+ * @author oswaldo.bapvic.jr
+ * @since 1.0
+ */
 public class DateUtil
 {
-
+    /**
+     * Supporter time units for timer agents maintenance
+     */
     public enum TimeUnit
     {
-
-        SECONDS(Calendar.SECOND, "second(s)"), MINUTES(Calendar.MINUTE, "minute(s)"),
+        SECONDS(Calendar.SECOND, "second(s)"),
+        MINUTES(Calendar.MINUTE, "minute(s)"),
         HOURS(Calendar.HOUR_OF_DAY, "hour(s)");
 
         private int calendarConstant;
@@ -33,11 +41,20 @@ public class DateUtil
     private static final ThreadLocal<DateFormat> SIMPLE_FORMAT = ThreadLocal
             .withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
 
+    /**
+     * @return current date and time, formatted
+     */
     public static String now()
     {
         return formatDate(new Date());
     }
 
+    /**
+     * Formats the given date using internally standardized date format
+     * 
+     * @param date the date to be formatted
+     * @return a formatted date
+     */
     public static String formatDate(Date date)
     {
         return SIMPLE_FORMAT.get().format(date);

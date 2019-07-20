@@ -17,17 +17,17 @@ import net.obvj.smart.jmx.AgentManagerJMXMBean;
 import net.obvj.smart.manager.AgentManager;
 
 /**
- * To make an application is visible to JConsole, simply add this JVM argument to the
- * startup: -Dcom.sun.management.jmxremote
+ * S.M.A.R.T. service main class
+ * 
+ * @author oswaldo.bapvic.jr
+ * @since 1.0
  */
 public class Main
 {
-
-    public static final Logger logger = Logger.getLogger(Main.class.getName());
+    public static final Logger logger = Logger.getLogger("smart-server");
 
     public static void main(String[] args)
     {
-
         /*
          * STEP 1: Start Agent Manager
          */
@@ -50,7 +50,6 @@ public class Main
             ObjectName name = new ObjectName("net.obvj.smart.jmx:type=AgentManagerJMX");
             MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
             mBeanServer.registerMBean(mBean, name);
-
         }
         catch (OperationsException | MBeanRegistrationException exception)
         {

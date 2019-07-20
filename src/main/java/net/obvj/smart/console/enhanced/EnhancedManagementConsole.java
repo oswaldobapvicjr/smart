@@ -12,6 +12,13 @@ import net.obvj.smart.jmx.client.AgentManagerJMXClient;
 import picocli.CommandLine;
 import picocli.shell.jline2.PicocliJLineCompleter;
 
+/**
+ * A new management console with enhanced user experience features, such as
+ * auto-completion and history navigation, and runs in a separate JVM instance.
+ * 
+ * @author oswaldo.bapvic.jr
+ * @since 2.0
+ */
 public class EnhancedManagementConsole implements Runnable
 {
     private static final Logger LOG = Logger.getLogger("smart");

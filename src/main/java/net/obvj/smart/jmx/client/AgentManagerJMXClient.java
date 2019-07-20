@@ -14,9 +14,16 @@ import javax.management.remote.JMXServiceURL;
 
 import net.obvj.smart.jmx.AgentManagerJMXMBean;
 
+/**
+ * An object that contains infrastructure logic to connect to the S.M.A.R.T. server via
+ * RMI and provides a proxy to the remote Agent Management bean
+ * 
+ * @author oswaldo.bapvic.jr
+ * @since 2.0
+ */
 public class AgentManagerJMXClient
 {
-    private static final Logger LOG = Logger.getLogger("smart");
+    private static final Logger LOG = Logger.getLogger("smart-console");
 
     private static final String SERVICE_JMX_RMI_URL = "service:jmx:rmi:///jndi/rmi://:9999/jmxrmi";
     

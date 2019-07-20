@@ -6,6 +6,12 @@ import jline.console.ConsoleReader;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
+/**
+ * A base command that groups all commands available to the Enhanced Management Console
+ * 
+ * @author oswaldo.bapvic.jr
+ * @since 2.0
+ */
 @Command(name = "", header = "",
          commandListHeading = "Available commands:%n%n",
          subcommands = { AgentsCommand.class,

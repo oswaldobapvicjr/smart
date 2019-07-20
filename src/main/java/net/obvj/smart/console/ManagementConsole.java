@@ -17,6 +17,9 @@ import java.util.logging.Logger;
 /**
  * A command-line user interface application for agents management at runtime. This
  * console should only be accessible locally.
+ * 
+ * @author oswaldo.bapvic.jr
+ * @since 1.0
  */
 public class ManagementConsole implements Runnable
 {

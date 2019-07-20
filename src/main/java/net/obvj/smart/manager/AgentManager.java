@@ -7,17 +7,21 @@ import java.util.logging.Logger;
 import net.obvj.smart.agents.api.Agent;
 import net.obvj.smart.agents.api.DaemonAgent;
 import net.obvj.smart.agents.api.dto.AgentDTO;
-import net.obvj.smart.agents.dummy.DummyAgent;
 
+/**
+ * An single object for agents maintenance
+ * 
+ * @author oswaldo.bapvic.jr
+ * @since 1.0
+ */
 public final class AgentManager
 {
-
     private static final String MSG_PATTERN_INVALID_AGENT = "Invalid agent: %s";
 
     private static final AgentManager instance = new AgentManager();
 
     private Map<String, Agent> agents = new TreeMap<>();
-    private final Logger logger = Logger.getLogger(this.getClass().getName());
+    private final Logger logger = Logger.getLogger("smart-server");
 
     private AgentManager()
     {
@@ -28,15 +32,24 @@ public final class AgentManager
         return instance;
     }
 
+    /**
+     * Registers a new agent for maintenance
+     * 
+     * @param agent the agent to be registered
+     */
     public void addAgent(Agent agent)
     {
         String name = agent.getName();
-        if (!agents.containsKey(name))
-        {
-            agents.put(name, agent);
-        }
+        agents.put(name, agent);
     }
 
+    /**
+     * Removes an agent identified by the given name, if it is not started
+     * 
+     * @param name the identifier of the agent to be removed
+     * @throws IllegalArgumentException if no agent with the given name was found
+     * @throws IllegalStateException    if the requested agent is started
+     */
     public void removeAgent(String name)
     {
         if (agents.containsKey(name))
@@ -46,10 +59,7 @@ public final class AgentManager
             {
                 throw new IllegalStateException("'" + name + "' is started. Please stop this agent first.");
             }
-            else
-            {
-                agents.remove(name);
-            }
+            agents.remove(name);
         }
         else
         {
@@ -57,6 +67,14 @@ public final class AgentManager
         }
     }
 
+    /**
+     * Creates a new instance of the agent identified by the given name
+     * 
+     * @param name the identifier of the agent to be reset
+     * @return {@code true} if the operation succeeds, otherwise {@code false}
+     * @throws IllegalArgumentException if no agent with the given name was found
+     * @throws IllegalStateException    if the requested agent is not stopped
+     */
     public boolean resetAgent(String name)
     {
         if (agents.containsKey(name))
@@ -74,13 +92,10 @@ public final class AgentManager
             case STOPPED:
                 try
                 {
-                    // Creating a new BaseAgent object
+                    // Creating a new agent
                     Agent newAgent = agent.getClass().getConstructor(String.class).newInstance(name);
-                    // Removing old agent and adding the new one
-                    removeAgent(name);
                     addAgent(newAgent);
                     return true;
-
                 }
                 catch (Exception ex)
                 {
@@ -97,6 +112,13 @@ public final class AgentManager
         }
     }
 
+    /**
+     * Starts the agent identified by the given name
+     * 
+     * @param name the identifier of the agent to be started
+     * @throws IllegalArgumentException if no agent with the given name was found
+     * @throws IllegalStateException    if the requested agent is already started
+     */
     public void startAgent(String name)
     {
         if (agents.containsKey(name))
@@ -109,6 +131,13 @@ public final class AgentManager
         }
     }
 
+    /**
+     * Posts immediate execution of the agent identified by the given name
+     * 
+     * @param name the identifier of the agent to be run
+     * @throws IllegalArgumentException      if no agent with the given name was found
+     * @throws UnsupportedOperationException if the requested agent is a daemon agent
+     */
     public void runNow(String name)
     {
         if (agents.containsKey(name))
@@ -126,6 +155,14 @@ public final class AgentManager
         }
     }
 
+    /**
+     * Posts a graceful stop request for the agent identified by the given name
+     * 
+     * @param name the identifier of the agent to be stopped
+     * @throws IllegalArgumentException if no agent with the given name was found
+     * @throws TimeoutException         if the requested agent did not complete its normal
+     *                                  execution after agent's cancellation timeout
+     */
     public boolean stopAgent(String name) throws TimeoutException
     {
         if (agents.containsKey(name))
@@ -149,6 +186,9 @@ public final class AgentManager
         return agents.keySet().toArray(new String[] {});
     }
 
+    /**
+     * @return a collection of agents metadata for interchange with client applications
+     */
     public Collection<AgentDTO> getAgentDTOs()
     {
         List<AgentDTO> agentDTOs = new ArrayList<>(agents.size());
@@ -157,6 +197,13 @@ public final class AgentManager
         return agentDTOs;
     }
 
+    /**
+     * Returns a flag indicating whether an agent is running or not
+     * 
+     * @param name the identifier of the agent to be reset
+     * @return {@code true} if the agent is running, otherwise {@code false}
+     * @throws IllegalArgumentException if no agent with the given name was found
+     */
     public boolean isAgentRunning(String name)
     {
         if (agents.containsKey(name))
@@ -169,6 +216,13 @@ public final class AgentManager
         }
     }
 
+    /**
+     * Returns a flag indicating whether an agent is started or not
+     * 
+     * @param name the identifier of the agent to be reset
+     * @return {@code true} if the agent is started, otherwise {@code false}
+     * @throws IllegalArgumentException if no agent with the given name was found
+     */
     public boolean isAgentStarted(String name)
     {
         if (agents.containsKey(name))
@@ -181,6 +235,13 @@ public final class AgentManager
         }
     }
 
+    /**
+     * Returns a string containing agent status information for reporting
+     * 
+     * @param name the identifier of the agent to be reported
+     * @return a String containing agent status information and other metadata
+     * @throws IllegalArgumentException if no agent with the given name was found
+     */
     public String getAgentStatusStr(String name)
     {
         if (agents.containsKey(name))
@@ -191,12 +252,6 @@ public final class AgentManager
         {
             throw new IllegalArgumentException(String.format(MSG_PATTERN_INVALID_AGENT, name));
         }
-    }
-
-    public static void main(String[] args)
-    {
-        AgentManager.getInstance().addAgent(new DummyAgent("dummyAgent"));
-        System.out.println(AgentManager.getInstance().getAgentDTOs());
     }
 
 }

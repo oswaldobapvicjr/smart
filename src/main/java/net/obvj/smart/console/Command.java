@@ -12,6 +12,12 @@ import net.obvj.smart.manager.AgentManager;
 import net.obvj.smart.util.DateUtil;
 import net.obvj.smart.util.SystemUtil;
 
+/**
+ * A set of commands and business logic available to the classic management console
+ * 
+ * @author oswaldo.bapvic.jr
+ * @since 1.0
+ */
 public enum Command
 {
     SHOW_AGENTS("show-agents")
@@ -52,7 +58,7 @@ public enum Command
             }
         }
     },
-    
+
     UPTIME("uptime")
     {
         @Override
@@ -92,7 +98,7 @@ public enum Command
                     {
                         log.warning(e.getMessage());
                         out.println(e.getMessage());
-                    }                    
+                    }
                 }
             }
             else
@@ -135,7 +141,7 @@ public enum Command
                         log.warning(e.getMessage());
                         out.println(e.getMessage());
                     }
-                    
+
                 }
             }
             else

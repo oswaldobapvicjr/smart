@@ -18,7 +18,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * A Runnable object for handling of user commands via Management Console
+ * A Runnable object for handling of user commands via classic Management Console
+ * 
+ * @author oswaldo.bapvic.jr
+ * @since 1.0
  */
 public class CommandWorker implements Runnable
 {

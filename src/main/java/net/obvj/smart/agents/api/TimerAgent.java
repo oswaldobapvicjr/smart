@@ -18,7 +18,7 @@ public abstract class TimerAgent extends Agent
 {
 
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
-    private static final Logger logger = Logger.getLogger(TimerAgent.class.getName());
+    private static final Logger logger = Logger.getLogger("smart-server");
 
     private int intervalInMinutes;
     /*
