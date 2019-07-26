@@ -14,6 +14,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.obvj.smart.conf.SmartProperties;
+
 /**
  * A command-line user interface application for agents management at runtime. This
  * console should only be accessible locally.
@@ -24,9 +26,14 @@ import java.util.logging.Logger;
 public class ManagementConsole implements Runnable
 {
 
-    public static final int PORT = 1910;
-    public static final int SESSION_TIMEOUT_MILIS = 60000;
+    private static final SmartProperties PROPERTIES = SmartProperties.getInstance();
+
+    private static final int PORT = PROPERTIES.getIntProperty(SmartProperties.CLASSIC_CONSOLE_PORT);
+    private static final int SESSION_TIMEOUT_SECONDS = PROPERTIES
+            .getIntProperty(SmartProperties.CLASSIC_CONSOLE_SESSION_TIMEOUT_SECONDS);
+    
     private static ManagementConsole instance = new ManagementConsole();
+    
     private boolean started;
     private Thread serverThread;
     private ExecutorService sessionExecutor;
@@ -61,6 +68,11 @@ public class ManagementConsole implements Runnable
         }
     }
 
+    public static int getPort()
+    {
+        return PORT;
+    }
+
     public void run()
     {
         while (started)
@@ -68,7 +80,7 @@ public class ManagementConsole implements Runnable
             try
             {
                 Socket socket = server.accept();
-                socket.setSoTimeout(SESSION_TIMEOUT_MILIS);
+                socket.setSoTimeout(SESSION_TIMEOUT_SECONDS * 1000);
                 log.info("Connection received from " + socket.getInetAddress().getHostName());
                 sessionExecutor.submit(new CommandWorker(socket));
 

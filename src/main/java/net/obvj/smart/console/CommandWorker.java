@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.obvj.smart.conf.SmartProperties;
+
 /**
  * A Runnable object for handling of user commands via classic Management Console
  * 
@@ -28,7 +30,7 @@ public class CommandWorker implements Runnable
 
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
-    private static final String CMD_PROMPT = "smart> ";
+    private static final String PROMPT = SmartProperties.getInstance().getProperty(SmartProperties.CONSOLE_PROMPT) + " ";
 
     private Socket socket;
     private BufferedReader in;
@@ -78,7 +80,7 @@ public class CommandWorker implements Runnable
             while (true)
             {
                 out.println();
-                send(CMD_PROMPT);
+                send(PROMPT);
                 String commandLine = readLine();
 
                 if (!"".equals(commandLine))
@@ -121,7 +123,7 @@ public class CommandWorker implements Runnable
                 }
                 catch (IOException e)
                 {
-                    log.severe("Error closing client socket connected to port " + ManagementConsole.PORT);
+                    log.severe("Error closing client socket connected to port " + ManagementConsole.getPort());
                 }
             }
         }

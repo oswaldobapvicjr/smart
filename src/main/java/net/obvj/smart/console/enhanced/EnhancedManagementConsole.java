@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 import jline.console.ConsoleReader;
 import jline.console.completer.ArgumentCompleter.ArgumentList;
 import jline.console.completer.ArgumentCompleter.WhitespaceArgumentDelimiter;
+import net.obvj.smart.conf.SmartProperties;
 import net.obvj.smart.console.CommandWorker;
 import net.obvj.smart.console.enhanced.commands.Commands;
 import net.obvj.smart.jmx.client.AgentManagerJMXClient;
@@ -30,6 +31,8 @@ import picocli.shell.jline2.PicocliJLineCompleter;
 public class EnhancedManagementConsole implements Runnable
 {
     private static final Logger LOG = Logger.getLogger("smart");
+    private static final String PROMPT = SmartProperties.getInstance().getProperty(SmartProperties.CONSOLE_PROMPT) + " ";
+
     private String[] args;
 
     public EnhancedManagementConsole(String[] args)
@@ -44,7 +47,7 @@ public class EnhancedManagementConsole implements Runnable
         {
             // Setting-up the console
             ConsoleReader reader = new ConsoleReader();
-            reader.setPrompt("smart> ");
+            reader.setPrompt(PROMPT);
 
             // Set up the completion
             Commands commands = new Commands(reader);

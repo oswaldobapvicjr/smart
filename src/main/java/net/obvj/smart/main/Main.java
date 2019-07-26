@@ -11,6 +11,7 @@ import javax.management.OperationsException;
 
 import net.obvj.smart.agents.dummy.DummyAgent;
 import net.obvj.smart.agents.dummy.PMReporter;
+import net.obvj.smart.conf.SmartProperties;
 import net.obvj.smart.console.ManagementConsole;
 import net.obvj.smart.jmx.AgentManagerJMX;
 import net.obvj.smart.jmx.AgentManagerJMXMBean;
@@ -24,26 +25,35 @@ import net.obvj.smart.manager.AgentManager;
  */
 public class Main
 {
-    public static final Logger logger = Logger.getLogger("smart-server");
+    public static final Logger LOG = Logger.getLogger("smart-server");
 
+    private static boolean runFlag = true;
+    
     public static void main(String[] args)
     {
         /*
          * STEP 1: Start Agent Manager
          */
-        logger.info("Starting Agent Manager...");
+        LOG.info("Starting Agent Manager...");
         AgentManager manager = AgentManager.getInstance();
 
         /*
-         * STEP 2: Start management console
+         * STEP 2: Start classic management console
          */
-        logger.info("Starting Agent Management Console...");
-        ManagementConsole.getInstance().start();
+        if (SmartProperties.getInstance().getBooleanProperty(SmartProperties.CLASSIC_CONSOLE_ENABLED))
+        {
+            LOG.info("Starting classic Agent Management Console...");
+            ManagementConsole.getInstance().start();
+        }
+        else
+        {
+            LOG.info("Classic Agent Management Console not enabled");
+        }
 
         /*
          * STEP 3: Register Managed Beans
          */
-        logger.info("Creating and registering Managed Beans...");
+        LOG.info("Creating and registering Managed Beans...");
         try
         {
             AgentManagerJMXMBean mBean = new AgentManagerJMX();
@@ -53,23 +63,35 @@ public class Main
         }
         catch (OperationsException | MBeanRegistrationException exception)
         {
-            logger.log(Level.SEVERE, "Unable to register JMX bean", exception);
+            LOG.log(Level.SEVERE, "Unable to register JMX bean", exception);
         }
 
         /*
          * STEP 4: Create shutdown hook
          */
-        logger.info("Creating shutdown hook...");
+        LOG.info("Creating shutdown hook...");
         Runtime.getRuntime().addShutdownHook(new Thread(new ShutdownHook(), "Shutdown"));
 
         /*
          * Step 5: Register and start agents
          */
-        logger.info("Loading agents...");
+        LOG.info("Loading agents...");
         manager.addAgent(new DummyAgent("DummyAgent"));
         manager.addAgent(new PMReporter("PMReporter"));
 
-        logger.info("Ready.");
+        LOG.info("Ready.");
+        
+        while (runFlag)
+        {
+            try
+            {
+                Thread.sleep(1000);
+            }
+            catch (InterruptedException e)
+            {
+                Thread.currentThread().interrupt();
+            }
+        }
 
     }
 }
