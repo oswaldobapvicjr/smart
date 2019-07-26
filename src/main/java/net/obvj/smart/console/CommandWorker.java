@@ -1,7 +1,7 @@
 package net.obvj.smart.console;
 
 import static net.obvj.smart.console.Command.EXIT;
-import static net.obvj.smart.console.Command.getCommandByString;
+import static net.obvj.smart.console.Command.getByNameOrAlias;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -43,7 +43,7 @@ public class CommandWorker implements Runnable
         this.out = new PrintWriter(this.socket.getOutputStream(), true);
     }
 
-    private void printHeader() throws IOException
+    private void printCustomHeader() throws IOException
     {
         log.fine("Searching for custom header file...");
         try
@@ -62,11 +62,19 @@ public class CommandWorker implements Runnable
         }
     }
 
+    private void printHints()
+    {
+        out.println();
+        out.println(" Type 'help' for a list of available commands.");
+        out.println(" Type 'exit' to quit the console.");
+    }
+    
     public void run()
     {
         try
         {
-            printHeader();
+            printCustomHeader();
+            printHints();
             while (true)
             {
                 out.println();
@@ -80,7 +88,7 @@ public class CommandWorker implements Runnable
                     String[] arguments = commandLine.split(" ");
                     String command = arguments[0];
 
-                    if (command.equalsIgnoreCase(EXIT.getString()))
+                    if (EXIT == Command.getByNameOrAliasOrNull(command))
                     {
                         return;
                     }
@@ -104,7 +112,9 @@ public class CommandWorker implements Runnable
         {
             if (socket != null)
             {
-                log.info("Closing console session...");
+                String closingMessage = "Closing console session...";
+                sendLine(closingMessage);
+                log.info(closingMessage);
                 try
                 {
                     socket.close();
@@ -121,7 +131,7 @@ public class CommandWorker implements Runnable
     {
         try
         {
-            Command command = getCommandByString(arguments[0]);
+            Command command = getByNameOrAlias(arguments[0]);
             command.execute(arguments, out);
         }
         catch (IllegalArgumentException ile)

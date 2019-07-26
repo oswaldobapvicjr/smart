@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.lang.management.ThreadInfo;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
@@ -20,7 +21,7 @@ import net.obvj.smart.util.SystemUtil;
  */
 public enum Command
 {
-    SHOW_AGENTS("show-agents")
+    SHOW_AGENTS("show-agents", "agents")
     {
         @Override
         public void execute(String[] parameters, PrintWriter out)
@@ -32,34 +33,34 @@ public enum Command
                 return;
             }
             out.println("");
-            out.println("NAME                                 TYPE   STATE  ");
-            out.println("------------------------------------ ------ -------");
+            out.println("Name                                       Type   State");
+            out.println("------------------------------------------ ------ -------");
 
             for (AgentDTO agent : agents)
             {
-                out.println(String.format("%-36s %-6s %-7s", agent.name, agent.type, agent.state));
+                out.println(String.format("%-42s %-6s %-7s", agent.name, agent.type, agent.state));
             }
         }
     },
 
-    SHOW_THREADS("show-threads")
+    SHOW_THREADS("show-threads", "threads")
     {
         @Override
         public void execute(String[] parameters, PrintWriter out)
         {
             out.println("");
-            out.println("ID   NAME                             STATE        ");
-            out.println("---- -------------------------------- -------------");
+            out.println("ID   Name                                   State");
+            out.println("---- -------------------------------------- -------------");
 
             for (ThreadInfo thread : SystemUtil.getAllSystemTheadsInfo())
             {
-                out.println(String.format("%-4d %-32s %-13s", thread.getThreadId(), thread.getThreadName(),
+                out.println(String.format("%-4d %-38s %-13s", thread.getThreadId(), thread.getThreadName(),
                         thread.getThreadState()));
             }
         }
     },
 
-    UPTIME("uptime")
+    UPTIME("uptime", "")
     {
         @Override
         public void execute(String[] parameters, PrintWriter out)
@@ -68,7 +69,7 @@ public enum Command
         }
     },
 
-    START("start")
+    START("start", "")
     {
         @Override
         public void execute(String[] parameters, PrintWriter out)
@@ -108,7 +109,7 @@ public enum Command
         }
     },
 
-    RUN("run")
+    RUN("run", "")
     {
         @Override
         public void execute(String[] parameters, PrintWriter out)
@@ -151,7 +152,7 @@ public enum Command
         }
     },
 
-    STOP("stop")
+    STOP("stop", "")
     {
         @Override
         public void execute(String[] parameters, PrintWriter out)
@@ -204,7 +205,7 @@ public enum Command
         }
     },
 
-    STATUS("status")
+    STATUS("status", "")
     {
         @Override
         public void execute(String[] parameters, PrintWriter out)
@@ -236,7 +237,7 @@ public enum Command
         }
     },
 
-    RESET("reset")
+    RESET("reset", "")
     {
         @Override
         public void execute(String[] parameters, PrintWriter out)
@@ -277,7 +278,7 @@ public enum Command
         }
     },
 
-    DATE("date")
+    DATE("date", "")
     {
         @Override
         public void execute(String[] parameters, PrintWriter out)
@@ -286,17 +287,18 @@ public enum Command
         }
     },
 
-    HELP("help")
+    HELP("help", "")
     {
         @Override
         public void execute(String[] parameters, PrintWriter out)
         {
             out.println("Available commands:");
-            Arrays.stream(values()).forEachOrdered(command -> out.println(" - " + command.getString()));
+            Arrays.stream(values()).forEachOrdered(
+                    command -> out.println(" - " + command.name + (command.hasAlias() ? ", " + command.alias : "")));
         }
     },
 
-    EXIT("exit")
+    EXIT("exit", "quit")
     {
         @Override
         public void execute(String[] parameters, PrintWriter out)
@@ -306,25 +308,49 @@ public enum Command
     };
 
     private static final String MISSING_PARAMETER_AGENT_NAME = "Missing parameter: <agent-name>";
-    private static final Logger log = Logger.getLogger("smart");
+    private static final Logger log = Logger.getLogger("smart-server");
 
-    private final String string;
+    private final String name;
+    private final String alias;
 
-    private Command(String string)
+    private Command(String name, String alias)
     {
-        this.string = string;
+        this.name = name;
+        this.alias = alias;
     }
 
-    public String getString()
+    public String getAlias()
     {
-        return string;
+        return alias;
+    }
+    
+    public boolean hasAlias()
+    {
+        return alias != null && alias != "";
+    }
+    
+    public String getName()
+    {
+        return name;
     }
 
     public abstract void execute(String[] parameters, PrintWriter out);
 
-    public static Command getCommandByString(String string)
+    public static Command getByNameOrAlias(String string)
     {
-        return Arrays.stream(values()).filter(command -> command.getString().equals(string)).findFirst()
+        return getOptionalByNameOrAlias(string)
                 .orElseThrow(() -> new IllegalArgumentException("Unknown command: " + string));
     }
+    
+    public static Command getByNameOrAliasOrNull(String string)
+    {
+        return getOptionalByNameOrAlias(string).orElse(null);
+    }
+
+    public static Optional<Command> getOptionalByNameOrAlias(String string)
+    {
+        return Arrays.stream(values()).filter(command -> command.name.equals(string) || command.alias.equals(string))
+                .findFirst();
+    }
+
 }

@@ -1,12 +1,20 @@
 package net.obvj.smart.console.enhanced;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jline.console.ConsoleReader;
 import jline.console.completer.ArgumentCompleter.ArgumentList;
 import jline.console.completer.ArgumentCompleter.WhitespaceArgumentDelimiter;
+import net.obvj.smart.console.CommandWorker;
 import net.obvj.smart.console.enhanced.commands.Commands;
 import net.obvj.smart.jmx.client.AgentManagerJMXClient;
 import picocli.CommandLine;
@@ -46,6 +54,9 @@ public class EnhancedManagementConsole implements Runnable
             // Set up connection to JMX
             AgentManagerJMXClient.getMBeanProxy();
             
+            // Print custom header and hints
+            printHeader(reader);
+
             // Start the shell and process input until the user quits with Ctl+D
             String line;
             while ((line = args !=null && args.length > 0 ? args[0] : reader.readLine()) != null)
@@ -53,7 +64,7 @@ public class EnhancedManagementConsole implements Runnable
                 line = line.trim();
                 if (!"".equals(line))
                 {
-                    if ("exit".equals(line))
+                    if ("exit".equals(line) || "quit".equals(line))
                     {
                         break;
                     }
@@ -80,6 +91,43 @@ public class EnhancedManagementConsole implements Runnable
         }
     }
 
+    private void printHeader(ConsoleReader console)
+    {
+        // Print custom header
+        List<String> customHeaderLines = readCustomHeaderLines();
+        PrintWriter out = new PrintWriter(console.getOutput());
+        customHeaderLines.forEach(out::println);
+        out.flush();
+        
+        // Print hints
+        out.println();
+        out.println(" Hit <Tab> for a list of available commands.");
+        out.println(" Press <Ctrl> + D to quit the console.");
+        out.println();
+        out.flush();
+    }
+    
+    private List<String> readCustomHeaderLines()
+    {
+        LOG.fine("Searching for custom header file...");
+        try
+        {
+            URL headerFileURL = CommandWorker.class.getClassLoader().getResource("header.txt");
+            if (headerFileURL == null)
+            {
+                LOG.warning("Unable to find header.txt file");
+                return Collections.emptyList();
+            }
+            return Files.readAllLines(Paths.get(headerFileURL.toURI()));
+        }
+        catch (URISyntaxException | IOException e)
+        {
+            LOG.log(Level.WARNING, "Unable to read header.txt file: {0} ({1})",
+                    new String[] { e.getClass().getName(), e.getLocalizedMessage() });
+            return Collections.emptyList();
+        }
+    }
+    
     public static void main(String[] args)
     {
         new EnhancedManagementConsole(args).run();

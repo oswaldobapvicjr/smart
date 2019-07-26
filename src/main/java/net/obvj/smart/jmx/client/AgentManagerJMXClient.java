@@ -38,6 +38,7 @@ public class AgentManagerJMXClient
     {
         try
         {
+            LOG.fine("Connecting to remote management console...");
             JMXConnector jmxc = JMXConnectorFactory.connect(new JMXServiceURL(SERVICE_JMX_RMI_URL));
             MBeanServerConnection mbsc = jmxc.getMBeanServerConnection();
             ObjectName mbeanName = new ObjectName("net.obvj.smart.jmx:type=AgentManagerJMX");

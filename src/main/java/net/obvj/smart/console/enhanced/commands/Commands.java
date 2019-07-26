@@ -23,7 +23,7 @@ import picocli.CommandLine.Command;
                          RunCommand.class,
                          ThreadsCommand.class,
                          UptimeCommand.class },
-         footer = { "", "Press Ctl+D to exit." })
+         footer = { "", "Press <Ctrl> + D to exit." })
 public class Commands implements Runnable
 {
     protected final ConsoleReader reader;
