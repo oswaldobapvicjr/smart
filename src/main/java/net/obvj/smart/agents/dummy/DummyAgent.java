@@ -15,12 +15,7 @@ import net.obvj.smart.agents.api.TimerAgent;
 public class DummyAgent extends TimerAgent
 {
     private static final Logger LOG = Logger.getLogger("smart-server");
-    
-    public DummyAgent(String name)
-    {
-        super(name);
-    }
-
+   
     @Override
     protected void runTask()
     {
@@ -37,12 +32,6 @@ public class DummyAgent extends TimerAgent
                 Thread.currentThread().interrupt();
             }
         }
-    }
-
-    @Override
-    public int getStopTimeoutSeconds()
-    {
-        return 5;
     }
 
 }

@@ -10,8 +10,7 @@ import javax.management.MBeanServer;
 import javax.management.ObjectName;
 import javax.management.OperationsException;
 
-import net.obvj.smart.agents.dummy.DummyAgent;
-import net.obvj.smart.agents.dummy.PMReporter;
+import net.obvj.smart.agents.api.Agent;
 import net.obvj.smart.conf.AgentConfiguration;
 import net.obvj.smart.conf.SmartProperties;
 import net.obvj.smart.conf.xml.XmlAgent;
@@ -31,7 +30,7 @@ public class Main
     public static final Logger LOG = Logger.getLogger("smart-server");
 
     private static boolean runFlag = true;
-    
+
     public static void main(String[] args)
     {
         /*
@@ -78,18 +77,32 @@ public class Main
         /*
          * Step 5: Loading agents configuration
          */
-        LOG.info("Loading agents...");
-        List<XmlAgent> agents = AgentConfiguration.getInstance().getAgents();
-        // TODO: Convert XML agents
-        
+        LOG.info("Loading agents configuration...");
+        List<XmlAgent> xmlAgents = AgentConfiguration.getInstance().getAgents();
+
         /*
-         * Step 6: Register and start agents
+         * Step 6: Loading and starting agents objects
          */
-        manager.addAgent(new DummyAgent("DummyAgent"));
-        manager.addAgent(new PMReporter("PMReporter"));
+        LOG.info("Loading agents objects...");
+        xmlAgents.forEach(xmlAgent ->
+        {
+            try
+            {
+                manager.addAgent(Agent.parseAgent(xmlAgent));
+            }
+            catch (Exception e)
+            {
+                LOG.log(Level.SEVERE, "Unable to load agent: " + xmlAgent.getName(), e);
+            }
+        });
+
+        LOG.log(Level.INFO, "{0} agents loaded", manager.getAgents().size());
+
+        LOG.log(Level.INFO, "Starting agents...");
+        manager.getAgents().forEach(agent -> manager.startAgent(agent.getName()));
 
         LOG.info("Ready.");
-        
+
         while (runFlag)
         {
             try

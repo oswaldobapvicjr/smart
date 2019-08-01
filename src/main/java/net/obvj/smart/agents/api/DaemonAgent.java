@@ -1,11 +1,13 @@
 package net.obvj.smart.agents.api;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.obvj.smart.conf.xml.XmlAgent;
 import net.obvj.smart.util.DateUtil;
 
 /**
@@ -34,6 +36,27 @@ public abstract class DaemonAgent extends Agent
         this.currentState = State.SET;
     }
 
+    /**
+     * Creates a new DaemonAgent from the given XmlAgent
+     * 
+     * @throws ClassNotFoundException if the agent class cannot be found
+     * @throws NoSuchMethodException  if the default agent constructor cannot be found
+     * @throws IllegalAccessException if the agent constructor is not accessible
+     * @throws InstantiationException if the agent cannot be instantiated
+     */
+    public static Agent parseAgent(XmlAgent xmlAgent) throws InstantiationException, IllegalAccessException,
+            InvocationTargetException, NoSuchMethodException, ClassNotFoundException
+    {
+        if (!"daemon".equals(xmlAgent.getType()))
+        {
+            throw new IllegalArgumentException("Not a daemon agent");
+        }
+        DaemonAgent agent = (DaemonAgent) Class.forName(xmlAgent.getAgentClass()).getConstructor().newInstance();
+        agent.name = xmlAgent.getName();
+        agent.stopTimeoutSeconds = xmlAgent.getStopTimeoutInSeconds();
+        return agent;
+    }
+    
     /**
      * Executes this agent task.
      */
@@ -160,5 +183,4 @@ public abstract class DaemonAgent extends Agent
 
     protected abstract void stopTask();
 
-    public abstract int getStopTimeoutSeconds();
 }

@@ -1,10 +1,13 @@
 package net.obvj.smart.agents.api;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Calendar;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeoutException;
+
+import net.obvj.smart.conf.xml.XmlAgent;
 
 /**
  * A common interface for all managed agents.
@@ -20,6 +23,7 @@ public abstract class Agent implements Runnable
     protected State currentState;
     protected String name;
     protected String type;
+    protected int stopTimeoutSeconds = -1;
     protected ThreadFactory threadFactory;
     protected ScheduledExecutorService schedule;
 
@@ -101,9 +105,30 @@ public abstract class Agent implements Runnable
 
     public abstract void stop() throws TimeoutException;
 
-    public abstract int getStopTimeoutSeconds();
+    public int getStopTimeoutSeconds()
+    {
+        return stopTimeoutSeconds;
+    }
 
     public abstract String getStatusString();
+
+    /**
+     * Creates a new Agent from the given XmlAgent
+     * 
+     * @throws ClassNotFoundException if the agent class cannot be found
+     * @throws NoSuchMethodException  if the default agent constructor cannot be found
+     * @throws IllegalAccessException if the agent constructor is not accessible
+     * @throws InstantiationException if the agent cannot be instantiated
+     */
+    public static Agent parseAgent(XmlAgent xmlAgent) throws InstantiationException, IllegalAccessException,
+            InvocationTargetException, NoSuchMethodException, ClassNotFoundException
+    {
+        if (xmlAgent.getType().equals("timer"))
+        {
+            return TimerAgent.parseAgent(xmlAgent);
+        }
+        return DaemonAgent.parseAgent(xmlAgent);
+    }
 
     class AgentThreadFactory implements ThreadFactory
     {

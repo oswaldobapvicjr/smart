@@ -16,8 +16,11 @@ public class XmlAgent
     @XmlElement(name = "class")
     private String agentClass;
 
-    @XmlElement(name = "stopTimeout")
-    private int stopTimeout;
+    @XmlElement(name = "intervalInMinutes")
+    private int intervalInMinutes;
+
+    @XmlElement(name = "stopTimeoutInSeconds")
+    private int stopTimeoutInSeconds;
 
     public String getName()
     {
@@ -49,14 +52,24 @@ public class XmlAgent
         this.agentClass = agentClass;
     }
 
-    public int getStopTimeout()
+    public int getIntervalInMinutes()
     {
-        return stopTimeout;
+        return intervalInMinutes;
     }
 
-    public void setStopTimeout(int stopTimeout)
+    public void setIntervalInMinutes(int intervalInMinutes)
     {
-        this.stopTimeout = stopTimeout;
+        this.intervalInMinutes = intervalInMinutes;
+    }
+
+    public int getStopTimeoutInSeconds()
+    {
+        return stopTimeoutInSeconds;
+    }
+
+    public void setStopTimeoutInSeconds(int stopTimeoutInSeconds)
+    {
+        this.stopTimeoutInSeconds = stopTimeoutInSeconds;
     }
 
 }

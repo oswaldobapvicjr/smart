@@ -18,7 +18,9 @@
                     nillable="false" />
                 <xs:element name="class" maxOccurs="1" minOccurs="1" type="xs:string"
                     nillable="false" />
-                <xs:element name="stopTimeout" minOccurs="0" maxOccurs="1"
+                <xs:element name="intervalInMinutes" minOccurs="0" maxOccurs="1"
+                    type="xs:integer" default="1" />
+                <xs:element name="stopTimeoutInSeconds" minOccurs="0" maxOccurs="1"
                     type="xs:integer" default="-1" />
             </xs:all>
         </xs:complexType>

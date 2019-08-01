@@ -16,11 +16,6 @@ public class PMReporter extends TimerAgent
 {
     private static final Logger LOG = Logger.getLogger("smart-server");
     
-    public PMReporter(String name)
-    {
-        super(name);
-    }
-
     @Override
     protected void runTask()
     {
@@ -44,11 +39,4 @@ public class PMReporter extends TimerAgent
             Thread.currentThread().interrupt();
         }
     }
-
-    @Override
-    public int getStopTimeoutSeconds()
-    {
-        return 5;
-    }
-
 }

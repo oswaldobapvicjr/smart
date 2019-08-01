@@ -8,14 +8,14 @@
             <name>DummyAgent</name>
             <type>timer</type>
             <class>net.obvj.smart.agents.dummy.DummyAgent</class>
-            <stopTimeout>5</stopTimeout>
+            <intervalInMinutes>2</intervalInMinutes>
+            <stopTimeoutInSeconds>5</stopTimeoutInSeconds>
         </agent>
 
         <agent>
             <name>PMReporter</name>
             <type>timer</type>
             <class>net.obvj.smart.agents.dummy.PMReporter</class>
-            <stopTimeout>-1</stopTimeout>
         </agent>
 
     </agents>
