@@ -1,6 +1,7 @@
 package net.obvj.smart.main;
 
 import java.lang.management.ManagementFactory;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -11,7 +12,9 @@ import javax.management.OperationsException;
 
 import net.obvj.smart.agents.dummy.DummyAgent;
 import net.obvj.smart.agents.dummy.PMReporter;
+import net.obvj.smart.conf.AgentConfiguration;
 import net.obvj.smart.conf.SmartProperties;
+import net.obvj.smart.conf.xml.XmlAgent;
 import net.obvj.smart.console.ManagementConsole;
 import net.obvj.smart.jmx.AgentManagerJMX;
 import net.obvj.smart.jmx.AgentManagerJMXMBean;
@@ -73,9 +76,15 @@ public class Main
         Runtime.getRuntime().addShutdownHook(new Thread(new ShutdownHook(), "Shutdown"));
 
         /*
-         * Step 5: Register and start agents
+         * Step 5: Loading agents configuration
          */
         LOG.info("Loading agents...");
+        List<XmlAgent> agents = AgentConfiguration.getInstance().getAgents();
+        // TODO: Convert XML agents
+        
+        /*
+         * Step 6: Register and start agents
+         */
         manager.addAgent(new DummyAgent("DummyAgent"));
         manager.addAgent(new PMReporter("PMReporter"));
 

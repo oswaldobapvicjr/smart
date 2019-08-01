@@ -1,0 +1,62 @@
+package net.obvj.smart.conf.xml;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+
+@XmlAccessorType(XmlAccessType.FIELD)
+public class XmlAgent
+{
+    @XmlElement(name = "name")
+    private String name;
+
+    @XmlElement(name = "type")
+    private String type;
+
+    @XmlElement(name = "class")
+    private String agentClass;
+
+    @XmlElement(name = "stopTimeout")
+    private int stopTimeout;
+
+    public String getName()
+    {
+        return name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
+    public String getType()
+    {
+        return type;
+    }
+
+    public void setType(String type)
+    {
+        this.type = type;
+    }
+
+    public String getAgentClass()
+    {
+        return agentClass;
+    }
+
+    public void setAgentClass(String agentClass)
+    {
+        this.agentClass = agentClass;
+    }
+
+    public int getStopTimeout()
+    {
+        return stopTimeout;
+    }
+
+    public void setStopTimeout(int stopTimeout)
+    {
+        this.stopTimeout = stopTimeout;
+    }
+
+}

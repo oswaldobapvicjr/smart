@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+    <xs:element name="agents">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="unbounded" ref="agent" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="agent">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="name" maxOccurs="1" minOccurs="1" type="agentName"
+                    nillable="false" />
+                <xs:element name="type" maxOccurs="1" minOccurs="1" type="agentType"
+                    nillable="false" />
+                <xs:element name="class" maxOccurs="1" minOccurs="1" type="xs:string"
+                    nillable="false" />
+                <xs:element name="stopTimeout" minOccurs="0" maxOccurs="1"
+                    type="xs:integer" default="-1" />
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:simpleType name="agentName">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="[a-zA-Z0-9]+" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="agentType">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="timer|daemon" />
+        </xs:restriction>
+    </xs:simpleType>
+
+</xs:schema>

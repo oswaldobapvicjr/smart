@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<smart>
+    <agents>
+
+        <!-- Dummy agents for testing purpose -->
+
+        <agent>
+            <name>DummyAgent</name>
+            <type>timer</type>
+            <class>net.obvj.smart.agents.dummy.DummyAgent</class>
+            <stopTimeout>5</stopTimeout>
+        </agent>
+
+        <agent>
+            <name>PMReporter</name>
+            <type>timer</type>
+            <class>net.obvj.smart.agents.dummy.PMReporter</class>
+            <stopTimeout>-1</stopTimeout>
+        </agent>
+
+    </agents>
+</smart>
