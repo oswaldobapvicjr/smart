@@ -80,6 +80,11 @@ public class Main
         LOG.info("Loading agents configuration...");
         List<XmlAgent> xmlAgents = AgentConfiguration.getInstance().getAgents();
 
+        if (xmlAgents.isEmpty())
+        {
+            System.exit(1);
+        }
+
         /*
          * Step 6: Loading and starting agents objects
          */
@@ -98,6 +103,11 @@ public class Main
 
         LOG.log(Level.INFO, "{0} agents loaded", manager.getAgents().size());
 
+        if (manager.getAgents().isEmpty())
+        {
+            System.exit(1);
+        }
+
         LOG.log(Level.INFO, "Starting agents...");
         manager.getAgents().forEach(agent -> manager.startAgent(agent.getName()));
 
@@ -114,6 +124,5 @@ public class Main
                 Thread.currentThread().interrupt();
             }
         }
-
     }
 }
