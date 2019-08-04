@@ -19,6 +19,9 @@ public class XmlAgent
     @XmlElement(name = "intervalInMinutes")
     private int intervalInMinutes;
 
+    @XmlElement(name = "started")
+    private boolean automaticallyStarted;
+    
     @XmlElement(name = "stopTimeoutInSeconds")
     private int stopTimeoutInSeconds;
 
@@ -60,6 +63,16 @@ public class XmlAgent
     public void setIntervalInMinutes(int intervalInMinutes)
     {
         this.intervalInMinutes = intervalInMinutes;
+    }
+
+    public boolean isAutomaticallyStarted()
+    {
+        return automaticallyStarted;
+    }
+
+    public void setAutomaticallyStarted(boolean automaticallyStarted)
+    {
+        this.automaticallyStarted = automaticallyStarted;
     }
 
     public int getStopTimeoutInSeconds()

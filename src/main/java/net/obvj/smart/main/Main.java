@@ -109,7 +109,8 @@ public class Main
         }
 
         LOG.log(Level.INFO, "Starting agents...");
-        manager.getAgents().forEach(agent -> manager.startAgent(agent.getName()));
+        xmlAgents.stream().filter(XmlAgent::isAutomaticallyStarted)
+                .forEach(xmlAgent -> manager.startAgent(xmlAgent.getName()));
 
         LOG.info("Ready.");
 

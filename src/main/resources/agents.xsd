@@ -28,6 +28,8 @@
                     nillable="false" />
                 <xs:element name="intervalInMinutes" minOccurs="0" maxOccurs="1"
                     type="xs:integer" default="1" />
+                <xs:element name="started" minOccurs="0" maxOccurs="1" type="xs:boolean"
+                    default="true" />
                 <xs:element name="stopTimeoutInSeconds" minOccurs="0" maxOccurs="1"
                     type="xs:integer" default="-1" />
             </xs:all>
