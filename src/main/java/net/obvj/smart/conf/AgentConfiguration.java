@@ -3,7 +3,9 @@ package net.obvj.smart.conf;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,9 +30,12 @@ public class AgentConfiguration
 
     private XmlSmart agents;
 
+    private Map<String, XmlAgent> agentsByName = new HashMap<>();
+    
     private AgentConfiguration()
     {
         loadAgentsXmlFile();
+        loadAgentsMap();
     }
 
     private void loadAgentsXmlFile()
@@ -69,10 +74,20 @@ public class AgentConfiguration
         SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         return sf.newSchema(AgentConfiguration.class.getClassLoader().getResource("agents.xsd"));
     }
+    
+    private void loadAgentsMap()
+    {
+        agents.getAgents().forEach(agent -> agentsByName.put(agent.getName(), agent));
+    }
 
     public List<XmlAgent> getAgents()
     {
         return agents != null ? agents.getAgents() : Collections.emptyList();
+    }
+    
+    public XmlAgent getAgentConfiguration(String name)
+    {
+        return agentsByName.get(name);
     }
 
     public static AgentConfiguration getInstance()

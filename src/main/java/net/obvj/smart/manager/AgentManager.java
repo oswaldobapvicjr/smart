@@ -7,6 +7,8 @@ import java.util.logging.Logger;
 import net.obvj.smart.agents.api.Agent;
 import net.obvj.smart.agents.api.DaemonAgent;
 import net.obvj.smart.agents.api.dto.AgentDTO;
+import net.obvj.smart.conf.AgentConfiguration;
+import net.obvj.smart.conf.xml.XmlAgent;
 
 /**
  * An single object for agents maintenance
@@ -93,7 +95,8 @@ public final class AgentManager
                 try
                 {
                     // Creating a new agent
-                    Agent newAgent = agent.getClass().getConstructor(String.class).newInstance(name);
+                    XmlAgent agentConfig = AgentConfiguration.getInstance().getAgentConfiguration(name);
+                    Agent newAgent = Agent.parseAgent(agentConfig);
                     addAgent(newAgent);
                     return true;
                 }
