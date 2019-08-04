@@ -10,6 +10,12 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.ParentCommand;
 
+/**
+ * A command that lists agents
+ * 
+ * @author oswaldo.bapvic.jr
+ * @since 2.0
+ */
 @Command(name = "agents",
          aliases = "ls",
          headerHeading = "@|bold,underline Usage|@:%n%n",

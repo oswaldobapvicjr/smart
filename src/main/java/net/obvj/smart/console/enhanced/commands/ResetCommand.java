@@ -8,6 +8,12 @@ import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 import picocli.CommandLine.ParentCommand;
 
+/**
+ * A command that resets a given agent
+ * 
+ * @author oswaldo.bapvic.jr
+ * @since 2.0
+ */
 @Command(name = "reset",
          headerHeading = "@|bold,underline Usage|@:%n%n",
          header = "Resets an agent",

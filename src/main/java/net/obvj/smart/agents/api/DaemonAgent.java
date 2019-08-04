@@ -17,6 +17,8 @@ import net.obvj.smart.util.DateUtil;
  * Available operations are: 'start', 'stop', and 'reset' Not all concrete DaemonAgents
  * may implement the 'stop' operation.
  * 
+ * @author oswaldo.bapvic.jr
+ * @since 1.0
  */
 public abstract class DaemonAgent extends Agent
 {

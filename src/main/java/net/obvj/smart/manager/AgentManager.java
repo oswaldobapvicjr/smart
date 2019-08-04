@@ -11,7 +11,7 @@ import net.obvj.smart.conf.AgentConfiguration;
 import net.obvj.smart.conf.xml.XmlAgent;
 
 /**
- * An single object for agents maintenance
+ * A single object for agents maintenance
  * 
  * @author oswaldo.bapvic.jr
  * @since 1.0

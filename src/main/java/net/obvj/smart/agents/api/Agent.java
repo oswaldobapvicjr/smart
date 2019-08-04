@@ -10,7 +10,10 @@ import java.util.concurrent.TimeoutException;
 import net.obvj.smart.conf.xml.XmlAgent;
 
 /**
- * A common interface for all managed agents.
+ * A common interface for all managed agents
+ *
+ * @author oswaldo.bapvic.jr
+ * @since 1.0
  */
 public abstract class Agent implements Runnable
 {

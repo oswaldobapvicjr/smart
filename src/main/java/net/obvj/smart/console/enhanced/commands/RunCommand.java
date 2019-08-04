@@ -8,6 +8,12 @@ import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 import picocli.CommandLine.ParentCommand;
 
+/**
+ * A command that runs a given agent immediately
+ * 
+ * @author oswaldo.bapvic.jr
+ * @since 2.0
+ */
 @Command(name = "run",
          headerHeading = "@|bold,underline Usage|@:%n%n",
          header = "Run an agent",

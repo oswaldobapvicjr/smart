@@ -8,6 +8,12 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.ParentCommand;
 
+/**
+ * A command that prints the total server up-time.
+ * 
+ * @author oswaldo.bapvic.jr
+ * @since 2.0
+ */
 @Command(name = "uptime",
          headerHeading = "@|bold,underline Usage|@:%n%n",
          header = "Display server up-time",

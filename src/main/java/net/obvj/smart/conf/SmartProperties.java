@@ -6,6 +6,12 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * An object that maintains configuration data retrieved from the {@code smart.properties} file
+ * 
+ * @author oswaldo.bapvic.jr
+ * @since 2.0
+ */
 public class SmartProperties
 {
     private static final Logger LOG = Logger.getLogger("smart-server");

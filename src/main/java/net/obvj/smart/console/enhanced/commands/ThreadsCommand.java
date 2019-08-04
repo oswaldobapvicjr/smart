@@ -9,6 +9,12 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.ParentCommand;
 
+/**
+ * A command that prints currently active threads
+ * 
+ * @author oswaldo.bapvic.jr
+ * @since 2.0
+ */
 @Command(name = "threads",
          headerHeading = "@|bold,underline Usage|@:%n%n",
          header = "List server threads",

@@ -9,6 +9,12 @@ import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 import picocli.CommandLine.ParentCommand;
 
+/**
+ * A command that stops a given agent
+ * 
+ * @author oswaldo.bapvic.jr
+ * @since 2.0
+ */
 @Command(name = "stop",
          headerHeading = "@|bold,underline Usage|@:%n%n",
          header = "Stops an agent",

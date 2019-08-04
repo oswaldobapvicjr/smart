@@ -4,6 +4,12 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 
+/**
+ * An object that contains the set-up of an agent from the {@code agents.xml} file
+ * 
+ * @author oswaldo.bapvic.jr
+ * @since 2.0
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class XmlAgent
 {
@@ -21,7 +27,7 @@ public class XmlAgent
 
     @XmlElement(name = "started")
     private boolean automaticallyStarted;
-    
+
     @XmlElement(name = "stopTimeoutInSeconds")
     private int stopTimeoutInSeconds;
 

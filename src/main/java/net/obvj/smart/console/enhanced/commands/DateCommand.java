@@ -7,6 +7,12 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.ParentCommand;
 
+/**
+ * A command that prints server date and time
+ * 
+ * @author oswaldo.bapvic.jr
+ * @since 2.0
+ */
 @Command(name = "date",
          headerHeading = "@|bold,underline Usage|@:%n%n",
          header = "Display server date",

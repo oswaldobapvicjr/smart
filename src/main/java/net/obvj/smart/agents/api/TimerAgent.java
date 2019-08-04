@@ -15,6 +15,9 @@ import net.obvj.smart.util.DateUtil;
  * A thread-safe extensible Agent for tasks that are scheduled in the system to run
  * repeatedly, given an interval in minutes that is particular to each task. Available
  * operations are: 'start', 'stop', 'run' and 'reset'
+ * 
+ * @author oswaldo.bapvic.jr
+ * @since 1.0
  */
 public abstract class TimerAgent extends Agent
 {

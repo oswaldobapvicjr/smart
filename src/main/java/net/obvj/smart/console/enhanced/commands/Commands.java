@@ -15,6 +15,7 @@ import picocli.CommandLine.Command;
 @Command(name = "", header = "",
          commandListHeading = "Available commands:%n%n",
          subcommands = { AgentsCommand.class,
+                         ClearScreenCommand.class,
                          DateCommand.class,
                          StatusCommand.class,
                          StartCommand.class,

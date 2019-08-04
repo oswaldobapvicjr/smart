@@ -4,6 +4,12 @@ import java.util.List;
 
 import javax.xml.bind.annotation.*;
 
+/**
+ * The root element of the {@code agents.xml} file
+ * 
+ * @author oswaldo.bapvic.jr
+ * @since 2.0
+ */
 @XmlRootElement(name = "smart")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class XmlSmart

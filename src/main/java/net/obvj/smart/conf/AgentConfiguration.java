@@ -22,6 +22,12 @@ import org.xml.sax.SAXException;
 import net.obvj.smart.conf.xml.XmlAgent;
 import net.obvj.smart.conf.xml.XmlSmart;
 
+/**
+ * An object that maintains agent configuration data retrieved from the {@code agents.xml} file
+ * 
+ * @author oswaldo.bapvic.jr
+ * @since 2.0
+ */
 public class AgentConfiguration
 {
     private static final Logger LOG = Logger.getLogger("smart-server");
