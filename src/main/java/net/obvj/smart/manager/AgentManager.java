@@ -46,6 +46,20 @@ public final class AgentManager
     }
 
     /**
+     * @param name the agent to be found
+     * @return the Agent associated with the given name
+     * @throws IllegalArgumentException if no agent with the given name was found
+     */
+    public Agent findAgentByName(String name)
+    {
+        if (agents.containsKey(name))
+        {
+            return agents.get(name);
+        }
+        throw new IllegalArgumentException(String.format(MSG_PATTERN_INVALID_AGENT, name));
+    }
+
+    /**
      * Removes an agent identified by the given name, if it is not started
      * 
      * @param name the identifier of the agent to be removed
@@ -54,19 +68,12 @@ public final class AgentManager
      */
     public void removeAgent(String name)
     {
-        if (agents.containsKey(name))
+        Agent agent = findAgentByName(name);
+        if (agent.isStarted())
         {
-            Agent agent = agents.get(name);
-            if (agent.isStarted())
-            {
-                throw new IllegalStateException("'" + name + "' is started. Please stop this agent first.");
-            }
-            agents.remove(name);
+            throw new IllegalStateException("'" + name + "' is started. Please stop this agent first.");
         }
-        else
-        {
-            throw new IllegalArgumentException(String.format(MSG_PATTERN_INVALID_AGENT, name));
-        }
+        agents.remove(name);
     }
 
     /**
@@ -79,39 +86,31 @@ public final class AgentManager
      */
     public boolean resetAgent(String name)
     {
-        if (agents.containsKey(name))
+        Agent agent = findAgentByName(name);
+        switch (agent.getState())
         {
-            Agent agent = agents.get(name);
-
-            switch (agent.getState())
+        case SET:
+            throw new IllegalStateException("'" + name + "' is already set. No action was taken.");
+        case STARTED:
+            throw new IllegalStateException("'" + name + "' is started. Please stop this agent first.");
+        case RUNNING:
+            throw new IllegalStateException("'" + name + "' task is currently under execution.");
+        case STOPPED:
+            try
             {
-            case SET:
-                throw new IllegalStateException("'" + name + "' is already set. No action was taken.");
-            case STARTED:
-                throw new IllegalStateException("'" + name + "' is started. Please stop this agent first.");
-            case RUNNING:
-                throw new IllegalStateException("'" + name + "' task is currently under execution.");
-            case STOPPED:
-                try
-                {
-                    // Creating a new agent
-                    XmlAgent agentConfig = AgentConfiguration.getInstance().getAgentConfiguration(name);
-                    Agent newAgent = Agent.parseAgent(agentConfig);
-                    addAgent(newAgent);
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    logger.severe("Error reseting agent: " + ex.getClass().getName() + ": " + ex.getMessage());
-                    return false;
-                }
-            default:
-                throw new IllegalStateException(agent.getStatusString());
+                // Creating a new agent
+                XmlAgent agentConfig = AgentConfiguration.getInstance().getAgentConfiguration(name);
+                Agent newAgent = Agent.parseAgent(agentConfig);
+                addAgent(newAgent);
+                return true;
             }
-        }
-        else
-        {
-            throw new IllegalArgumentException(String.format(MSG_PATTERN_INVALID_AGENT, name));
+            catch (Exception ex)
+            {
+                logger.severe("Error reseting agent: " + ex.getClass().getName() + ": " + ex.getMessage());
+                return false;
+            }
+        default:
+            throw new IllegalStateException(agent.getStatusString());
         }
     }
 
@@ -124,14 +123,7 @@ public final class AgentManager
      */
     public void startAgent(String name)
     {
-        if (agents.containsKey(name))
-        {
-            agents.get(name).start();
-        }
-        else
-        {
-            throw new IllegalArgumentException(String.format(MSG_PATTERN_INVALID_AGENT, name));
-        }
+        findAgentByName(name).start();
     }
 
     /**
@@ -143,19 +135,12 @@ public final class AgentManager
      */
     public void runNow(String name)
     {
-        if (agents.containsKey(name))
+        Agent agent = findAgentByName(name);
+        if (agent instanceof DaemonAgent)
         {
-            Agent agent = agents.get(name);
-            if (agent instanceof DaemonAgent)
-            {
-                throw new UnsupportedOperationException("Cannot run a daemon agent task manually");
-            }
-            agents.get(name).run();
+            throw new UnsupportedOperationException("Cannot run a daemon agent task manually");
         }
-        else
-        {
-            throw new IllegalArgumentException(String.format(MSG_PATTERN_INVALID_AGENT, name));
-        }
+        agent.run();
     }
 
     /**
@@ -168,15 +153,8 @@ public final class AgentManager
      */
     public boolean stopAgent(String name) throws TimeoutException
     {
-        if (agents.containsKey(name))
-        {
-            agents.get(name).stop();
-            return true;
-        }
-        else
-        {
-            throw new IllegalArgumentException(String.format(MSG_PATTERN_INVALID_AGENT, name));
-        }
+        findAgentByName(name).stop();
+        return true;
     }
 
     public Collection<Agent> getAgents()
@@ -209,14 +187,7 @@ public final class AgentManager
      */
     public boolean isAgentRunning(String name)
     {
-        if (agents.containsKey(name))
-        {
-            return agents.get(name).isRunning();
-        }
-        else
-        {
-            throw new IllegalArgumentException(String.format(MSG_PATTERN_INVALID_AGENT, name));
-        }
+        return findAgentByName(name).isRunning();
     }
 
     /**
@@ -228,14 +199,7 @@ public final class AgentManager
      */
     public boolean isAgentStarted(String name)
     {
-        if (agents.containsKey(name))
-        {
-            return agents.get(name).isStarted();
-        }
-        else
-        {
-            throw new IllegalArgumentException(String.format(MSG_PATTERN_INVALID_AGENT, name));
-        }
+        return findAgentByName(name).isStarted();
     }
 
     /**
@@ -247,14 +211,7 @@ public final class AgentManager
      */
     public String getAgentStatusStr(String name)
     {
-        if (agents.containsKey(name))
-        {
-            return agents.get(name).getStatusString();
-        }
-        else
-        {
-            throw new IllegalArgumentException(String.format(MSG_PATTERN_INVALID_AGENT, name));
-        }
+        return findAgentByName(name).getStatusString();
     }
 
 }

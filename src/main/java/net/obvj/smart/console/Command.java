@@ -326,7 +326,7 @@ public enum Command
     
     public boolean hasAlias()
     {
-        return alias != null && alias != "";
+        return alias != null && !alias.equals("");
     }
     
     public String getName()
@@ -349,7 +349,8 @@ public enum Command
 
     public static Optional<Command> getOptionalByNameOrAlias(String string)
     {
-        return Arrays.stream(values()).filter(command -> command.name.equals(string) || command.alias.equals(string))
+        return Arrays.stream(values())
+                .filter(command -> command.name.equals(string) || (command.hasAlias() && command.alias.equals(string)))
                 .findFirst();
     }
 
