@@ -15,6 +15,7 @@ import net.obvj.smart.util.DateUtil.TimeUnit;
  * Unit tests for the {@link DateUtil} class.
  * 
  * @author oswaldo.bapvic.jr
+ * @since 1.0
  */
 public class DateUtilTest
 {
@@ -50,7 +51,7 @@ public class DateUtilTest
      * Test successful exact start date calculation every 1 minute with the
      * {@code getExactStartDateEveryMinute(int, Calendar)} method and a given base date.
      * <p>
-     * The resulting date must be: 
+     * The resulting date must be:
      * <li>minute = the next minute</li>
      * <li>second = 0</li>
      * <li>millisecond = 0</li>
@@ -79,7 +80,7 @@ public class DateUtilTest
         Date exactStartDate = DateUtil.getExactStartDateEveryMinute(5, baseDate);
         assertEquals(toDate(2019, 6, 12, 18, 20, 0, 0), exactStartDate);
     }
-    
+
     /**
      * Test successful exact start date calculation every 1 minute with the
      * {@code getExactStartDateEvery(int, TimeUnit, Calendar)} method and a given base date.
@@ -114,4 +115,124 @@ public class DateUtilTest
         assertEquals(toDate(2019, 6, 12, 18, 20, 0, 0), exactStartDate);
     }
 
+    /**
+     * Test successful exact start date calculation every 30 minutes with the
+     * {@code getExactStartDateEvery(int, TimeUnit, Calendar)} method and a given base date.
+     * <p>
+     * The resulting date must be:
+     * <li>minute = the next multiple of 30</li>
+     * <li>second = 0</li>
+     * <li>millisecond = 0</li>
+     */
+    @Test
+    public void testGetExactStartDateEveryTimeUnit30Minutes()
+    {
+        Calendar baseDate = toCalendar(2019, 6, 12, 18, 45, 1, 123);
+        Date exactStartDate = DateUtil.getExactStartDateEvery(30, TimeUnit.MINUTES, baseDate);
+        assertEquals(toDate(2019, 6, 12, 19, 0, 0, 0), exactStartDate);
+    }
+
+    /**
+     * Test successful exact start date calculation every 1 hour with the
+     * {@code getExactStartDateEvery(int, TimeUnit, Calendar)} method and a given base date.
+     * <p>
+     * The resulting date must be:
+     * <li>hour = the next hour</li>
+     * <li>minute = 0</li>
+     * <li>second = 0</li>
+     * <li>millisecond = 0</li>
+     */
+    @Test
+    public void testGetExactStartDateEveryTimeUnit1Hour()
+    {
+        Calendar baseDate = toCalendar(2019, 6, 12, 23, 38, 1, 123);
+        Date exactStartDate = DateUtil.getExactStartDateEvery(1, TimeUnit.HOURS, baseDate);
+        assertEquals(toDate(2019, 6, 13, 0, 0, 0, 0), exactStartDate);
+    }
+
+    /**
+     * Test successful exact start date calculation every 2 hours with the
+     * {@code getExactStartDateEvery(int, TimeUnit, Calendar)} method and a given base date.
+     * <p>
+     * The resulting date must be:
+     * <li>hour = the next multiple of 2</li>
+     * <li>minute = 0</li>
+     * <li>second = 0</li>
+     * <li>millisecond = 0</li>
+     */
+    @Test
+    public void testGetExactStartDateEveryTimeUnit2Hours()
+    {
+        Calendar baseDate = toCalendar(2019, 6, 12, 17, 16, 1, 123);
+        Date exactStartDate = DateUtil.getExactStartDateEvery(2, TimeUnit.HOURS, baseDate);
+        assertEquals(toDate(2019, 6, 12, 18, 0, 0, 0), exactStartDate);
+    }
+
+    /**
+     * Test TimeUnit identification based on configured string identifiers
+     */
+    @Test
+    public void testFindTimeUnitByKnownIdentifiers()
+    {
+        assertEquals(TimeUnit.SECONDS, TimeUnit.findByIdentifier("second"));
+        assertEquals(TimeUnit.SECONDS, TimeUnit.findByIdentifier("SECOND"));
+        assertEquals(TimeUnit.SECONDS, TimeUnit.findByIdentifier("seconds"));
+        assertEquals(TimeUnit.SECONDS, TimeUnit.findByIdentifier("SECONDS"));
+        assertEquals(TimeUnit.SECONDS, TimeUnit.findByIdentifier("s"));
+        assertEquals(TimeUnit.SECONDS, TimeUnit.findByIdentifier("S"));
+
+        assertEquals(TimeUnit.MINUTES, TimeUnit.findByIdentifier("minute"));
+        assertEquals(TimeUnit.MINUTES, TimeUnit.findByIdentifier("MINUTE"));
+        assertEquals(TimeUnit.MINUTES, TimeUnit.findByIdentifier("minutes"));
+        assertEquals(TimeUnit.MINUTES, TimeUnit.findByIdentifier("MINUTES"));
+        assertEquals(TimeUnit.MINUTES, TimeUnit.findByIdentifier("m"));
+        assertEquals(TimeUnit.MINUTES, TimeUnit.findByIdentifier("M"));
+
+        assertEquals(TimeUnit.HOURS, TimeUnit.findByIdentifier("hour"));
+        assertEquals(TimeUnit.HOURS, TimeUnit.findByIdentifier("HOUR"));
+        assertEquals(TimeUnit.HOURS, TimeUnit.findByIdentifier("hours"));
+        assertEquals(TimeUnit.HOURS, TimeUnit.findByIdentifier("HOURS"));
+        assertEquals(TimeUnit.HOURS, TimeUnit.findByIdentifier("h"));
+        assertEquals(TimeUnit.HOURS, TimeUnit.findByIdentifier("H"));
+    }
+
+    /**
+     * Test TimeUnit identification for an unknown string identifier
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testFindTimeUnitByUnknownIdentifier()
+    {
+        TimeUnit.findByIdentifier("x");
+    }
+
+    /**
+     * Test TimeUnit identification for null identifier
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testFindTimeUnitWithNullIdentifier()
+    {
+        TimeUnit.findByIdentifier(null);
+    }
+
+    /**
+     * Test Calendar constant associations by TimeUnit
+     */
+    @Test
+    public void testTimeUnitCalendarConstants()
+    {
+        assertEquals(Calendar.SECOND, TimeUnit.SECONDS.getCalendarConstant());
+        assertEquals(Calendar.MINUTE, TimeUnit.MINUTES.getCalendarConstant());
+        assertEquals(Calendar.HOUR_OF_DAY, TimeUnit.HOURS.getCalendarConstant());
+    }
+
+    /**
+     * Test display strings returned by TimeUnit
+     */
+    @Test
+    public void testTimeUnitDisplayStrings()
+    {
+        assertEquals("second(s)", TimeUnit.SECONDS.toString());
+        assertEquals("minute(s)", TimeUnit.MINUTES.toString());
+        assertEquals("hour(s)", TimeUnit.HOURS.toString());
+    }
 }

@@ -13,6 +13,10 @@ import javax.xml.bind.annotation.XmlElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class XmlAgent
 {
+    private static final String DEFAULT_INTERVAL = "1";
+    private static final int DEFAULT_STOP_TIMEOUT_IN_SECONDS = -1;
+    private static final boolean DEFAULT_AUTOMATICALLY_STARTED = true;
+
     @XmlElement(name = "name")
     private String name;
 
@@ -22,14 +26,14 @@ public class XmlAgent
     @XmlElement(name = "class")
     private String agentClass;
 
-    @XmlElement(name = "intervalInMinutes")
-    private int intervalInMinutes;
+    @XmlElement(name = "interval")
+    private String interval = DEFAULT_INTERVAL;
 
     @XmlElement(name = "started")
-    private boolean automaticallyStarted;
+    private boolean automaticallyStarted = DEFAULT_AUTOMATICALLY_STARTED;
 
     @XmlElement(name = "stopTimeoutInSeconds")
-    private int stopTimeoutInSeconds;
+    private int stopTimeoutInSeconds = DEFAULT_STOP_TIMEOUT_IN_SECONDS;
 
     public String getName()
     {
@@ -61,14 +65,14 @@ public class XmlAgent
         this.agentClass = agentClass;
     }
 
-    public int getIntervalInMinutes()
+    public String getInterval()
     {
-        return intervalInMinutes;
+        return interval;
     }
 
-    public void setIntervalInMinutes(int intervalInMinutes)
+    public void setInterval(String interval)
     {
-        this.intervalInMinutes = intervalInMinutes;
+        this.interval = interval;
     }
 
     public boolean isAutomaticallyStarted()

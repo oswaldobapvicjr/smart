@@ -3,18 +3,19 @@ package net.obvj.smart.agents.api;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.obvj.smart.conf.xml.XmlAgent;
 import net.obvj.smart.util.DateUtil;
+import net.obvj.smart.util.DateUtil.TimeUnit;
+import net.obvj.smart.util.TimeInterval;
 
 /**
  * A thread-safe extensible Agent for tasks that are scheduled in the system to run
- * repeatedly, given an interval in minutes that is particular to each task. Available
- * operations are: 'start', 'stop', 'run' and 'reset'
+ * repeatedly, given an interval that is particular to each task. Available operations
+ * are: 'start', 'stop', 'run' and 'reset'
  * 
  * @author oswaldo.bapvic.jr
  * @since 1.0
@@ -25,7 +26,9 @@ public abstract class TimerAgent extends Agent
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
     private static final Logger logger = Logger.getLogger("smart-server");
 
-    private int intervalInMinutes;
+    private int interval;
+    private TimeUnit timeUnit;
+
     /*
      * This object is used to control access to the task execution independently of other
      * operations.
@@ -34,19 +37,20 @@ public abstract class TimerAgent extends Agent
 
     public TimerAgent()
     {
-        this(null, 1);
+        this(null, 1, TimeUnit.DEFAULT);
     }
 
     public TimerAgent(String name)
     {
-        this(name, 1);
+        this(name, 1, TimeUnit.DEFAULT);
     }
 
-    public TimerAgent(String name, int intervalInMinutes)
+    public TimerAgent(String name, int interval, TimeUnit timeUnit)
     {
         this.name = (name == null ? this.getClass().getSimpleName() : name);
         this.type = "TIMER";
-        this.intervalInMinutes = intervalInMinutes;
+        this.interval = interval;
+        this.timeUnit = timeUnit;
         this.currentState = State.SET;
         this.runLock = new Object();
     }
@@ -66,13 +70,18 @@ public abstract class TimerAgent extends Agent
         {
             throw new IllegalArgumentException("Not a timer agent");
         }
+
         TimerAgent agent = (TimerAgent) Class.forName(xmlAgent.getAgentClass()).getConstructor().newInstance();
         agent.name = xmlAgent.getName();
         agent.stopTimeoutSeconds = xmlAgent.getStopTimeoutInSeconds();
-        agent.intervalInMinutes = xmlAgent.getIntervalInMinutes() > 0 ? xmlAgent.getIntervalInMinutes() : 1;
+
+        TimeInterval timeInterval = TimeInterval.of(xmlAgent.getInterval());
+        agent.interval = timeInterval.getDuration();
+        agent.timeUnit = timeInterval.getTimeUnit();
+
         return agent;
     }
-    
+
     /**
      * Executes this agent task.
      */
@@ -128,13 +137,13 @@ public abstract class TimerAgent extends Agent
                 throw new IllegalStateException("Agent already started");
             }
             logger.log(Level.INFO, "Starting agent: {0}", name);
-            Date start = DateUtil.getExactStartDateEveryMinute(intervalInMinutes);
+            Date start = DateUtil.getExactStartDateEvery(interval, timeUnit);
 
             schedule.scheduleAtFixedRate(this, (start.getTime() - System.currentTimeMillis()),
-                    intervalInMinutes * 60 * 1000l, TimeUnit.MILLISECONDS);
+                    timeUnit.toMillis(interval), java.util.concurrent.TimeUnit.MILLISECONDS);
 
-            logger.log(Level.INFO, "Agent {0} scheduled to run every {1} minute(s). Start programmed to {2}",
-                    new Object[] { name, intervalInMinutes, DateUtil.formatDate(start) });
+            logger.log(Level.INFO, "Agent {0} scheduled to run every {1} {2}. Start programmed to {3}",
+                    new Object[] { name, interval, timeUnit, DateUtil.formatDate(start) });
             currentState = State.STARTED;
             startDate = Calendar.getInstance();
         }
@@ -196,7 +205,7 @@ public abstract class TimerAgent extends Agent
                 .append("   startDate:  ").append(startDate != null ? DateUtil.formatDate(startDate.getTime()) : "null")
                 .append(LINE_SEPARATOR).append("   lastRun:    ")
                 .append(lastRunDate != null ? DateUtil.formatDate(lastRunDate.getTime()) : "null")
-                .append(LINE_SEPARATOR).append("   frequency:  ").append(intervalInMinutes).append(" minute(s)")
+                .append(LINE_SEPARATOR).append("   frequency:  ").append(interval).append(" ").append(timeUnit)
                 .append(LINE_SEPARATOR).append("}").toString();
     }
 

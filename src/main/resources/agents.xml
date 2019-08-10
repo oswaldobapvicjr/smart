@@ -8,8 +8,7 @@
             <name>DummyAgent</name>
             <type>timer</type>
             <class>net.obvj.smart.agents.dummy.DummyAgent</class>
-            <started>true</started>
-            <intervalInMinutes>2</intervalInMinutes>
+            <interval>30 seconds</interval>
             <stopTimeoutInSeconds>5</stopTimeoutInSeconds>
         </agent>
 
