@@ -30,7 +30,10 @@ import net.obvj.smart.conf.xml.XmlSmart;
  */
 public class AgentConfiguration
 {
+
     private static final Logger LOG = Logger.getLogger("smart-server");
+
+    private static final String AGENTS_XML = "agents.xml";
 
     private static final AgentConfiguration instance = new AgentConfiguration();
 
@@ -40,22 +43,23 @@ public class AgentConfiguration
     
     private AgentConfiguration()
     {
-        loadAgentsXmlFile();
+        agents = loadAgentsXmlFile(AGENTS_XML);
         loadAgentsMap();
     }
 
-    private void loadAgentsXmlFile()
+    protected static XmlSmart loadAgentsXmlFile(String fileName)
     {
+        XmlSmart xmlAgents = null;
         LOG.info("Searching for agents.xml file...");
-        try (final InputStream stream = AgentConfiguration.class.getClassLoader().getResourceAsStream("agents.xml"))
+        try (final InputStream stream = AgentConfiguration.class.getClassLoader().getResourceAsStream(fileName))
         {
             JAXBContext jaxb = JAXBContext.newInstance(XmlSmart.class);
 
             Unmarshaller unmarshaller = jaxb.createUnmarshaller();
             unmarshaller.setSchema(loadSchema());
-            agents = (XmlSmart) unmarshaller.unmarshal(stream);
+            xmlAgents = (XmlSmart) unmarshaller.unmarshal(stream);
 
-            LOG.log(Level.INFO, "{0} agents found", agents.getAgents().size());
+            LOG.log(Level.INFO, "{0} agents found", xmlAgents.getAgents().size());
         }
         catch (NullPointerException e)
         {
@@ -73,9 +77,10 @@ public class AgentConfiguration
         {
             LOG.log(Level.SEVERE, "Unable to parse agents.xsd schema file", e);
         }
+        return xmlAgents;
     }
 
-    private Schema loadSchema() throws SAXException
+    private static Schema loadSchema() throws SAXException
     {
         SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         return sf.newSchema(AgentConfiguration.class.getClassLoader().getResource("agents.xsd"));
