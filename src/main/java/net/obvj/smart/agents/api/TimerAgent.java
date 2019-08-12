@@ -211,6 +211,16 @@ public abstract class TimerAgent extends Agent
                 .append(LINE_SEPARATOR).append("}").toString();
     }
 
+    public int getInterval()
+    {
+        return interval;
+    }
+
+    public TimeUnit getTimeUnit()
+    {
+        return timeUnit;
+    }
+    
     /**
      * Implements the logic for concrete agents. This method cannot be accessed externally.
      * Its functionality will be available via the run() method.

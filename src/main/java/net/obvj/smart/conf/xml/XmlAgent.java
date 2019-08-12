@@ -35,6 +35,20 @@ public class XmlAgent
     @XmlElement(name = "stopTimeoutInSeconds")
     private int stopTimeoutInSeconds = DEFAULT_STOP_TIMEOUT_IN_SECONDS;
 
+    public XmlAgent()
+    {
+    }
+
+    private XmlAgent(Builder builder)
+    {
+        this.name = builder.name;
+        this.type = builder.type;
+        this.agentClass = builder.agentClass;
+        this.interval = builder.interval;
+        this.automaticallyStarted = builder.automaticallyStarted.booleanValue();
+        this.stopTimeoutInSeconds = builder.stopTimeoutInSeconds.intValue();
+    }
+
     public String getName()
     {
         return name;
@@ -65,4 +79,62 @@ public class XmlAgent
         return stopTimeoutInSeconds;
     }
 
+    /**
+     * A builder object for testing purposes.
+     * 
+     * @author oswaldo.bapvic.jr
+     * @since 2.0
+     */
+    public static class Builder
+    {
+        private String name;
+        private String type;
+        private String agentClass;
+        private String interval = DEFAULT_INTERVAL;
+        private Boolean automaticallyStarted = Boolean.valueOf(DEFAULT_AUTOMATICALLY_STARTED);
+        private Integer stopTimeoutInSeconds = Integer.valueOf(DEFAULT_STOP_TIMEOUT_IN_SECONDS);
+
+        public Builder(String name)
+        {
+            this.name = name;
+        }
+
+        public Builder type(String type)
+        {
+            this.type = type;
+            return this;
+        }
+
+        public Builder agentClass(String agentClass)
+        {
+            this.agentClass = agentClass;
+            return this;
+        }
+
+        public Builder interval(String interval)
+        {
+            this.interval = interval;
+            return this;
+        }
+
+        public Builder automaticallyStarted(boolean automaticallyStarted)
+        {
+            this.automaticallyStarted = Boolean.valueOf(automaticallyStarted);
+            return this;
+        }
+        
+        public Builder stopTimeoutInSeconds(int stopTimeoutInSeconds)
+        {
+            this.stopTimeoutInSeconds = Integer.valueOf(stopTimeoutInSeconds);
+            return this;
+        }        
+
+        public XmlAgent build()
+        {
+            if (name == null) throw new IllegalStateException("name cannot be null");
+            if (type == null) throw new IllegalStateException("type cannot be null");
+            if (agentClass == null) throw new IllegalStateException("agentClass cannot be null");
+            return new XmlAgent(this);
+        }
+    }
 }

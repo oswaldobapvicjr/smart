@@ -58,7 +58,7 @@ public abstract class Agent implements Runnable
      */
     public String getType()
     {
-        return type;
+        return type.toLowerCase();
     }
 
     /**

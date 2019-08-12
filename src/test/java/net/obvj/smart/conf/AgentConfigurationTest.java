@@ -13,7 +13,7 @@ import net.obvj.smart.conf.xml.XmlAgent;
 import net.obvj.smart.conf.xml.XmlSmart;
 
 /**
- * Unit test for the {@link AgentConfiguration} class.
+ * Unit tests for the {@link AgentConfiguration} class.
  * 
  * @author oswaldo.bapvic.jr
  * @since 2.0
