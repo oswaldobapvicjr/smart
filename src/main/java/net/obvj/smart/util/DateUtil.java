@@ -81,6 +81,11 @@ public class DateUtil
     private static final ThreadLocal<DateFormat> SIMPLE_FORMAT = ThreadLocal
             .withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
 
+    private DateUtil()
+    {
+        throw new IllegalStateException("Utility class");
+    }
+    
     /**
      * @return current date and time, formatted
      */

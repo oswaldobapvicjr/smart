@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- A sample agent XML with an invalid agent: invalid 'type' element -->
+
+<smart>
+    <agents>
+        <agent>
+            <name>DummyAgent</name>
+            <type>unknown</type>
+            <class>net.obvj.smart.agents.dummy.DummyAgent</class>
+        </agent>
+    </agents>
+</smart>

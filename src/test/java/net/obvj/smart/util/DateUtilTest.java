@@ -1,7 +1,8 @@
 package net.obvj.smart.util;
 
-import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -37,6 +38,18 @@ public class DateUtilTest
         return calendar;
     }
 
+    /**
+     * Tests that no instances of this utility class are created
+     *
+     * @throws Exception in case of error getting constructor metadata or instantiating the
+     *                   private constructor via Reflection
+     */
+    @Test
+    public void testNoInstancesAllowed() throws Exception
+    {
+        UtilitiesCommons.testNoInstancesAllowed(DateUtil.class, IllegalStateException.class, "Utility class");
+    }
+    
     /**
      * Test successful date formatting to common string format
      */
@@ -234,5 +247,16 @@ public class DateUtilTest
         assertEquals("second(s)", TimeUnit.SECONDS.toString());
         assertEquals("minute(s)", TimeUnit.MINUTES.toString());
         assertEquals("hour(s)", TimeUnit.HOURS.toString());
+    }
+    
+    /**
+     * Test time unit conversion to milliseconds
+     */
+    @Test
+    public void testTimeUnitToMilliseconds()
+    {
+        assertEquals(1000, TimeUnit.SECONDS.toMillis(1));
+        assertEquals(60000, TimeUnit.MINUTES.toMillis(1));
+        assertEquals(3600000, TimeUnit.HOURS.toMillis(1));
     }
 }

@@ -40,19 +40,9 @@ public class XmlAgent
         return name;
     }
 
-    public void setName(String name)
-    {
-        this.name = name;
-    }
-
     public String getType()
     {
         return type;
-    }
-
-    public void setType(String type)
-    {
-        this.type = type;
     }
 
     public String getAgentClass()
@@ -60,19 +50,9 @@ public class XmlAgent
         return agentClass;
     }
 
-    public void setAgentClass(String agentClass)
-    {
-        this.agentClass = agentClass;
-    }
-
     public String getInterval()
     {
         return interval;
-    }
-
-    public void setInterval(String interval)
-    {
-        this.interval = interval;
     }
 
     public boolean isAutomaticallyStarted()
@@ -80,19 +60,9 @@ public class XmlAgent
         return automaticallyStarted;
     }
 
-    public void setAutomaticallyStarted(boolean automaticallyStarted)
-    {
-        this.automaticallyStarted = automaticallyStarted;
-    }
-
     public int getStopTimeoutInSeconds()
     {
         return stopTimeoutInSeconds;
-    }
-
-    public void setStopTimeoutInSeconds(int stopTimeoutInSeconds)
-    {
-        this.stopTimeoutInSeconds = stopTimeoutInSeconds;
     }
 
 }

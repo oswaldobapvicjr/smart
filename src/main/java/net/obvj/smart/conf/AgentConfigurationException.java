@@ -11,14 +11,6 @@ public class AgentConfigurationException extends RuntimeException
     private static final long serialVersionUID = 6615162498994428780L;
 
     /**
-     * Constructs an AgentConfigurationException with no detail message.
-     */
-    public AgentConfigurationException()
-    {
-        super();
-    }
-
-    /**
      * Constructs an AgentConfigurationException with the specified detail message. A detail
      * message is a String that describes this particular exception.
      *

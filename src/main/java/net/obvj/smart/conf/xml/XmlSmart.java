@@ -23,9 +23,4 @@ public class XmlSmart
         return agents;
     }
 
-    public void setAgents(List<XmlAgent> agents)
-    {
-        this.agents = agents;
-    }
-
 }

@@ -49,6 +49,7 @@ public final class AgentManager
      * @param name the agent to be found
      * @return the Agent associated with the given name
      * @throws IllegalArgumentException if no agent with the given name was found
+     * @since 2.0
      */
     public Agent findAgentByName(String name)
     {
@@ -169,6 +170,7 @@ public final class AgentManager
 
     /**
      * @return a collection of agents metadata for interchange with client applications
+     * @since 2.0
      */
     public Collection<AgentDTO> getAgentDTOs()
     {

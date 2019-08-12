@@ -44,4 +44,11 @@ public class CommandTest
     {
         Command.getByNameOrAlias("");
     }
+    
+    @Test
+    public void testCommandNameAndAlias()
+    {
+        assertEquals("show-agents", Command.SHOW_AGENTS.getName());
+        assertEquals("agents", Command.SHOW_AGENTS.getAlias());
+    }
 }

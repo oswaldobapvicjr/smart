@@ -2,6 +2,7 @@ package net.obvj.smart.conf;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.FileNotFoundException;
 import java.util.function.Supplier;
 
 import javax.xml.bind.UnmarshalException;
@@ -11,12 +12,17 @@ import org.junit.Test;
 import net.obvj.smart.conf.xml.XmlAgent;
 import net.obvj.smart.conf.xml.XmlSmart;
 
+/**
+ * Unit test for the {@link AgentConfiguration} class.
+ * 
+ * @author oswaldo.bapvic.jr
+ * @since 2.0
+ */
 public class AgentConfigurationTest
 {
     // Test files
     private static final String XML_TIMER_AGENT_30_SECONDS = "testAgents/timerAgent30seconds.xml";
     private static final String XML_TIMER_AGENT_WITH_DEFAULT_VALUES = "testAgents/timerAgentWithDefaultValues.xml";
-    private static final String XML_TIMER_AGENT_WITHOUT_NAME = "testAgents/timerAgentWithoutName.xml";
 
     // Test data
     private static final String DUMMY_AGENT = "DummyAgent";
@@ -80,7 +86,41 @@ public class AgentConfigurationTest
     public void testLoadTimerAgentWithoutName()
     {
         assertException(AgentConfigurationException.class, "Invalid agents file", UnmarshalException.class,
-                () -> AgentConfiguration.loadAgentsXmlFile(XML_TIMER_AGENT_WITHOUT_NAME));
+                () -> AgentConfiguration.loadAgentsXmlFile("testAgents/timerAgentWithoutName.xml"));
     }
 
+    @Test
+    public void testLoadAgentWithoutType()
+    {
+        assertException(AgentConfigurationException.class, "Invalid agents file", UnmarshalException.class,
+                () -> AgentConfiguration.loadAgentsXmlFile("testAgents/agentWithoutType.xml"));
+    }
+
+    @Test
+    public void testLoadTimerAgentWithoutClass()
+    {
+        assertException(AgentConfigurationException.class, "Invalid agents file", UnmarshalException.class,
+                () -> AgentConfiguration.loadAgentsXmlFile("testAgents/timerAgentWithoutClass.xml"));
+    }
+
+    @Test
+    public void testLoadTimerAgentWithInvalidName()
+    {
+        assertException(AgentConfigurationException.class, "Invalid agents file", UnmarshalException.class,
+                () -> AgentConfiguration.loadAgentsXmlFile("testAgents/timerAgentWithInvalidName.xml"));
+    }
+
+    @Test
+    public void testLoadAgentWithInvalidType()
+    {
+        assertException(AgentConfigurationException.class, "Invalid agents file", UnmarshalException.class,
+                () -> AgentConfiguration.loadAgentsXmlFile("testAgents/agentWithInvalidType.xml"));
+    }
+
+    @Test
+    public void testAgentsFileNotFound()
+    {
+        assertException(AgentConfigurationException.class, null, FileNotFoundException.class,
+                () -> AgentConfiguration.loadAgentsXmlFile("testAgents/notfound.xml"));
+    }
 }

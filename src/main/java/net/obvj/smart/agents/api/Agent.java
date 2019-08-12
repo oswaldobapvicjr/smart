@@ -122,6 +122,8 @@ public abstract class Agent implements Runnable
      * @throws NoSuchMethodException  if the default agent constructor cannot be found
      * @throws IllegalAccessException if the agent constructor is not accessible
      * @throws InstantiationException if the agent cannot be instantiated
+     * 
+     * @since 2.0
      */
     public static Agent parseAgent(XmlAgent xmlAgent) throws InstantiationException, IllegalAccessException,
             InvocationTargetException, NoSuchMethodException, ClassNotFoundException
