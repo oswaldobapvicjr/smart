@@ -3,27 +3,29 @@ package net.obvj.smart.agents.dummy;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.obvj.smart.agents.api.TimerAgent;
+import net.obvj.smart.agents.api.DaemonAgent;
 
 /**
- * A dummy agent that executes for 10 seconds for testing purposes
+ * A dummy daemon agent for testing purposes
  * 
  * @author oswaldo.bapvic.jr
- * @since 1.0
+ * @since 2.0
  */
-public class DummyAgent extends TimerAgent
+public class DummyDaemonAgent extends DaemonAgent
 {
     private static final Logger LOG = Logger.getLogger("smart-server");
    
+    private boolean runFlag = true;
+    
     @Override
     protected void runTask()
     {
-        for (int i = 9; i >= 0; i--)
+        while (runFlag)
         {
             try
             {
-                LOG.log(Level.INFO, "DummyAgent says {0}", i);
-                Thread.sleep(1000);
+                LOG.info("DummyDaemonAgent says hello.");
+                Thread.sleep(10000);
             }
             catch (InterruptedException e)
             {
@@ -31,6 +33,12 @@ public class DummyAgent extends TimerAgent
                 Thread.currentThread().interrupt();
             }
         }
+    }
+
+    @Override
+    protected void stopTask()
+    {
+        runFlag = false;
     }
 
 }

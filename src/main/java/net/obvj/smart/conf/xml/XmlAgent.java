@@ -90,7 +90,7 @@ public class XmlAgent
         private String name;
         private String type;
         private String agentClass;
-        private String interval = DEFAULT_INTERVAL;
+        private String interval;
         private Boolean automaticallyStarted = Boolean.valueOf(DEFAULT_AUTOMATICALLY_STARTED);
         private Integer stopTimeoutInSeconds = Integer.valueOf(DEFAULT_STOP_TIMEOUT_IN_SECONDS);
 
@@ -134,6 +134,10 @@ public class XmlAgent
             if (name == null) throw new IllegalStateException("name cannot be null");
             if (type == null) throw new IllegalStateException("type cannot be null");
             if (agentClass == null) throw new IllegalStateException("agentClass cannot be null");
+            
+            // The default interval can only be set for timer agents 
+            if (interval == null && type.equals("timer")) interval = DEFAULT_INTERVAL;
+            
             return new XmlAgent(this);
         }
     }

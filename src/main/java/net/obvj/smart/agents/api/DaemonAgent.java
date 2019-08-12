@@ -26,6 +26,8 @@ public abstract class DaemonAgent extends Agent
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
     private static final Logger logger = Logger.getLogger("smart-server");
 
+    private Object runLock;
+    
     public DaemonAgent()
     {
         this(null);
@@ -36,6 +38,7 @@ public abstract class DaemonAgent extends Agent
         this.name = (name == null ? this.getClass().getSimpleName() : name);
         this.type = "DAEMON";
         this.currentState = State.SET;
+        this.runLock = new Object();
     }
 
     /**
@@ -72,7 +75,7 @@ public abstract class DaemonAgent extends Agent
         }
         else
         {
-            synchronized (this)
+            synchronized (runLock)
             {
                 currentState = State.RUNNING;
                 lastRunDate = Calendar.getInstance();

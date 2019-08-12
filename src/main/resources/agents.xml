@@ -18,6 +18,13 @@
             <class>net.obvj.smart.agents.dummy.PMReporter</class>
             <started>false</started>
         </agent>
+        
+        <agent>
+            <name>DummyDaemon</name>
+            <type>daemon</type>
+            <class>net.obvj.smart.agents.dummy.DummyDaemonAgent</class>
+            <started>true</started>
+        </agent>
 
     </agents>
 </smart>
