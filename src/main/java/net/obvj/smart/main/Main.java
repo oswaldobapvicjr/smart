@@ -12,6 +12,7 @@ import javax.management.OperationsException;
 
 import net.obvj.smart.agents.api.Agent;
 import net.obvj.smart.conf.AgentConfiguration;
+import net.obvj.smart.conf.AgentConfigurationException;
 import net.obvj.smart.conf.SmartProperties;
 import net.obvj.smart.conf.xml.XmlAgent;
 import net.obvj.smart.console.ManagementConsole;
@@ -77,43 +78,52 @@ public class Main
         /*
          * Step 5: Loading agents configuration
          */
-        LOG.info("Loading agents configuration...");
-        List<XmlAgent> xmlAgents = AgentConfiguration.getInstance().getAgents();
-
-        if (xmlAgents.isEmpty())
+        try
         {
+            LOG.info("Loading agents configuration...");
+            List<XmlAgent> xmlAgents = AgentConfiguration.getInstance().getAgents();
+
+            /*
+             * Step 6: Loading and starting agents objects
+             */
+            LOG.info("Loading agents objects...");
+            xmlAgents.forEach(xmlAgent ->
+            {
+                try
+                {
+                    manager.addAgent(Agent.parseAgent(xmlAgent));
+                }
+                catch (Exception e)
+                {
+                    LOG.log(Level.SEVERE, "Unable to load agent: " + xmlAgent.getName(), e);
+                }
+            });
+
+            LOG.log(Level.INFO, "{0} agents loaded", manager.getAgents().size());
+
+            if (manager.getAgents().isEmpty())
+            {
+                System.exit(1);
+            }
+
+            LOG.log(Level.INFO, "Starting agents...");
+            xmlAgents.stream().filter(XmlAgent::isAutomaticallyStarted)
+                    .forEach(xmlAgent -> manager.startAgent(xmlAgent.getName()));
+
+            LOG.info("Ready.");
+
+            keepMainThreadBusy();
+        }
+        catch (AgentConfigurationException e)
+        {
+            LOG.log(Level.SEVERE, "Unable to load agents configuration", e);
             System.exit(1);
         }
 
-        /*
-         * Step 6: Loading and starting agents objects
-         */
-        LOG.info("Loading agents objects...");
-        xmlAgents.forEach(xmlAgent ->
-        {
-            try
-            {
-                manager.addAgent(Agent.parseAgent(xmlAgent));
-            }
-            catch (Exception e)
-            {
-                LOG.log(Level.SEVERE, "Unable to load agent: " + xmlAgent.getName(), e);
-            }
-        });
+    }
 
-        LOG.log(Level.INFO, "{0} agents loaded", manager.getAgents().size());
-
-        if (manager.getAgents().isEmpty())
-        {
-            System.exit(1);
-        }
-
-        LOG.log(Level.INFO, "Starting agents...");
-        xmlAgents.stream().filter(XmlAgent::isAutomaticallyStarted)
-                .forEach(xmlAgent -> manager.startAgent(xmlAgent.getName()));
-
-        LOG.info("Ready.");
-
+    private static void keepMainThreadBusy()
+    {
         while (runFlag)
         {
             try

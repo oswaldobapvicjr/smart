@@ -1,5 +1,6 @@
 package net.obvj.smart.conf;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
@@ -30,12 +31,11 @@ import net.obvj.smart.conf.xml.XmlSmart;
  */
 public class AgentConfiguration
 {
-
     private static final Logger LOG = Logger.getLogger("smart-server");
 
     private static final String AGENTS_XML = "agents.xml";
 
-    private static final AgentConfiguration instance = new AgentConfiguration();
+    private static AgentConfiguration instance;
 
     private XmlSmart agents;
 
@@ -50,32 +50,33 @@ public class AgentConfiguration
     protected static XmlSmart loadAgentsXmlFile(String fileName)
     {
         XmlSmart xmlAgents = null;
-        LOG.info("Searching for agents.xml file...");
+        LOG.log(Level.INFO, "Searching for agents file: {0}", fileName);
         try (final InputStream stream = AgentConfiguration.class.getClassLoader().getResourceAsStream(fileName))
         {
-            JAXBContext jaxb = JAXBContext.newInstance(XmlSmart.class);
+            if (stream == null)
+            {
+                throw new FileNotFoundException(String.format("Unable to find %s in class path", fileName));
+            }
 
+            LOG.log(Level.INFO, "{0} found", fileName);
+            JAXBContext jaxb = JAXBContext.newInstance(XmlSmart.class);
             Unmarshaller unmarshaller = jaxb.createUnmarshaller();
             unmarshaller.setSchema(loadSchema());
             xmlAgents = (XmlSmart) unmarshaller.unmarshal(stream);
 
-            LOG.log(Level.INFO, "{0} agents found", xmlAgents.getAgents().size());
-        }
-        catch (NullPointerException e)
-        {
-            LOG.severe("Unable to find agents.xml file in the class path");
+            LOG.log(Level.INFO, "{0} agent(s) found", xmlAgents.getAgents().size());
         }
         catch (UnmarshalException e)
         {
-            LOG.log(Level.SEVERE, "Invalid agents.xml file", e);
+            throw new AgentConfigurationException("Invalid agents file", e);
         }
         catch (JAXBException | IOException e)
         {
-            LOG.log(Level.SEVERE, "Unable to read agents.xml file", e);
+            throw new AgentConfigurationException(e);
         }
         catch (SAXException e)
         {
-            LOG.log(Level.SEVERE, "Unable to parse agents.xsd schema file", e);
+            throw new AgentConfigurationException("Unable to parse agents.xsd schema file", e);
         }
         return xmlAgents;
     }
@@ -103,6 +104,10 @@ public class AgentConfiguration
 
     public static AgentConfiguration getInstance()
     {
+        if (instance == null)
+        {
+            instance = new AgentConfiguration();
+        }
         return instance;
     }
 
