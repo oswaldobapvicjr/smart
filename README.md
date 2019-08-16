@@ -15,9 +15,9 @@ A lightweight runtime engine for Java agents.
 
 ### Timer agents
 
-![Timer agents state machine](resources/state_chart_timer_agents.png)
+![Timer agents state machine](resources/state_chart_timer_agents.svg)
 
 
 ### Daemon agents
 
-![Daemon agents state machine](resources/state_chart_daemon_agents.png)
+![Daemon agents state machine](resources/state_chart_daemon_agents.svg)
