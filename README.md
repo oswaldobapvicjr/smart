@@ -12,3 +12,12 @@ A lightweight runtime engine for Java agents.
 - Start, stop and reset agents independently, reducing downtime
 - Customizable shell
 - Standalone: runs on top of JVM, requiring no application server or additional frameworks
+
+### Timer agents
+
+![Timer agents state machine](resources/state_chart_timer_agents.png)
+
+
+### Daemon agents
+
+![Daemon agents state machine](resources/state_chart_daemon_agents.png)
