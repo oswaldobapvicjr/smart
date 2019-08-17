@@ -48,11 +48,11 @@ public class SmartProperties
 
     private void readSmartPropertiesFile()
     {
-        LOG.info("Searching for smart.properties file...");
+        LOG.fine("Searching for smart.properties file...");
         try (final InputStream stream = SmartProperties.class.getClassLoader().getResourceAsStream("smart.properties"))
         {
             properties.load(stream);
-            LOG.info("smart.properties loaded successfully");
+            LOG.fine("smart.properties loaded successfully");
         }
         catch (NullPointerException e)
         {

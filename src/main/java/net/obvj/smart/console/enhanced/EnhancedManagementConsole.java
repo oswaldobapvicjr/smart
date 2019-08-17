@@ -30,50 +30,80 @@ import picocli.shell.jline2.PicocliJLineCompleter;
  */
 public class EnhancedManagementConsole implements Runnable
 {
+    public enum Mode
+    {
+        /**
+         * Interactive console: start the shell and process user input until the user hits Ctrl+D
+         */
+        INTERACTIVE,
+
+        /**
+         * Executes a single command received via application arguments and quits
+         */
+        SINGLE_COMMAND;
+    }
+
     private static final Logger LOG = Logger.getLogger("smart");
     private static final String PROMPT = SmartProperties.getInstance().getProperty(SmartProperties.CONSOLE_PROMPT) + " ";
 
-    private String[] args;
+    private final String[] args;
+    private final ConsoleReader reader;
+    private final Commands commands;
+    private final Mode mode;
 
-    public EnhancedManagementConsole(String[] args)
+    public EnhancedManagementConsole(String... args) throws IOException
     {
         this.args = args;
+        mode = userArgsSet(args) ? Mode.SINGLE_COMMAND : Mode.INTERACTIVE;
+
+        // Setting-up the console
+        reader = new ConsoleReader();
+        reader.setPrompt(PROMPT);
+
+        // Set up the completion
+        commands = new Commands(reader);
+        CommandLine cmd = new CommandLine(commands);
+        reader.addCompleter(new PicocliJLineCompleter(cmd.getCommandSpec()));
     }
-    
+
+    private boolean userArgsSet(String... args)
+    {
+        return args != null && args.length > 0 && args[0] != null && !"".equals(args[0]);
+    }
+
     @Override
     public void run()
     {
         try
         {
-            // Setting-up the console
-            ConsoleReader reader = new ConsoleReader();
-            reader.setPrompt(PROMPT);
-
-            // Set up the completion
-            Commands commands = new Commands(reader);
-            CommandLine cmd = new CommandLine(commands);
-            reader.addCompleter(new PicocliJLineCompleter(cmd.getCommandSpec()));
-
             // Set up connection to JMX
             AgentManagerJMXClient.getMBeanProxy();
-            
+
             // Print custom header and hints
             printHeader(reader);
 
-            // Start the shell and process input until the user quits with Ctl+D
-            String line;
-            while ((line = args !=null && args.length > 0 ? args[0] : reader.readLine()) != null)
+            if (mode == Mode.SINGLE_COMMAND)
             {
-                line = line.trim();
-                if (!"".equals(line))
+                handleCommandLine(parseArgs(args));
+            }
+            else
+            {
+                // Start the shell and process user input until the user quits with Ctl+D
+                String line;
+                while ((line = reader.readLine()) != null)
                 {
-                    if ("exit".equals(line) || "quit".equals(line))
+                    line = line.trim();
+                    if (!"".equals(line))
                     {
-                        break;
+                        if ("exit".equals(line) || "quit".equals(line))
+                        {
+                            break;
+                        }
+                        handleCommandLine(line);
                     }
-                    handleCommandLine(reader, commands, line);
                 }
             }
+
         }
         catch (IOException e)
         {
@@ -81,7 +111,12 @@ public class EnhancedManagementConsole implements Runnable
         }
     }
 
-    private void handleCommandLine(ConsoleReader reader, Commands commands, String line) throws IOException
+    protected static String parseArgs(String... args)
+    {
+        return String.join(" ", args);
+    }
+
+    protected void handleCommandLine(String line) throws IOException
     {
         try
         {
@@ -89,8 +124,13 @@ public class EnhancedManagementConsole implements Runnable
             new CommandLine(commands).execute(list.getArguments());
             reader.println();
         }
-        catch (Exception e) {
+        catch (Exception e)
+        {
             reader.println(e.getClass().getName() + ": " + e.getMessage() + "\n");
+        }
+        finally
+        {
+            reader.flush();
         }
     }
 
@@ -100,16 +140,18 @@ public class EnhancedManagementConsole implements Runnable
         List<String> customHeaderLines = readCustomHeaderLines();
         PrintWriter out = new PrintWriter(console.getOutput());
         customHeaderLines.forEach(out::println);
-        out.flush();
-        
-        // Print hints
         out.println();
-        out.println(" Hit <Tab> for a list of available commands.");
-        out.println(" Press <Ctrl> + D to quit the console.");
-        out.println();
+
+        if (mode == Mode.INTERACTIVE)
+        {
+            // Print hints
+            out.println(" Hit <Tab> for a list of available commands.");
+            out.println(" Press <Ctrl> + D to quit the console.");
+            out.println();
+        }
         out.flush();
     }
-    
+
     private List<String> readCustomHeaderLines()
     {
         LOG.fine("Searching for custom header file...");
@@ -130,9 +172,15 @@ public class EnhancedManagementConsole implements Runnable
             return Collections.emptyList();
         }
     }
-    
-    public static void main(String[] args)
+
+    public static void main(String[] args) throws IOException
     {
         new EnhancedManagementConsole(args).run();
     }
+
+    protected Mode getMode()
+    {
+        return mode;
+    }
+
 }
