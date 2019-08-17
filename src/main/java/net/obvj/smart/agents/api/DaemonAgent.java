@@ -35,9 +35,9 @@ public abstract class DaemonAgent extends Agent
 
     public DaemonAgent(String name)
     {
-        this.name = (name == null ? this.getClass().getSimpleName() : name);
-        this.type = "DAEMON";
-        this.currentState = State.SET;
+        setName(name == null ? this.getClass().getSimpleName() : name);
+        setType("DAEMON");
+        setState(State.SET);
         this.runLock = new Object();
     }
 
@@ -59,8 +59,8 @@ public abstract class DaemonAgent extends Agent
             throw new IllegalArgumentException("Not a daemon agent");
         }
         DaemonAgent agent = (DaemonAgent) Class.forName(xmlAgent.getAgentClass()).getConstructor().newInstance();
-        agent.name = xmlAgent.getName();
-        agent.stopTimeoutSeconds = xmlAgent.getStopTimeoutInSeconds();
+        agent.setName(xmlAgent.getName());
+        agent.setStopTimeoutSeconds(xmlAgent.getStopTimeoutInSeconds());
         return agent;
     }
     
@@ -77,7 +77,7 @@ public abstract class DaemonAgent extends Agent
         {
             synchronized (runLock)
             {
-                currentState = State.RUNNING;
+                setState(State.RUNNING);
                 lastRunDate = Calendar.getInstance();
                 logger.log(Level.INFO, "{0} - Agent task started.", DateUtil.formatDate(lastRunDate.getTime()));
                 try
@@ -87,7 +87,7 @@ public abstract class DaemonAgent extends Agent
                 catch (Exception e)
                 {
                     logger.severe(e.getClass().getName() + ": " + e.getMessage());
-                    currentState = State.ERROR;
+                    setState(State.ERROR);
                 }
             }
         }
@@ -98,7 +98,7 @@ public abstract class DaemonAgent extends Agent
      */
     public final void start()
     {
-        switch (currentState)
+        switch (getState())
         {
         case STARTED:
             throw new IllegalStateException("Agent already started");
@@ -116,7 +116,7 @@ public abstract class DaemonAgent extends Agent
             logger.info("Starting agent...");
             schedule.schedule(this, 0, TimeUnit.SECONDS);
             logger.info("Daemon agent started");
-            currentState = State.STARTED;
+            setState(State.STARTED);
             startDate = Calendar.getInstance();
         }
     }
@@ -128,13 +128,13 @@ public abstract class DaemonAgent extends Agent
      */
     public final void stop() throws TimeoutException
     {
-        if (currentState == State.STOPPED)
+        if (isStopped())
         {
             throw new IllegalStateException("Agent already stopped");
         }
         synchronized (this)
         {
-            if (currentState == State.STOPPED)
+            if (isStopped())
             {
                 throw new IllegalStateException("Agent already stopped");
             } 
@@ -144,7 +144,7 @@ public abstract class DaemonAgent extends Agent
             logger.info("Stopping agent...");
             int sleepSeconds = 2;
             int attempts = getStopTimeoutSeconds() / sleepSeconds;
-            while ((currentState == State.RUNNING) && (attempts-- > 0))
+            while (isRunning() && attempts-- > 0)
             {
                 try
                 {
@@ -158,13 +158,13 @@ public abstract class DaemonAgent extends Agent
                     Thread.currentThread().interrupt();
                 }
             }
-            if (currentState == State.RUNNING)
+            if (isRunning())
             {
-                currentState = State.ERROR;
+                setState(State.ERROR);
                 throw new TimeoutException("Unable to stop agent task.");
             }
 
-            currentState = State.STOPPED;
+            setState(State.STOPPED);
             startDate = null;
             logger.info("Agent stopped successfully.");
         }
@@ -176,8 +176,8 @@ public abstract class DaemonAgent extends Agent
      */
     public String getStatusString()
     {
-        return new StringBuilder(name).append(" {").append(LINE_SEPARATOR).append("   type:       ").append(type)
-                .append(LINE_SEPARATOR).append("   status:     ").append(currentState).append(LINE_SEPARATOR)
+        return new StringBuilder(getName()).append(" {").append(LINE_SEPARATOR).append("   type:       ").append(getType())
+                .append(LINE_SEPARATOR).append("   status:     ").append(getState()).append(LINE_SEPARATOR)
                 .append("   startDate:  ").append(startDate != null ? DateUtil.formatDate(startDate.getTime()) : "null")
                 .append(LINE_SEPARATOR).append("}").toString();
     }

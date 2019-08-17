@@ -47,11 +47,11 @@ public abstract class TimerAgent extends Agent
 
     public TimerAgent(String name, int interval, TimeUnit timeUnit)
     {
-        this.name = (name == null ? this.getClass().getSimpleName() : name);
-        this.type = "TIMER";
+        setName(name == null ? this.getClass().getSimpleName() : name);
+        setType("TIMER");
         this.interval = interval;
         this.timeUnit = timeUnit;
-        this.currentState = State.SET;
+        setState(State.SET);
         this.runLock = new Object();
     }
 
@@ -74,8 +74,8 @@ public abstract class TimerAgent extends Agent
         }
 
         TimerAgent agent = (TimerAgent) Class.forName(xmlAgent.getAgentClass()).getConstructor().newInstance();
-        agent.name = xmlAgent.getName();
-        agent.stopTimeoutSeconds = xmlAgent.getStopTimeoutInSeconds();
+        agent.setName(xmlAgent.getName());
+        agent.setStopTimeoutSeconds(xmlAgent.getStopTimeoutInSeconds());
 
         TimeInterval timeInterval = TimeInterval.of(xmlAgent.getInterval());
         agent.interval = timeInterval.getDuration();
@@ -97,8 +97,8 @@ public abstract class TimerAgent extends Agent
         {
             synchronized (runLock)
             {
-                State previousState = currentState;
-                currentState = State.RUNNING;
+                State previousState = getState();
+                setState(State.RUNNING);
                 lastRunDate = Calendar.getInstance();
                 logger.log(Level.INFO, "{0} - Agent task started.", DateUtil.formatDate(lastRunDate.getTime()));
                 try
@@ -111,7 +111,7 @@ public abstract class TimerAgent extends Agent
                 }
                 finally
                 {
-                    currentState = previousState;
+                    setState(previousState);
                     logger.log(Level.INFO, "{0} - Agent task complete.", DateUtil.now());
                 }
             }
@@ -123,7 +123,7 @@ public abstract class TimerAgent extends Agent
      */
     public final void start()
     {
-        switch (currentState)
+        switch (getState())
         {
         case STARTED:
             throw new IllegalStateException("Agent already started");
@@ -138,15 +138,15 @@ public abstract class TimerAgent extends Agent
             {
                 throw new IllegalStateException("Agent already started");
             }
-            logger.log(Level.INFO, "Starting agent: {0}", name);
+            logger.log(Level.INFO, "Starting agent: {0}", getName());
             Date start = DateUtil.getExactStartDateEvery(interval, timeUnit);
 
             schedule.scheduleAtFixedRate(this, (start.getTime() - System.currentTimeMillis()),
                     timeUnit.toMillis(interval), java.util.concurrent.TimeUnit.MILLISECONDS);
 
             logger.log(Level.INFO, "Agent {0} scheduled to run every {1} {2}. Start programmed to {3}",
-                    new Object[] { name, interval, timeUnit, DateUtil.formatDate(start) });
-            currentState = State.STARTED;
+                    new Object[] { getName(), interval, timeUnit, DateUtil.formatDate(start) });
+            setState(State.STARTED);
             startDate = Calendar.getInstance();
         }
     }
@@ -157,20 +157,20 @@ public abstract class TimerAgent extends Agent
      */
     public final void stop() throws TimeoutException
     {
-        if (currentState == State.STOPPED)
+        if (isStopped())
         {
             throw new IllegalStateException("Agent already stopped");
         }
         synchronized (this)
         {
-            if (currentState == State.STOPPED)
+            if (isStopped())
             {
                 throw new IllegalStateException("Agent already stopped");
             }
             logger.info("Stopping agent...");
             int sleepSeconds = 2;
             int attempts = getStopTimeoutSeconds() / sleepSeconds;
-            while ((currentState == State.RUNNING) && (attempts-- > 0))
+            while (isRunning() && attempts-- > 0)
             {
                 try
                 {
@@ -184,12 +184,12 @@ public abstract class TimerAgent extends Agent
                     Thread.currentThread().interrupt();
                 }
             }
-            if (currentState == State.RUNNING)
+            if (isRunning())
             {
                 throw new TimeoutException("Unable to stop agent task.");
             }
             schedule.shutdown();
-            currentState = State.STOPPED;
+            setState(State.STOPPED);
             startDate = null;
             logger.info("Agent stopped successfully.");
         }
@@ -202,8 +202,8 @@ public abstract class TimerAgent extends Agent
     public String getStatusString()
     {
 
-        return new StringBuilder(name).append(" {").append(LINE_SEPARATOR).append("   type:       ").append(type)
-                .append(LINE_SEPARATOR).append("   status:     ").append(currentState).append(LINE_SEPARATOR)
+        return new StringBuilder(getName()).append(" {").append(LINE_SEPARATOR).append("   type:       ").append(getType())
+                .append(LINE_SEPARATOR).append("   status:     ").append(getState()).append(LINE_SEPARATOR)
                 .append("   startDate:  ").append(startDate != null ? DateUtil.formatDate(startDate.getTime()) : "null")
                 .append(LINE_SEPARATOR).append("   lastRun:    ")
                 .append(lastRunDate != null ? DateUtil.formatDate(lastRunDate.getTime()) : "null")

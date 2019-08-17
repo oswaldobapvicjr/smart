@@ -2,8 +2,13 @@ package net.obvj.smart.agents.api;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import net.obvj.smart.agents.api.Agent.State;
 import net.obvj.smart.agents.dummy.DummyAgent;
@@ -17,6 +22,7 @@ import net.obvj.smart.util.DateUtil.TimeUnit;
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
+@RunWith(PowerMockRunner.class)
 public class AgentTest
 {
     // Test data
@@ -27,6 +33,9 @@ public class AgentTest
     private static final String TIMER = "timer";
     private static final String DAEMON = "daemon";
 
+    // The setting CALLS_REAL_METHODS allows mocking abstract methods/classes
+    Agent agent = PowerMockito.mock(Agent.class, Mockito.CALLS_REAL_METHODS);
+    
     @Test
     public void testParseTimerAgent30Seconds() throws Exception
     {
@@ -112,6 +121,42 @@ public class AgentTest
         
         assertEquals(State.SET, daemonAgent.getState());
         assertFalse(daemonAgent.isStarted());
+    }
+    
+    @Test
+    public void testStatusMethodsForAgentStatusSet()
+    {
+        agent.setState(State.SET);
+        assertFalse("expected false on agent.isStarted()", agent.isStarted());
+        assertFalse("expected false on agent.isRunning()", agent.isRunning());
+        assertFalse("expected false on agent.isStopped()", agent.isStopped());
+    }
+    
+    @Test
+    public void testStatusMethodsForAgentStatusStarted()
+    {
+        agent.setState(State.STARTED);
+        assertTrue("expected true on agent.isStarted()", agent.isStarted());
+        assertFalse("expected false on agent.isRunning()", agent.isRunning());
+        assertFalse("expected false on agent.isStopped()", agent.isStopped());
+    }
+    
+    @Test
+    public void testStatusMethodsForAgentStatusRunning()
+    {
+        agent.setState(State.RUNNING);
+        assertFalse("expected false on agent.isStarted()", agent.isStarted());
+        assertTrue("expected true on agent.isRunning()", agent.isRunning());
+        assertFalse("expected false on agent.isStopped()", agent.isStopped());
+    }
+    
+    @Test
+    public void testStatusMethodsForAgentStatusStopped()
+    {
+        agent.setState(State.STOPPED);
+        assertFalse("expected false on agent.isStarted()", agent.isStarted());
+        assertFalse("expected false on agent.isRunning()", agent.isRunning());
+        assertTrue("expected true on agent.isStopped()", agent.isStopped());
     }
 
 }

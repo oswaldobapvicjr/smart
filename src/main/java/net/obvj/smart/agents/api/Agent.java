@@ -4,7 +4,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Calendar;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeoutException;
 
 import net.obvj.smart.conf.xml.XmlAgent;
@@ -23,11 +22,13 @@ public abstract class Agent implements Runnable
         SET, STARTED, RUNNING, STOPPED, ERROR;
     }
 
-    protected State currentState;
-    protected String name;
-    protected String type;
-    protected int stopTimeoutSeconds = -1;
-    protected ThreadFactory threadFactory;
+    private String name;
+    private String type;
+    private int stopTimeoutSeconds = -1;
+    
+    private State currentState;
+
+    private AgentThreadFactory threadFactory;
     protected ScheduledExecutorService schedule;
 
     /*
@@ -41,10 +42,16 @@ public abstract class Agent implements Runnable
 
     public Agent()
     {
-        threadFactory = new AgentThreadFactory();
+        threadFactory = new AgentThreadFactory(name);
         schedule = Executors.newSingleThreadScheduledExecutor(threadFactory);
     }
 
+    protected void setName(String name)
+    {
+        this.name = name;
+        threadFactory.setAgentName(name);
+    }
+    
     /**
      * @return This agent's identifier name
      */
@@ -53,12 +60,27 @@ public abstract class Agent implements Runnable
         return name;
     }
     
+    protected void setType(String type)
+    {
+        this.type = type;
+    }
+    
     /**
      * @return This agent's type
      */
     public String getType()
     {
         return type.toLowerCase();
+    }
+
+    protected void setStopTimeoutSeconds(int stopTimeoutSeconds)
+    {
+        this.stopTimeoutSeconds = stopTimeoutSeconds;
+    }
+
+    protected void setState(State currentState)
+    {
+        this.currentState = currentState;
     }
 
     /**
@@ -75,7 +97,7 @@ public abstract class Agent implements Runnable
      */
     public boolean isStarted()
     {
-        return (startDate != null);
+        return (currentState == State.STARTED);
     }
 
     /**
@@ -85,6 +107,15 @@ public abstract class Agent implements Runnable
     public boolean isRunning()
     {
         return (currentState == State.RUNNING);
+    }
+    
+    /**
+     * @return <code>true</code> if this agent's timer (not its task) is currently started or
+     *         <code>false</code> instead.
+     */
+    public boolean isStopped()
+    {
+        return (currentState == State.STOPPED);
     }
 
     /**
@@ -135,20 +166,4 @@ public abstract class Agent implements Runnable
         return DaemonAgent.parseAgent(xmlAgent);
     }
 
-    class AgentThreadFactory implements ThreadFactory
-    {
-        static final String AGENT_NAME_PREFIX = "Agent-";
-
-        public Thread newThread(Runnable runnable)
-        {
-            String threadName = AGENT_NAME_PREFIX + getName();
-            Thread thread = new Thread(runnable, threadName);
-            thread.setPriority(Thread.NORM_PRIORITY);
-            if (thread.isDaemon())
-            {
-                thread.setDaemon(false);
-            }
-            return thread;
-        }
-    }
 }
