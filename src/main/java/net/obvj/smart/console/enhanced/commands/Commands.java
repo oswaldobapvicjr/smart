@@ -35,6 +35,12 @@ public class Commands implements Runnable
         this.reader = reader;
         out = new PrintWriter(reader.getOutput());
     }
+    
+    protected Commands(PrintWriter out)
+    {
+        this.reader = null;
+        this.out = out;
+    }
 
     public void run()
     {
