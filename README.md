@@ -42,7 +42,7 @@ Daemon agents can be started together with the container, or via management cons
 
 ![Daemon agents state machine](resources/state_chart_daemon_agents.svg)
 
-This is a sample configuration of a timer agent that will execute every 30 seconds:
+This is a sample configuration of a daemon agent:
 
 ```xml
 <agent>
