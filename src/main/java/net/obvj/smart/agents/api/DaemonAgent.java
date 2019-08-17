@@ -83,6 +83,7 @@ public abstract class DaemonAgent extends Agent
                 try
                 {
                     runTask();
+                    setState(State.STOPPED);
                 }
                 catch (Exception e)
                 {
