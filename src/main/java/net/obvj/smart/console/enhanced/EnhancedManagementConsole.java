@@ -2,6 +2,7 @@ package net.obvj.smart.console.enhanced;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Writer;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -80,7 +81,7 @@ public class EnhancedManagementConsole implements Runnable
             AgentManagerJMXClient.getMBeanProxy();
 
             // Print custom header and hints
-            printHeader(reader);
+            printHeader(reader.getOutput());
 
             if (mode == Mode.SINGLE_COMMAND)
             {
@@ -134,11 +135,11 @@ public class EnhancedManagementConsole implements Runnable
         }
     }
 
-    private void printHeader(ConsoleReader console)
+    protected void printHeader(Writer writer)
     {
         // Print custom header
         List<String> customHeaderLines = readCustomHeaderLines();
-        PrintWriter out = new PrintWriter(console.getOutput());
+        PrintWriter out = new PrintWriter(writer);
         customHeaderLines.forEach(out::println);
         out.println();
 
@@ -152,7 +153,7 @@ public class EnhancedManagementConsole implements Runnable
         out.flush();
     }
 
-    private List<String> readCustomHeaderLines()
+    protected List<String> readCustomHeaderLines()
     {
         LOG.fine("Searching for custom header file...");
         try
