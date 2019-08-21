@@ -10,12 +10,17 @@ import java.util.Arrays;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import net.obvj.smart.console.enhanced.EnhancedManagementConsole.Mode;
+import net.obvj.smart.jmx.AgentManagerJMXMBean;
+import net.obvj.smart.jmx.client.AgentManagerJMXClient;
 
 @RunWith(PowerMockRunner.class)
+@PrepareForTest(AgentManagerJMXClient.class)
 public class EnhancedManagementConsoleTest
 {
 
@@ -75,6 +80,21 @@ public class EnhancedManagementConsoleTest
         // Interactive-mode specific hints shall not be printed on single-command mode
         assertFalse(header.contains("Hit <Tab> for a list of available commands"));
         assertFalse(header.contains("Press <Ctrl> + D to quit the console."));
+    }
+    
+    @Test
+    public void testHandleCommandLine() throws IOException
+    {
+        // Mock
+        AgentManagerJMXMBean agentManagerJMXBeanMock = PowerMockito.mock(AgentManagerJMXMBean.class);
+        PowerMockito.mockStatic(AgentManagerJMXClient.class);
+        PowerMockito.when(AgentManagerJMXClient.getMBeanProxy()).thenReturn(agentManagerJMXBeanMock);
+        
+        EnhancedManagementConsole console = new EnhancedManagementConsole();
+        console.handleCommandLine("start AgentName");
+        
+        Mockito.verify(agentManagerJMXBeanMock, Mockito.times(1)).startAgent("AgentName");
+        
     }
 
 }
