@@ -41,18 +41,32 @@ public class UptimeCommand implements Runnable
         try
         {
             long serverUptimeMillis = AgentManagerJMXClient.getMBeanProxy().getServerUptime();
-            TimeUnit tu = TimeUnit.valueOf(timeUnit.toUpperCase());
-            long serverUptimeConverted = tu.convert(serverUptimeMillis, TimeUnit.MILLISECONDS);
-
-            String timeUnitToBeDisplayed = serverUptimeConverted > 1 ? tu.toString().toLowerCase()
-                    : tu.toString().toLowerCase().substring(0, tu.toString().length() - 1);
-
-            parent.out.println(
-                    (serverUptimeConverted > 0 ? serverUptimeConverted : "Less than 1") + " " + timeUnitToBeDisplayed);
+            parent.out.println(formatOutput(serverUptimeMillis, timeUnit));
         }
         catch (IOException e)
         {
             parent.out.println("Unable to connect to the agent manager. Please make sure the service is running.");
         }
+    }
+    
+    protected static String formatOutput(long serverUptimeMillis, String timeUnit)
+    {
+        TimeUnit tu = TimeUnit.valueOf(timeUnit.toUpperCase());
+        long serverUptimeConverted = tu.convert(serverUptimeMillis, TimeUnit.MILLISECONDS);
+
+        String timeUnitToBeDisplayed = serverUptimeConverted > 1 ? tu.toString().toLowerCase()
+                : tu.toString().toLowerCase().substring(0, tu.toString().length() - 1);
+
+        return (serverUptimeConverted > 0 ? serverUptimeConverted : "Less than 1") + " " + timeUnitToBeDisplayed;
+    }
+    
+    protected void setParent(Commands parent)
+    {
+        this.parent = parent;
+    }
+    
+    protected void setTimeUnit(String timeUnit)
+    {
+        this.timeUnit = timeUnit;
     }
 }
