@@ -19,7 +19,7 @@ public interface AgentManagerJMXMBean
 
     String[] getAgentNames();
 
-    Collection<AgentDTO> getAgentsDTO();
+    Collection<AgentDTO> getAgentDTOs();
 
     boolean isAgentRunning(String name);
 

@@ -45,7 +45,7 @@ public class AgentsCommand implements Runnable
         parent.out.flush();
         try
         {
-            Collection<AgentDTO> agents = AgentManagerJMXClient.getMBeanProxy().getAgentsDTO();
+            Collection<AgentDTO> agents = AgentManagerJMXClient.getMBeanProxy().getAgentDTOs();
             if (!type.isEmpty())
             {
                 agents = agents.stream().filter(a -> a.type.equalsIgnoreCase(this.type)).collect(Collectors.toSet());
