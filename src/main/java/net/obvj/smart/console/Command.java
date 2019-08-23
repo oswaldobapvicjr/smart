@@ -1,7 +1,6 @@
 package net.obvj.smart.console;
 
 import java.io.PrintWriter;
-import java.lang.management.ThreadInfo;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
@@ -9,6 +8,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
 import net.obvj.smart.agents.api.dto.AgentDTO;
+import net.obvj.smart.jmx.dto.ThreadDTO;
 import net.obvj.smart.manager.AgentManager;
 import net.obvj.smart.util.DateUtil;
 import net.obvj.smart.util.SystemUtil;
@@ -52,10 +52,9 @@ public enum Command
             out.println("ID   Name                                   State");
             out.println("---- -------------------------------------- -------------");
 
-            for (ThreadInfo thread : SystemUtil.getAllSystemTheadsInfo())
+            for (ThreadDTO thread : SystemUtil.getAllSystemTheadsDTOs())
             {
-                out.println(String.format("%-4d %-38s %-13s", thread.getThreadId(), thread.getThreadName(),
-                        thread.getThreadState()));
+                out.println(String.format("%-4d %-38s %-13s", thread.id, thread.name, thread.state));
             }
         }
     },
@@ -77,29 +76,22 @@ public enum Command
             if (parameters.length == 2)
             {
                 String agent = parameters[1];
-                if (agent == null || agent.equals(""))
+                out.println(String.format("Starting %s...", agent));
+                try
                 {
-                    out.println(MISSING_PARAMETER_AGENT_NAME);
+                    AgentManager.getInstance().startAgent(agent);
+                    out.println(String.format("%s started", agent));
                 }
-                else
+                catch (IllegalStateException e)
                 {
-                    out.println(String.format("Starting %s...", agent));
-                    try
-                    {
-                        AgentManager.getInstance().startAgent(agent);
-                        out.println(String.format("%s started", agent));
-                    }
-                    catch (IllegalStateException e)
-                    {
-                        String warningMessage = e.getClass().getName() + ": " + e.getMessage();
-                        log.warning(warningMessage);
-                        out.println(warningMessage);
-                    }
-                    catch (IllegalArgumentException e)
-                    {
-                        log.warning(e.getMessage());
-                        out.println(e.getMessage());
-                    }
+                    String warningMessage = e.getClass().getName() + ": " + e.getMessage();
+                    log.warning(warningMessage);
+                    out.println(warningMessage);
+                }
+                catch (IllegalArgumentException e)
+                {
+                    log.warning(e.getMessage());
+                    out.println(e.getMessage());
                 }
             }
             else
@@ -117,32 +109,24 @@ public enum Command
             if (parameters.length == 2)
             {
                 String agent = parameters[1];
-                if (agent == null || agent.equals(""))
+                String message = String.format("Running %s...", agent);
+                out.println(message);
+                log.info(message);
+                try
                 {
-                    out.println(MISSING_PARAMETER_AGENT_NAME);
+                    AgentManager.getInstance().runNow(agent);
+                    out.println("Agent task finished. See agent logs for details.");
                 }
-                else
+                catch (IllegalStateException | UnsupportedOperationException e)
                 {
-                    String message = String.format("Running %s...", agent);
-                    out.println(message);
-                    log.info(message);
-                    try
-                    {
-                        AgentManager.getInstance().runNow(agent);
-                        out.println("Agent task finished. See agent logs for details.");
-                    }
-                    catch (IllegalStateException | UnsupportedOperationException e)
-                    {
-                        String warningMessage = e.getClass().getName() + ": " + e.getMessage();
-                        log.warning(warningMessage);
-                        out.println(warningMessage);
-                    }
-                    catch (IllegalArgumentException e)
-                    {
-                        log.warning(e.getMessage());
-                        out.println(e.getMessage());
-                    }
-
+                    String warningMessage = e.getClass().getName() + ": " + e.getMessage();
+                    log.warning(warningMessage);
+                    out.println(warningMessage);
+                }
+                catch (IllegalArgumentException e)
+                {
+                    log.warning(e.getMessage());
+                    out.println(e.getMessage());
                 }
             }
             else
@@ -160,42 +144,35 @@ public enum Command
             if (parameters.length == 2)
             {
                 String agent = parameters[1];
-                if (agent == null || agent.equals(""))
+                String message = String.format("Stopping %s...", agent);
+                out.println(message);
+                log.info(message);
+                try
                 {
-                    out.println(MISSING_PARAMETER_AGENT_NAME);
+                    AgentManager.getInstance().stopAgent(agent);
+                    out.println("Success.");
                 }
-                else
+                catch (IllegalStateException e)
                 {
-                    String message = String.format("Stopping %s...", agent);
-                    out.println(message);
-                    log.info(message);
-                    try
-                    {
-                        AgentManager.getInstance().stopAgent(agent);
-                        out.println("Success.");
-                    }
-                    catch (IllegalStateException e)
-                    {
-                        log.warning("Illegal state: " + e.getMessage());
-                        out.println(e.getMessage());
-                    }
-                    catch (IllegalArgumentException e)
-                    {
-                        log.warning(e.getMessage());
-                        out.println(e.getMessage());
-                    }
-                    catch (TimeoutException ex)
-                    {
-                        String errMessage = String.format("Timeout waiting for agent task to complete: %s", agent);
-                        out.println(errMessage);
-                        log.warning(errMessage);
-                    }
-                    catch (UnsupportedOperationException e)
-                    {
-                        String errMessage = String.format("Unsupported operation: %s", e.getMessage());
-                        out.println(errMessage);
-                        log.warning(errMessage);
-                    }
+                    log.warning("Illegal state: " + e.getMessage());
+                    out.println(e.getMessage());
+                }
+                catch (IllegalArgumentException e)
+                {
+                    log.warning(e.getMessage());
+                    out.println(e.getMessage());
+                }
+                catch (TimeoutException ex)
+                {
+                    String errMessage = String.format("Timeout waiting for agent task to complete: %s", agent);
+                    out.println(errMessage);
+                    log.warning(errMessage);
+                }
+                catch (UnsupportedOperationException e)
+                {
+                    String errMessage = String.format("Unsupported operation: %s", e.getMessage());
+                    out.println(errMessage);
+                    log.warning(errMessage);
                 }
             }
             else
@@ -213,21 +190,14 @@ public enum Command
             if (parameters.length == 2)
             {
                 String agent = parameters[1];
-                if (agent == null || agent.equals(""))
+                try
                 {
-                    out.println(MISSING_PARAMETER_AGENT_NAME);
+                    out.println(AgentManager.getInstance().getAgentStatusStr(agent));
                 }
-                else
+                catch (IllegalArgumentException e)
                 {
-                    try
-                    {
-                        out.println(AgentManager.getInstance().getAgentStatusStr(agent));
-                    }
-                    catch (IllegalArgumentException e)
-                    {
-                        log.warning(e.getMessage());
-                        out.println(e.getMessage());
-                    }
+                    log.warning(e.getMessage());
+                    out.println(e.getMessage());
                 }
             }
             else
@@ -245,30 +215,23 @@ public enum Command
             if (parameters.length == 2)
             {
                 String agent = parameters[1];
-                if (agent == null || agent.equals(""))
+                String message = String.format("Resetting %s...", agent);
+                out.println(message);
+                log.info(message);
+                try
                 {
-                    out.println(MISSING_PARAMETER_AGENT_NAME);
+                    AgentManager.getInstance().resetAgent(agent);
+                    out.println("Success.");
                 }
-                else
+                catch (IllegalStateException e)
                 {
-                    String message = String.format("Resetting %s...", agent);
-                    out.println(message);
-                    log.info(message);
-                    try
-                    {
-                        AgentManager.getInstance().resetAgent(agent);
-                        out.println("Success.");
-                    }
-                    catch (IllegalStateException e)
-                    {
-                        log.warning("Illegal state: " + e.getMessage());
-                        out.println(e.getMessage());
-                    }
-                    catch (IllegalArgumentException e)
-                    {
-                        log.warning(e.getMessage());
-                        out.println(e.getMessage());
-                    }
+                    log.warning("Illegal state: " + e.getMessage());
+                    out.println(e.getMessage());
+                }
+                catch (IllegalArgumentException e)
+                {
+                    log.warning(e.getMessage());
+                    out.println(e.getMessage());
                 }
             }
             else
@@ -307,7 +270,7 @@ public enum Command
         }
     };
 
-    private static final String MISSING_PARAMETER_AGENT_NAME = "Missing parameter: <agent-name>";
+    protected static final String MISSING_PARAMETER_AGENT_NAME = "Missing parameter: <agent-name>";
     private static final Logger log = Logger.getLogger("smart-server");
 
     private final String name;
@@ -323,12 +286,12 @@ public enum Command
     {
         return alias;
     }
-    
+
     public boolean hasAlias()
     {
         return alias != null && !alias.equals("");
     }
-    
+
     public String getName()
     {
         return name;
@@ -341,7 +304,7 @@ public enum Command
         return getOptionalByNameOrAlias(string)
                 .orElseThrow(() -> new IllegalArgumentException("Unknown command: " + string));
     }
-    
+
     public static Command getByNameOrAliasOrNull(String string)
     {
         return getOptionalByNameOrAlias(string).orElse(null);

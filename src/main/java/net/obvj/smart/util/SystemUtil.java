@@ -29,8 +29,7 @@ public class SystemUtil
         RuntimeMXBean rMXBean = ManagementFactory.getRuntimeMXBean();
         return rMXBean.getUptime();
     }
-
-    public static ThreadInfo[] getAllSystemTheadsInfo()
+    private static ThreadInfo[] getAllSystemTheadsInfo()
     {
         ThreadMXBean tMXBean = ManagementFactory.getThreadMXBean();
         return tMXBean.getThreadInfo(tMXBean.getAllThreadIds());
