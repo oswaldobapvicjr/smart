@@ -29,7 +29,7 @@ public class ThreadsCommand implements Runnable
 
     @Option(names = {"-h", "--help"}, usageHelp = true, description = "Display this help message.")
     boolean usageHelpRequested;
-    
+
     @ParentCommand
     private Commands parent;
 
@@ -52,4 +52,10 @@ public class ThreadsCommand implements Runnable
             parent.out.println("Unable to connect to the agent manager. Please make sure the service is running.");
         }
     }
+
+    protected void setParent(Commands parent)
+    {
+        this.parent = parent;
+    }
+
 }

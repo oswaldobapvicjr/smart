@@ -50,4 +50,15 @@ public class StartCommand implements Runnable
             parent.out.println("Unable to connect to the agent manager. Please make sure the service is running.");
         }
     }
+    
+    protected void setAgent(String agent)
+    {
+        this.agent = agent;
+    }
+
+    protected void setParent(Commands parent)
+    {
+        this.parent = parent;
+    }
+
 }

@@ -68,4 +68,14 @@ public class AgentsCommand implements Runnable
         }
         
     }
+
+    protected void setType(String type)
+    {
+        this.type = type;
+    }
+
+    protected void setParent(Commands parent)
+    {
+        this.parent = parent;
+    }
 }
