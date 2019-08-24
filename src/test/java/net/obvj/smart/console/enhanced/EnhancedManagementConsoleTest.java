@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Arrays;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -18,11 +19,17 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import net.obvj.smart.console.enhanced.EnhancedManagementConsole.Mode;
 import net.obvj.smart.jmx.AgentManagerJMXMBean;
 import net.obvj.smart.jmx.client.AgentManagerJMXClient;
+import net.obvj.smart.util.ConsoleUtil;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(AgentManagerJMXClient.class)
+@PrepareForTest({ ConsoleUtil.class, AgentManagerJMXClient.class })
 public class EnhancedManagementConsoleTest
 {
+    @Before
+    public void setup()
+    {
+        PowerMockito.mockStatic(ConsoleUtil.class);
+    }
 
     @Test
     public void testParseArgs()
@@ -46,10 +53,7 @@ public class EnhancedManagementConsoleTest
         // Building a console with interactive mode
         EnhancedManagementConsole console = new EnhancedManagementConsole();
 
-        // Mocking the method that reads custom header file content only
-        console = PowerMockito.spy(console);
-        PowerMockito.when(console.readCustomHeaderLines()).thenReturn(Arrays.asList("Header line 1", "Header line 2"));
-
+        PowerMockito.when(ConsoleUtil.readCustomHeaderLines()).thenReturn(Arrays.asList("Header line 1", "Header line 2"));
         StringWriter sw = new StringWriter();
         console.printHeader(sw);
 
@@ -66,10 +70,7 @@ public class EnhancedManagementConsoleTest
         // Building a console with single-command mode
         EnhancedManagementConsole console = new EnhancedManagementConsole("threads");
 
-        // Mocking the method that reads custom header file content only
-        console = PowerMockito.spy(console);
-        PowerMockito.when(console.readCustomHeaderLines()).thenReturn(Arrays.asList("Header line 1", "Header line 2"));
-
+        PowerMockito.when(ConsoleUtil.readCustomHeaderLines()).thenReturn(Arrays.asList("Header line 1", "Header line 2"));
         StringWriter sw = new StringWriter();
         console.printHeader(sw);
 
@@ -81,7 +82,7 @@ public class EnhancedManagementConsoleTest
         assertFalse(header.contains("Hit <Tab> for a list of available commands"));
         assertFalse(header.contains("Press <Ctrl> + D to quit the console."));
     }
-    
+
     @Test
     public void testHandleCommandLine() throws IOException
     {
@@ -89,12 +90,12 @@ public class EnhancedManagementConsoleTest
         AgentManagerJMXMBean agentManagerJMXBeanMock = PowerMockito.mock(AgentManagerJMXMBean.class);
         PowerMockito.mockStatic(AgentManagerJMXClient.class);
         PowerMockito.when(AgentManagerJMXClient.getMBeanProxy()).thenReturn(agentManagerJMXBeanMock);
-        
+
         EnhancedManagementConsole console = new EnhancedManagementConsole();
         console.handleCommandLine("start AgentName");
-        
+
         Mockito.verify(agentManagerJMXBeanMock, Mockito.times(1)).startAgent("AgentName");
-        
+
     }
 
 }

@@ -9,15 +9,12 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.obvj.smart.conf.SmartProperties;
+import net.obvj.smart.util.ConsoleUtil;
 
 /**
  * A Runnable object for handling of user commands via classic Management Console
@@ -45,30 +42,16 @@ public class CommandWorker implements Runnable
         this.out = new PrintWriter(this.socket.getOutputStream(), true);
     }
 
-    private void printCustomHeader() throws IOException
+    private void printCustomHeader()
     {
-        log.fine("Searching for custom header file...");
-        try
-        {
-            URL headerFileURL = CommandWorker.class.getClassLoader().getResource("header.txt");
-            if (headerFileURL == null)
-            {
-                log.warning("Unable to find header.txt file");
-                return;
-            }
-            sendLines(Files.readAllLines(Paths.get(headerFileURL.toURI())));
-        }
-        catch (URISyntaxException e)
-        {
-            log.warning("Unable to find header.txt file");
-        }
+        sendLines(ConsoleUtil.readCustomHeaderLines());
     }
 
     private void printHints()
     {
-        out.println();
-        out.println(" Type 'help' for a list of available commands.");
-        out.println(" Type 'exit' to quit the console.");
+        sendLine();
+        sendLine(" Type 'help' for a list of available commands.");
+        sendLine(" Type 'exit' to quit the console.");
     }
     
     public void run()
@@ -79,7 +62,7 @@ public class CommandWorker implements Runnable
             printHints();
             while (true)
             {
-                out.println();
+                sendLine();
                 send(PROMPT);
                 String commandLine = readLine();
 
@@ -142,6 +125,12 @@ public class CommandWorker implements Runnable
         }
     }
 
+    public void sendLine()
+    {
+        out.println();
+        out.flush();
+    }
+    
     public void sendLine(String message)
     {
         out.println(message);

@@ -3,11 +3,6 @@ package net.obvj.smart.console.enhanced;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,9 +11,9 @@ import jline.console.ConsoleReader;
 import jline.console.completer.ArgumentCompleter.ArgumentList;
 import jline.console.completer.ArgumentCompleter.WhitespaceArgumentDelimiter;
 import net.obvj.smart.conf.SmartProperties;
-import net.obvj.smart.console.CommandWorker;
 import net.obvj.smart.console.enhanced.commands.Commands;
 import net.obvj.smart.jmx.client.AgentManagerJMXClient;
+import net.obvj.smart.util.ConsoleUtil;
 import picocli.CommandLine;
 import picocli.shell.jline2.PicocliJLineCompleter;
 
@@ -138,7 +133,7 @@ public class EnhancedManagementConsole implements Runnable
     protected void printHeader(Writer writer)
     {
         // Print custom header
-        List<String> customHeaderLines = readCustomHeaderLines();
+        List<String> customHeaderLines = ConsoleUtil.readCustomHeaderLines();
         PrintWriter out = new PrintWriter(writer);
         customHeaderLines.forEach(out::println);
         out.println();
@@ -151,27 +146,6 @@ public class EnhancedManagementConsole implements Runnable
             out.println();
         }
         out.flush();
-    }
-
-    protected List<String> readCustomHeaderLines()
-    {
-        LOG.fine("Searching for custom header file...");
-        try
-        {
-            URL headerFileURL = CommandWorker.class.getClassLoader().getResource("header.txt");
-            if (headerFileURL == null)
-            {
-                LOG.warning("Unable to find header.txt file");
-                return Collections.emptyList();
-            }
-            return Files.readAllLines(Paths.get(headerFileURL.toURI()));
-        }
-        catch (URISyntaxException | IOException e)
-        {
-            LOG.log(Level.WARNING, "Unable to read header.txt file: {0} ({1})",
-                    new String[] { e.getClass().getName(), e.getLocalizedMessage() });
-            return Collections.emptyList();
-        }
     }
 
     public static void main(String[] args) throws IOException
