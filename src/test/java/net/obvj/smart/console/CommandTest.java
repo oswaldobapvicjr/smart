@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
+import static org.powermock.api.mockito.PowerMockito.doThrow;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
@@ -50,6 +51,11 @@ public class CommandTest
     private void assertOutputEquals(String expectedString)
     {
         assertEquals(expectedString, out.toString().trim());
+    }
+    
+    private void assertOutputContains(String expectedString)
+    {
+        assertTrue(out.toString().trim().contains(expectedString));
     }
 
     @Test
@@ -112,6 +118,14 @@ public class CommandTest
     }
     
     @Test
+    public void testStartAgentInvalidParameter()
+    {
+        doThrow(new IllegalArgumentException("message1")).when(manager).startAgent("invalidName");
+        Command.START.execute(new String[] { "status", "invalidName" }, new PrintWriter(out));
+        assertOutputContains("message1");
+    }
+    
+    @Test
     public void testRunAgent()
     {
         Command.RUN.execute(new String[] { "run", AGENT1 }, new PrintWriter(out));
@@ -123,6 +137,14 @@ public class CommandTest
     {
         Command.RUN.execute(new String[] { "run" }, new PrintWriter(out));
         assertOutputEquals(Command.MISSING_PARAMETER_AGENT_NAME);
+    }
+    
+    @Test
+    public void testRunAgentInvalidParameter()
+    {
+        doThrow(new IllegalArgumentException("message1")).when(manager).runNow("invalidName");
+        Command.RUN.execute(new String[] { "run", "invalidName" }, new PrintWriter(out));
+        assertOutputContains("message1");
     }
 
     @Test
@@ -138,6 +160,14 @@ public class CommandTest
         Command.STOP.execute(new String[] { "stop" }, new PrintWriter(out));
         assertOutputEquals(Command.MISSING_PARAMETER_AGENT_NAME);
     }
+    
+    @Test
+    public void testStopAgentIllegalArgumentException() throws TimeoutException
+    {
+        doThrow(new IllegalArgumentException("message1")).when(manager).stopAgent("invalidName");
+        Command.STOP.execute(new String[] { "stop", "invalidName" }, new PrintWriter(out));
+        assertOutputContains("message1");
+    }
 
     @Test
     public void testResetAgent()
@@ -151,6 +181,14 @@ public class CommandTest
     {
         Command.RESET.execute(new String[] { "reset" }, new PrintWriter(out));
         assertOutputEquals(Command.MISSING_PARAMETER_AGENT_NAME);
+    }
+    
+    @Test
+    public void testResetAgentIllegalArgumentException()
+    {
+        doThrow(new IllegalArgumentException("message1")).when(manager).resetAgent("invalidName");
+        Command.RESET.execute(new String[] { "reset", "invalidName" }, new PrintWriter(out));
+        assertOutputContains("message1");
     }
 
     @Test
@@ -166,6 +204,14 @@ public class CommandTest
     {
         Command.STATUS.execute(new String[] { "status" }, new PrintWriter(out));
         assertOutputEquals(Command.MISSING_PARAMETER_AGENT_NAME);
+    }
+    
+    @Test
+    public void testStatusAgentInvalidParameter()
+    {
+        doThrow(new IllegalArgumentException("message1")).when(manager).getAgentStatusStr("invalidName");
+        Command.STATUS.execute(new String[] { "status", "invalidName" }, new PrintWriter(out));
+        assertOutputContains("message1");
     }
 
     @Test

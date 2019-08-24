@@ -82,16 +82,11 @@ public enum Command
                     AgentManager.getInstance().startAgent(agent);
                     out.println(String.format("%s started", agent));
                 }
-                catch (IllegalStateException e)
+                catch (IllegalArgumentException | IllegalStateException e)
                 {
                     String warningMessage = e.getClass().getName() + ": " + e.getMessage();
                     log.warning(warningMessage);
                     out.println(warningMessage);
-                }
-                catch (IllegalArgumentException e)
-                {
-                    log.warning(e.getMessage());
-                    out.println(e.getMessage());
                 }
             }
             else
@@ -117,16 +112,11 @@ public enum Command
                     AgentManager.getInstance().runNow(agent);
                     out.println("Agent task finished. See agent logs for details.");
                 }
-                catch (IllegalStateException | UnsupportedOperationException e)
+                catch (IllegalArgumentException | IllegalStateException | UnsupportedOperationException e)
                 {
                     String warningMessage = e.getClass().getName() + ": " + e.getMessage();
                     log.warning(warningMessage);
                     out.println(warningMessage);
-                }
-                catch (IllegalArgumentException e)
-                {
-                    log.warning(e.getMessage());
-                    out.println(e.getMessage());
                 }
             }
             else
@@ -152,12 +142,7 @@ public enum Command
                     AgentManager.getInstance().stopAgent(agent);
                     out.println("Success.");
                 }
-                catch (IllegalStateException e)
-                {
-                    log.warning("Illegal state: " + e.getMessage());
-                    out.println(e.getMessage());
-                }
-                catch (IllegalArgumentException e)
+                catch (IllegalArgumentException | IllegalStateException e)
                 {
                     log.warning(e.getMessage());
                     out.println(e.getMessage());
@@ -165,12 +150,6 @@ public enum Command
                 catch (TimeoutException ex)
                 {
                     String errMessage = String.format("Timeout waiting for agent task to complete: %s", agent);
-                    out.println(errMessage);
-                    log.warning(errMessage);
-                }
-                catch (UnsupportedOperationException e)
-                {
-                    String errMessage = String.format("Unsupported operation: %s", e.getMessage());
                     out.println(errMessage);
                     log.warning(errMessage);
                 }
@@ -223,12 +202,7 @@ public enum Command
                     AgentManager.getInstance().resetAgent(agent);
                     out.println("Success.");
                 }
-                catch (IllegalStateException e)
-                {
-                    log.warning("Illegal state: " + e.getMessage());
-                    out.println(e.getMessage());
-                }
-                catch (IllegalArgumentException e)
+                catch (IllegalArgumentException | IllegalStateException e)
                 {
                     log.warning(e.getMessage());
                     out.println(e.getMessage());
