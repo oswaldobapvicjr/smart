@@ -25,7 +25,7 @@ public final class AgentManager
     private Map<String, Agent> agents = new TreeMap<>();
     private final Logger logger = Logger.getLogger("smart-server");
 
-    private AgentManager()
+    protected AgentManager()
     {
     }
 
@@ -70,7 +70,7 @@ public final class AgentManager
     public void removeAgent(String name)
     {
         Agent agent = findAgentByName(name);
-        if (agent.isStarted())
+        if (agent.isStarted() || agent.isRunning())
         {
             throw new IllegalStateException("'" + name + "' is started. Please stop this agent first.");
         }
