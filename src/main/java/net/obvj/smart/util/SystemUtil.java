@@ -4,10 +4,9 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
+import java.util.stream.Collectors;
 
 import net.obvj.smart.jmx.dto.ThreadDTO;
 
@@ -29,6 +28,7 @@ public class SystemUtil
         RuntimeMXBean rMXBean = ManagementFactory.getRuntimeMXBean();
         return rMXBean.getUptime();
     }
+
     private static ThreadInfo[] getAllSystemTheadsInfo()
     {
         ThreadMXBean tMXBean = ManagementFactory.getThreadMXBean();
@@ -38,10 +38,10 @@ public class SystemUtil
     public static Collection<ThreadDTO> getAllSystemTheadsDTOs()
     {
         ThreadInfo[] allThreadsInfo = getAllSystemTheadsInfo();
-        List<ThreadDTO> dtos = new ArrayList<>(allThreadsInfo.length);
-        Arrays.stream(allThreadsInfo).forEach(threadInfo -> dtos
-                .add(new ThreadDTO(threadInfo.getThreadId(), threadInfo.getThreadName(), threadInfo.getThreadState().toString())));
-        return dtos;
+        return Arrays
+                .stream(allThreadsInfo).map(threadInfo -> new ThreadDTO(threadInfo.getThreadId(),
+                        threadInfo.getThreadName(), threadInfo.getThreadState().toString()))
+                .collect(Collectors.toList());
     }
 
 }

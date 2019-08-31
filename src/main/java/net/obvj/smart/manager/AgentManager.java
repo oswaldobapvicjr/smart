@@ -3,6 +3,7 @@ package net.obvj.smart.manager;
 import java.util.*;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import net.obvj.smart.agents.api.Agent;
 import net.obvj.smart.agents.api.DaemonAgent;
@@ -174,10 +175,9 @@ public final class AgentManager
      */
     public Collection<AgentDTO> getAgentDTOs()
     {
-        List<AgentDTO> agentDTOs = new ArrayList<>(agents.size());
-        agents.values().forEach(
-                agent -> agentDTOs.add(new AgentDTO(agent.getName(), agent.getType(), agent.getState().toString())));
-        return agentDTOs;
+        return agents.values().stream()
+                .map(agent -> new AgentDTO(agent.getName(), agent.getType(), agent.getState().toString()))
+                .collect(Collectors.toList());
     }
 
     /**
