@@ -91,8 +91,6 @@ public final class AgentManager
         Agent agent = findAgentByName(name);
         switch (agent.getState())
         {
-        case SET:
-            throw new IllegalStateException("'" + name + "' is already set. No action was taken.");
         case STARTED:
             throw new IllegalStateException("'" + name + "' is started. Please stop this agent first.");
         case RUNNING:

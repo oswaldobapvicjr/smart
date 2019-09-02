@@ -10,11 +10,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.awaitility.Awaitility;
 import org.junit.Before;
 import org.junit.Test;
 
 import net.obvj.smart.agents.api.Agent;
 import net.obvj.smart.agents.api.Agent.State;
+import net.obvj.smart.agents.api.dto.AgentDTO;
 import net.obvj.smart.conf.xml.XmlAgent;
 
 /**
@@ -32,11 +34,16 @@ public class AgentManagerTest
 
     private static final List<String> names = Arrays.asList(DUMMY_AGENT, DUMMY_DAEMON);
 
-    private static final XmlAgent AML_DUMMY_AGENT = new XmlAgent.Builder(DUMMY_AGENT).type("timer")
-            .agentClass("net.obvj.smart.agents.dummy.DummyAgent").interval("30 seconds").build();
+    private static final XmlAgent XML_DUMMY_AGENT = new XmlAgent.Builder(DUMMY_AGENT).type("timer")
+            .agentClass("net.obvj.smart.agents.dummy.DummyAgent").interval("1 hour").build();
     private static final XmlAgent XML_DUMMY_DAEMON = new XmlAgent.Builder(DUMMY_DAEMON).type("daemon")
             .agentClass("net.obvj.smart.agents.dummy.DummyDaemonAgent").build();
 
+    private static final AgentDTO DUMMY_AGENT_DTO = new AgentDTO(DUMMY_AGENT, "timer", "SET");
+    private static final AgentDTO DUMMY_DAEMON_DTO = new AgentDTO(DUMMY_DAEMON, "daemon", "SET");
+    
+    private static final List<AgentDTO> ALL_AGENT_DTOS = Arrays.asList(DUMMY_AGENT_DTO, DUMMY_DAEMON_DTO);
+    
     private Agent dummyAgent;
     private Agent dummyDaemonAgent;
     private Agent[] allAgents;
@@ -44,7 +51,7 @@ public class AgentManagerTest
     @Before
     public void setup() throws Exception
     {
-        dummyAgent = Agent.parseAgent(AML_DUMMY_AGENT);
+        dummyAgent = Agent.parseAgent(XML_DUMMY_AGENT);
         dummyDaemonAgent = Agent.parseAgent(XML_DUMMY_DAEMON);
         allAgents = new Agent[] { dummyAgent, dummyDaemonAgent };
     }
@@ -78,7 +85,7 @@ public class AgentManagerTest
     @Test
     public void testFindAgentByName()
     {
-        AgentManager manager = newAgentManager(dummyAgent, dummyDaemonAgent);
+        AgentManager manager = newAgentManager(allAgents);
         assertEquals(dummyAgent, manager.findAgentByName(DUMMY_AGENT));
     }
 
@@ -94,14 +101,27 @@ public class AgentManagerTest
         AgentManager manager = newAgentManager(dummyAgent);
         assertEquals(State.SET, dummyAgent.getState());
         manager.startAgent(DUMMY_AGENT);
-        assertEquals(State.STARTED, dummyAgent.getState());
+        Awaitility.await().until(dummyAgent::isStarted);
         assertNotNull(dummyAgent.getStartDate());
+        assertTrue(manager.isAgentStarted(DUMMY_AGENT));
+    }
+
+    @Test
+    public void testStartDaemonAgentWithPreviousStateSet()
+    {
+        AgentManager manager = newAgentManager(dummyDaemonAgent);
+        assertEquals(State.SET, dummyDaemonAgent.getState());
+        manager.startAgent(DUMMY_DAEMON);
+        Awaitility.await().until(dummyDaemonAgent::isStarted);
+        assertNotNull(dummyDaemonAgent.getStartDate());
+        assertTrue(manager.isAgentStarted(DUMMY_DAEMON));
+        assertTrue(manager.isAgentRunning(DUMMY_DAEMON));
     }
 
     @Test
     public void testRemoveAgent()
     {
-        AgentManager manager = newAgentManager(dummyAgent, dummyDaemonAgent);
+        AgentManager manager = newAgentManager(allAgents);
         manager.removeAgent(DUMMY_AGENT);
         assertEquals(1, manager.getAgents().size());
         assertFalse(manager.getAgents().contains(dummyAgent));
@@ -119,6 +139,15 @@ public class AgentManagerTest
         AgentManager manager = newAgentManager(dummyAgent);
         manager.startAgent(DUMMY_AGENT);
         manager.removeAgent(DUMMY_AGENT);
+    }
+    
+    @Test
+    public void testGetAgentDTOs()
+    {
+        AgentManager manager = newAgentManager(allAgents);
+        Collection<AgentDTO> dtos = manager.getAgentDTOs();
+        assertEquals(2, dtos.size());
+        assertTrue(dtos.containsAll(ALL_AGENT_DTOS));
     }
 
 }

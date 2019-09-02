@@ -171,6 +171,12 @@ public abstract class DaemonAgent extends Agent
         }
     }
 
+    @Override
+    public boolean isRunning()
+    {
+        return isStarted();
+    }
+    
     /**
      * @return A string with this agent's metadata (name, type, 'currentState' and
      *         'startDate')
