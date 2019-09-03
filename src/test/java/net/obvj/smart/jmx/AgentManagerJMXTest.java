@@ -74,7 +74,7 @@ public class AgentManagerJMXTest
     }
 
     @Test
-    public void testResetAgent()
+    public void testResetAgent() throws ReflectiveOperationException
     {
         jmx.resetAgent(AGENT1);
         verify(manager).resetAgent(AGENT1);

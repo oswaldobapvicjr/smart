@@ -17,9 +17,9 @@ public class AgentManagerJMX implements AgentManagerJMXMBean
         AgentManager.getInstance().startAgent(name);
     }
 
-    public boolean resetAgent(String name)
+    public void resetAgent(String name) throws ReflectiveOperationException
     {
-        return AgentManager.getInstance().resetAgent(name);
+        AgentManager.getInstance().resetAgent(name);
     }
 
     public void runNow(String name)
@@ -27,9 +27,9 @@ public class AgentManagerJMX implements AgentManagerJMXMBean
         AgentManager.getInstance().runNow(name);
     }
 
-    public boolean stopAgent(String name) throws TimeoutException
+    public void stopAgent(String name) throws TimeoutException
     {
-        return AgentManager.getInstance().stopAgent(name);
+        AgentManager.getInstance().stopAgent(name);
     }
 
     public String[] getAgentNames()

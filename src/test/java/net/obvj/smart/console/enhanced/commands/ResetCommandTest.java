@@ -55,7 +55,7 @@ public class ResetCommandTest
      * Tests that the correct method from AgentManagerJMXBean is called
      */
     @Test
-    public void testCommandExecutionJMXCall() throws IOException
+    public void testCommandExecutionJMXCall() throws IOException, ReflectiveOperationException
     {
         ResetCommand command = newCommandWithOutput(new StringWriter());
         command.setAgent("AgentName");
@@ -65,10 +65,10 @@ public class ResetCommandTest
 
     /**
      * Tests the message printed to the console when an exception is thrown by the
-     * AgentManagerJMXBean
+     * AgentManagerJMXBean 
      */
     @Test
-    public void testCommandExecutionJMXCallException() throws IOException
+    public void testCommandExecutionJMXCallException() throws IOException, ReflectiveOperationException
     {
         Mockito.doThrow(new IllegalStateException("message1")).when(agentManagerJMXBean).resetAgent("InvalidName");
         

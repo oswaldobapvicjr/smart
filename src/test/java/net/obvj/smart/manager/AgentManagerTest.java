@@ -1,18 +1,17 @@
 package net.obvj.smart.manager;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 import org.awaitility.Awaitility;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import net.obvj.smart.agents.api.Agent;
 import net.obvj.smart.agents.api.Agent.State;
@@ -149,5 +148,25 @@ public class AgentManagerTest
         assertEquals(2, dtos.size());
         assertTrue(dtos.containsAll(ALL_AGENT_DTOS));
     }
+    
+    @Test
+    public void testGetAgentStatusStr()
+    {
+        Agent mockAgent = Mockito.mock(Agent.class);
+        Mockito.when(mockAgent.getName()).thenReturn("agent1");
+        Mockito.when(mockAgent.getStatusString()).thenReturn("statusStr1");
+        AgentManager manager = newAgentManager(mockAgent);
+        assertEquals("statusStr1", manager.getAgentStatusStr("agent1"));
+    }
 
+    @Test
+    public void testStopTimerAgentWithPreviousStateStarted() throws TimeoutException
+    {
+        AgentManager manager = newAgentManager(dummyAgent);
+        manager.startAgent(DUMMY_AGENT);
+        Awaitility.await().until(dummyAgent::isStarted);
+        manager.stopAgent(DUMMY_AGENT);
+        Awaitility.await().until(dummyAgent::isStopped);
+    }
+    
 }

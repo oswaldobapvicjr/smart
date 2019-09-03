@@ -1,6 +1,5 @@
 package net.obvj.smart.agents.api;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Calendar;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -25,7 +24,7 @@ public abstract class Agent implements Runnable
     private String name;
     private String type;
     private int stopTimeoutSeconds = -1;
-    
+
     private State currentState;
 
     private AgentThreadFactory threadFactory;
@@ -51,7 +50,7 @@ public abstract class Agent implements Runnable
         this.name = name;
         threadFactory.setAgentName(name);
     }
-    
+
     /**
      * @return This agent's identifier name
      */
@@ -59,12 +58,12 @@ public abstract class Agent implements Runnable
     {
         return name;
     }
-    
+
     protected void setType(String type)
     {
         this.type = type;
     }
-    
+
     /**
      * @return This agent's type
      */
@@ -108,7 +107,7 @@ public abstract class Agent implements Runnable
     {
         return (currentState == State.RUNNING);
     }
-    
+
     /**
      * @return <code>true</code> if this agent's timer (not its task) is currently started or
      *         <code>false</code> instead.
@@ -149,15 +148,12 @@ public abstract class Agent implements Runnable
     /**
      * Creates a new Agent from the given XmlAgent
      * 
-     * @throws ClassNotFoundException if the agent class cannot be found
-     * @throws NoSuchMethodException  if the default agent constructor cannot be found
-     * @throws IllegalAccessException if the agent constructor is not accessible
-     * @throws InstantiationException if the agent cannot be instantiated
-     * 
+     * @throws ReflectiveOperationException if the agent class or constructor cannot be found,
+     *                                      or the constructor is not accessible, or the agent
+     *                                      cannot be instantiated
      * @since 2.0
      */
-    public static Agent parseAgent(XmlAgent xmlAgent) throws InstantiationException, IllegalAccessException,
-            InvocationTargetException, NoSuchMethodException, ClassNotFoundException
+    public static Agent parseAgent(XmlAgent xmlAgent) throws ReflectiveOperationException
     {
         if (xmlAgent.getType().equals("timer"))
         {

@@ -1,8 +1,9 @@
 package net.obvj.smart.manager;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.TimeoutException;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import net.obvj.smart.agents.api.Agent;
@@ -24,7 +25,6 @@ public final class AgentManager
     private static final AgentManager instance = new AgentManager();
 
     private Map<String, Agent> agents = new TreeMap<>();
-    private final Logger logger = Logger.getLogger("smart-server");
 
     protected AgentManager()
     {
@@ -83,35 +83,20 @@ public final class AgentManager
      * 
      * @param name the identifier of the agent to be reset
      * @return {@code true} if the operation succeeds, otherwise {@code false}
-     * @throws IllegalArgumentException if no agent with the given name was found
-     * @throws IllegalStateException    if the requested agent is not stopped
+     * @throws ReflectiveOperationException if unable to parse a new agent object
+     * @throws IllegalArgumentException     if no agent with the given name was found
+     * @throws IllegalStateException        if the agent is either started or running
      */
-    public boolean resetAgent(String name)
+    public void resetAgent(String name) throws ReflectiveOperationException
     {
         Agent agent = findAgentByName(name);
-        switch (agent.getState())
+        if (agent.isStarted() || agent.isRunning())
         {
-        case STARTED:
             throw new IllegalStateException("'" + name + "' is started. Please stop this agent first.");
-        case RUNNING:
-            throw new IllegalStateException("'" + name + "' task is currently under execution.");
-        case STOPPED:
-            try
-            {
-                // Creating a new agent
-                XmlAgent agentConfig = AgentConfiguration.getInstance().getAgentConfiguration(name);
-                Agent newAgent = Agent.parseAgent(agentConfig);
-                addAgent(newAgent);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                logger.severe("Error reseting agent: " + ex.getClass().getName() + ": " + ex.getMessage());
-                return false;
-            }
-        default:
-            throw new IllegalStateException(agent.getStatusString());
         }
+        XmlAgent agentConfig = AgentConfiguration.getInstance().getAgentConfiguration(name);
+        Agent newAgent = Agent.parseAgent(agentConfig);
+        addAgent(newAgent);
     }
 
     /**
@@ -151,10 +136,9 @@ public final class AgentManager
      * @throws TimeoutException         if the requested agent did not complete its normal
      *                                  execution after agent's cancellation timeout
      */
-    public boolean stopAgent(String name) throws TimeoutException
+    public void stopAgent(String name) throws TimeoutException
     {
         findAgentByName(name).stop();
-        return true;
     }
 
     public Collection<Agent> getAgents()

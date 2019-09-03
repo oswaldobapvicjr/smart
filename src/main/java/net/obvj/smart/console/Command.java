@@ -202,7 +202,7 @@ public enum Command
                     AgentManager.getInstance().resetAgent(agent);
                     out.println("Success.");
                 }
-                catch (IllegalArgumentException | IllegalStateException e)
+                catch (IllegalArgumentException | IllegalStateException | ReflectiveOperationException e)
                 {
                     log.warning(e.getMessage());
                     out.println(e.getMessage());

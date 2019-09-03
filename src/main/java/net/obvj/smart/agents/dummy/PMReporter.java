@@ -19,24 +19,7 @@ public class PMReporter extends TimerAgent
     @Override
     protected void runTask()
     {
-        Runtime rt = Runtime.getRuntime();
-        LOG.info("Loading statistics...");
-        try
-        {
-            Thread.sleep(1000);
-            LOG.log(Level.INFO, "AVAILABLE_PROCESSORS={0}", rt.availableProcessors());
-            Thread.sleep(1000);
-            LOG.log(Level.INFO, "TOTAL_MEMORY={0}", rt.totalMemory());
-            Thread.sleep(1000);
-            LOG.log(Level.INFO, "FREE_MEMORY={0}", rt.freeMemory());
-            Thread.sleep(1000);
-            LOG.log(Level.INFO, "MAX_MEMORY={0}", rt.maxMemory());
-
-        }
-        catch (InterruptedException e)
-        {
-            LOG.log(Level.WARNING, "Interrupted while sleeping", e);
-            Thread.currentThread().interrupt();
-        }
+        LOG.log(Level.INFO, "TOTAL_MEMORY={0}", Runtime.getRuntime().totalMemory());
+        LOG.log(Level.INFO, "FREE_MEMORY={0}", Runtime.getRuntime().freeMemory());
     }
 }

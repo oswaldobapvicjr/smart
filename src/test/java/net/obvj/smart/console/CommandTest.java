@@ -170,7 +170,7 @@ public class CommandTest
     }
 
     @Test
-    public void testResetAgent()
+    public void testResetAgent() throws ReflectiveOperationException
     {
         Command.RESET.execute(new String[] { "reset", AGENT1 }, new PrintWriter(out));
         verify(manager).resetAgent(AGENT1);
@@ -184,7 +184,7 @@ public class CommandTest
     }
     
     @Test
-    public void testResetAgentIllegalArgumentException()
+    public void testResetAgentIllegalArgumentException() throws ReflectiveOperationException
     {
         doThrow(new IllegalArgumentException("message1")).when(manager).resetAgent("invalidName");
         Command.RESET.execute(new String[] { "reset", "invalidName" }, new PrintWriter(out));

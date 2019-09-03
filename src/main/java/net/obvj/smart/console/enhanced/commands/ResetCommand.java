@@ -41,7 +41,7 @@ public class ResetCommand implements Runnable
             AgentManagerJMXClient.getMBeanProxy().resetAgent(agent);
             parent.out.println("Success");
         }
-        catch (IllegalStateException | IllegalArgumentException e)
+        catch (IllegalStateException | IllegalArgumentException | ReflectiveOperationException e)
         {
             parent.out.println(e.getMessage());
         }

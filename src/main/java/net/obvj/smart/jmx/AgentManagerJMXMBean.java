@@ -11,11 +11,11 @@ public interface AgentManagerJMXMBean
 
     void startAgent(String name);
 
-    boolean stopAgent(String name) throws TimeoutException;
+    void stopAgent(String name) throws TimeoutException;
 
     void runNow(String name);
 
-    boolean resetAgent(String name);
+    void resetAgent(String name) throws ReflectiveOperationException;
 
     String[] getAgentNames();
 
