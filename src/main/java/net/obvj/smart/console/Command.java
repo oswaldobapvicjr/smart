@@ -142,16 +142,10 @@ public enum Command
                     AgentManager.getInstance().stopAgent(agent);
                     out.println("Success.");
                 }
-                catch (IllegalArgumentException | IllegalStateException e)
+                catch (IllegalArgumentException | IllegalStateException | TimeoutException e)
                 {
                     log.warning(e.getMessage());
                     out.println(e.getMessage());
-                }
-                catch (TimeoutException ex)
-                {
-                    String errMessage = String.format("Timeout waiting for agent task to complete: %s", agent);
-                    out.println(errMessage);
-                    log.warning(errMessage);
                 }
             }
             else

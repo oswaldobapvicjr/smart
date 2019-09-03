@@ -53,9 +53,13 @@ public class CommandTest
         assertEquals(expectedString, out.toString().trim());
     }
     
-    private void assertOutputContains(String expectedString)
+    private void assertOutputContains(String...expectedStrings)
     {
-        assertTrue(out.toString().trim().contains(expectedString));
+        String strOut = out.toString().trim();
+        Arrays.stream(expectedStrings)
+                .forEach(expectedString -> assertTrue(
+                        String.format("Expected string '%s' was not found", expectedString),
+                        strOut.contains(expectedString)));
     }
 
     @Test
@@ -266,6 +270,14 @@ public class CommandTest
         when(SystemUtil.getAllSystemTheadsDTOs()).thenReturn(Collections.emptyList());
         Command.SHOW_AGENTS.execute(null, new PrintWriter(out));
         assertOutputEquals("No agent found");
+    }
+    
+    @Test
+    public void testHelp()
+    {
+        Command.HELP.execute(null, new PrintWriter(out));
+        assertOutputContains("agents", "show-agents", "threads", "show-threads", "start", "stop", "run", "reset",
+                "date", "uptime", "help", "exit", "quit");
     }
 
 }

@@ -1,6 +1,5 @@
 package net.obvj.smart.console.enhanced.commands;
 
-import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
 import net.obvj.smart.jmx.client.AgentManagerJMXClient;
@@ -44,17 +43,9 @@ public class StopCommand implements Runnable
             AgentManagerJMXClient.getMBeanProxy().stopAgent(agent);
             parent.out.println("Success");
         }
-        catch (IllegalStateException | IllegalArgumentException e)
+        catch (IllegalStateException | IllegalArgumentException | TimeoutException e)
         {
             parent.out.println(e.getMessage());
-        }
-        catch (TimeoutException e)
-        {
-            parent.out.println("Operation timed-out. The agent is still running. Try again later.");
-        }
-        catch (IOException e)
-        {
-            parent.out.println("Unable to connect to the agent manager. Please make sure the service is running.");
         }
     }
 

@@ -1,7 +1,5 @@
 package net.obvj.smart.console.enhanced.commands;
 
-import java.io.IOException;
-
 import net.obvj.smart.jmx.client.AgentManagerJMXClient;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -32,14 +30,7 @@ public class DateCommand implements Runnable
     @Override
     public void run()
     {
-        try
-        {
-            parent.out.println(AgentManagerJMXClient.getMBeanProxy().getServerDate());
-        }
-        catch (IOException e)
-        {
-            parent.out.println("Unable to connect to the agent manager. Please make sure the service is running.");
-        }
+        parent.out.println(AgentManagerJMXClient.getMBeanProxy().getServerDate());
     }
     
     protected void setParent(Commands parent)

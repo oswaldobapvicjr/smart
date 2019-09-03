@@ -1,6 +1,5 @@
 package net.obvj.smart.console.enhanced.commands;
 
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import net.obvj.smart.jmx.client.AgentManagerJMXClient;
@@ -38,15 +37,8 @@ public class UptimeCommand implements Runnable
     @Override
     public void run()
     {
-        try
-        {
-            long serverUptimeMillis = AgentManagerJMXClient.getMBeanProxy().getServerUptime();
-            parent.out.println(formatOutput(serverUptimeMillis, timeUnit));
-        }
-        catch (IOException e)
-        {
-            parent.out.println("Unable to connect to the agent manager. Please make sure the service is running.");
-        }
+        long serverUptimeMillis = AgentManagerJMXClient.getMBeanProxy().getServerUptime();
+        parent.out.println(formatOutput(serverUptimeMillis, timeUnit));
     }
     
     protected static String formatOutput(long serverUptimeMillis, String timeUnit)

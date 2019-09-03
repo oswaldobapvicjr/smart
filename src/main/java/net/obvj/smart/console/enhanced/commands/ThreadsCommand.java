@@ -1,6 +1,5 @@
 package net.obvj.smart.console.enhanced.commands;
 
-import java.io.IOException;
 import java.util.Collection;
 
 import net.obvj.smart.jmx.client.AgentManagerJMXClient;
@@ -38,19 +37,13 @@ public class ThreadsCommand implements Runnable
     {
         parent.out.println("Listing active server threads...");
         parent.out.flush();
-        try
-        {
-            Collection<ThreadDTO> allThreads = AgentManagerJMXClient.getMBeanProxy().getAllThreadsInfo();
 
-            parent.out.println();
-            parent.out.println("ID   Name                                   State");
-            parent.out.println("---- -------------------------------------- -------------");
-            allThreads.forEach(thread -> parent.out.printf(ID_NAME_STATE_PATTERN, thread.id, thread.name, thread.state));
-        }
-        catch (IOException e)
-        {
-            parent.out.println("Unable to connect to the agent manager. Please make sure the service is running.");
-        }
+        Collection<ThreadDTO> allThreads = AgentManagerJMXClient.getMBeanProxy().getAllThreadsInfo();
+
+        parent.out.println();
+        parent.out.println("ID   Name                                   State");
+        parent.out.println("---- -------------------------------------- -------------");
+        allThreads.forEach(thread -> parent.out.printf(ID_NAME_STATE_PATTERN, thread.id, thread.name, thread.state));
     }
 
     protected void setParent(Commands parent)

@@ -1,7 +1,5 @@
 package net.obvj.smart.console.enhanced.commands;
 
-import java.io.IOException;
-
 import net.obvj.smart.jmx.client.AgentManagerJMXClient;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -44,10 +42,6 @@ public class StartCommand implements Runnable
         catch (IllegalStateException | IllegalArgumentException e)
         {
             parent.out.println(e.getMessage());
-        }
-        catch (IOException e)
-        {
-            parent.out.println("Unable to connect to the agent manager. Please make sure the service is running.");
         }
     }
     

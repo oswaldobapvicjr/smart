@@ -34,7 +34,7 @@ public class AgentManagerJMXClient
         // No instances allowed
     }
     
-    private static AgentManagerJMXMBean createMBeanProxy() throws IOException
+    private static AgentManagerJMXMBean createMBeanProxy()
     {
         try
         {
@@ -44,14 +44,14 @@ public class AgentManagerJMXClient
             ObjectName mbeanName = new ObjectName("net.obvj.smart.jmx:type=AgentManagerJMX");
             return JMX.newMBeanProxy(mbsc, mbeanName, AgentManagerJMXMBean.class, true);
         }
-        catch (MalformedObjectNameException e)
+        catch (MalformedObjectNameException | IOException e)
         {
             LOG.log(Level.SEVERE, "Unable to find remote agent manager stub", e);
             return null;
         }
     }
     
-    public static AgentManagerJMXMBean getMBeanProxy() throws IOException
+    public static AgentManagerJMXMBean getMBeanProxy()
     {
         if (mbeanProxy == null)
         {

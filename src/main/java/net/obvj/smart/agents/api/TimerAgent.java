@@ -183,7 +183,7 @@ public abstract class TimerAgent extends Agent
             }
             if (isRunning())
             {
-                throw new TimeoutException("Unable to stop agent task.");
+                throw new TimeoutException("Timeout waiting for agent task to complete. Please try again later.");
             }
             schedule.shutdown();
             setState(State.STOPPED);

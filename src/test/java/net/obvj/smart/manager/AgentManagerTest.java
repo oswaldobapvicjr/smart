@@ -1,6 +1,9 @@
 package net.obvj.smart.manager;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -152,10 +155,10 @@ public class AgentManagerTest
     @Test
     public void testGetAgentStatusStr()
     {
-        Agent mockAgent = Mockito.mock(Agent.class);
-        Mockito.when(mockAgent.getName()).thenReturn("agent1");
-        Mockito.when(mockAgent.getStatusString()).thenReturn("statusStr1");
-        AgentManager manager = newAgentManager(mockAgent);
+        Agent agent = Mockito.mock(Agent.class);
+        Mockito.when(agent.getName()).thenReturn("agent1");
+        Mockito.when(agent.getStatusString()).thenReturn("statusStr1");
+        AgentManager manager = newAgentManager(agent);
         assertEquals("statusStr1", manager.getAgentStatusStr("agent1"));
     }
 
@@ -167,6 +170,24 @@ public class AgentManagerTest
         Awaitility.await().until(dummyAgent::isStarted);
         manager.stopAgent(DUMMY_AGENT);
         Awaitility.await().until(dummyAgent::isStopped);
+    }
+    
+    @Test
+    public void testRunTimerAgent()
+    {
+        Agent agent = Mockito.mock(Agent.class);
+        Mockito.when(agent.getName()).thenReturn("agent1");
+        Mockito.when(agent.getType()).thenReturn("timer");
+        AgentManager manager = newAgentManager(agent);
+        manager.runNow("agent1");
+        Mockito.verify(agent).run();
+    }
+    
+    @Test(expected = UnsupportedOperationException.class)
+    public void testRunDaemonAgent()
+    {
+        AgentManager manager = newAgentManager(dummyDaemonAgent);
+        manager.runNow(DUMMY_DAEMON);
     }
     
 }

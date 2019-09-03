@@ -88,14 +88,14 @@ public class StopCommandTest
     @Test
     public void testCommandExecutionJMXCallTimeoutException() throws IOException, TimeoutException
     {
-        Mockito.doThrow(new TimeoutException()).when(agentManagerJMXBean).stopAgent("AgentName");
+        Mockito.doThrow(new TimeoutException("timeout1")).when(agentManagerJMXBean).stopAgent("AgentName");
 
         StringWriter out = new StringWriter();
         StopCommand command = newCommandWithOutput(out);
         command.setAgent("AgentName");
         command.run();
 
-        assertTrue(out.toString().contains("Operation timed-out"));
+        assertTrue(out.toString().contains("timeout1"));
     }
 
 }
