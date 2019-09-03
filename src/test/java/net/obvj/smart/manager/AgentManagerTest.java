@@ -1,9 +1,6 @@
 package net.obvj.smart.manager;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -14,11 +11,16 @@ import java.util.stream.Collectors;
 import org.awaitility.Awaitility;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import net.obvj.smart.agents.api.Agent;
 import net.obvj.smart.agents.api.Agent.State;
 import net.obvj.smart.agents.api.dto.AgentDTO;
+import net.obvj.smart.conf.AgentConfiguration;
 import net.obvj.smart.conf.xml.XmlAgent;
 
 /**
@@ -27,22 +29,28 @@ import net.obvj.smart.conf.xml.XmlAgent;
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(AgentConfiguration.class)
 public class AgentManagerTest
 {
     // Test data
     private static final String DUMMY_AGENT = "DummyAgent";
-    private static final String UNKNOWN = "Unknown";
     private static final String DUMMY_DAEMON = "DummyDaemon";
+    private static final String AGENT1 = "agent1";
+    private static final String UNKNOWN = "Unknown";
+
+    private static final String TIMER = "timer";
+    private static final String DAEMON = "daemon";
 
     private static final List<String> names = Arrays.asList(DUMMY_AGENT, DUMMY_DAEMON);
 
-    private static final XmlAgent XML_DUMMY_AGENT = new XmlAgent.Builder(DUMMY_AGENT).type("timer")
+    private static final XmlAgent XML_DUMMY_AGENT = new XmlAgent.Builder(DUMMY_AGENT).type(TIMER)
             .agentClass("net.obvj.smart.agents.dummy.DummyAgent").interval("1 hour").build();
-    private static final XmlAgent XML_DUMMY_DAEMON = new XmlAgent.Builder(DUMMY_DAEMON).type("daemon")
+    private static final XmlAgent XML_DUMMY_DAEMON = new XmlAgent.Builder(DUMMY_DAEMON).type(DAEMON)
             .agentClass("net.obvj.smart.agents.dummy.DummyDaemonAgent").build();
 
-    private static final AgentDTO DUMMY_AGENT_DTO = new AgentDTO(DUMMY_AGENT, "timer", "SET");
-    private static final AgentDTO DUMMY_DAEMON_DTO = new AgentDTO(DUMMY_DAEMON, "daemon", "SET");
+    private static final AgentDTO DUMMY_AGENT_DTO = new AgentDTO(DUMMY_AGENT, TIMER, "SET");
+    private static final AgentDTO DUMMY_DAEMON_DTO = new AgentDTO(DUMMY_DAEMON, DAEMON, "SET");
     
     private static final List<AgentDTO> ALL_AGENT_DTOS = Arrays.asList(DUMMY_AGENT_DTO, DUMMY_DAEMON_DTO);
     
@@ -156,10 +164,10 @@ public class AgentManagerTest
     public void testGetAgentStatusStr()
     {
         Agent agent = Mockito.mock(Agent.class);
-        Mockito.when(agent.getName()).thenReturn("agent1");
+        Mockito.when(agent.getName()).thenReturn(AGENT1);
         Mockito.when(agent.getStatusString()).thenReturn("statusStr1");
         AgentManager manager = newAgentManager(agent);
-        assertEquals("statusStr1", manager.getAgentStatusStr("agent1"));
+        assertEquals("statusStr1", manager.getAgentStatusStr(AGENT1));
     }
 
     @Test
@@ -176,10 +184,10 @@ public class AgentManagerTest
     public void testRunTimerAgent()
     {
         Agent agent = Mockito.mock(Agent.class);
-        Mockito.when(agent.getName()).thenReturn("agent1");
-        Mockito.when(agent.getType()).thenReturn("timer");
+        Mockito.when(agent.getName()).thenReturn(AGENT1);
+        Mockito.when(agent.getType()).thenReturn(TIMER);
         AgentManager manager = newAgentManager(agent);
-        manager.runNow("agent1");
+        manager.runNow(AGENT1);
         Mockito.verify(agent).run();
     }
     
@@ -188,6 +196,38 @@ public class AgentManagerTest
     {
         AgentManager manager = newAgentManager(dummyDaemonAgent);
         manager.runNow(DUMMY_DAEMON);
+    }
+    
+    @Test
+    public void testResetAgentWithPreviousStateSet() throws ReflectiveOperationException
+    {
+        // Setup AgentConfiguration mocks
+        AgentConfiguration agentConfigMock = Mockito.mock(AgentConfiguration.class);
+        Mockito.when(agentConfigMock.getAgentConfiguration(DUMMY_AGENT)).thenReturn(XML_DUMMY_AGENT);
+        PowerMockito.mockStatic(AgentConfiguration.class);
+        PowerMockito.when(AgentConfiguration.getInstance()).thenReturn(agentConfigMock);
+        
+        AgentManager manager = newAgentManager(dummyAgent);
+        manager.resetAgent(DUMMY_AGENT);
+        Agent newAgent = manager.findAgentByName(DUMMY_AGENT);
+        
+        // A new Agent instance is available
+        assertNotSame(dummyAgent, newAgent);
+        
+        assertEquals(dummyAgent.getName(), newAgent.getName());
+        assertEquals(dummyAgent.getType(), newAgent.getType());
+        assertEquals(dummyAgent.getClass(), newAgent.getClass());
+        assertEquals(dummyAgent.getStopTimeoutSeconds(), newAgent.getStopTimeoutSeconds());
+        
+        assertEquals(State.SET, newAgent.getState());
+    }
+    
+    @Test(expected = IllegalStateException.class)
+    public void testResetAgentWithPreviousStateStarted() throws ReflectiveOperationException
+    {
+        AgentManager manager = newAgentManager(dummyAgent);
+        manager.startAgent(DUMMY_AGENT);
+        manager.resetAgent(DUMMY_AGENT);
     }
     
 }

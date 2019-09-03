@@ -1,12 +1,8 @@
 package net.obvj.smart.console;
 
-import static net.obvj.smart.console.Command.EXIT;
 import static net.obvj.smart.console.Command.getByNameOrAlias;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.List;
@@ -22,6 +18,7 @@ import net.obvj.smart.util.ConsoleUtil;
  * @author oswaldo.bapvic.jr
  * @since 1.0
  */
+
 public class CommandWorker implements Runnable
 {
 
@@ -40,6 +37,13 @@ public class CommandWorker implements Runnable
         this.socket = socket;
         this.in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
         this.out = new PrintWriter(this.socket.getOutputStream(), true);
+    }
+    
+    protected CommandWorker(PrintWriter out) throws IOException
+    {
+        this.socket = null;
+        this.in = null;
+        this.out = out;
     }
 
     private void printCustomHeader()
@@ -73,14 +77,11 @@ public class CommandWorker implements Runnable
                     String[] arguments = commandLine.split(" ");
                     String command = arguments[0];
 
-                    if (EXIT == Command.getByNameOrAliasOrNull(command))
+                    if ("exit".equals(command))
                     {
                         return;
                     }
-                    else
-                    {
-                        handleUserInput(arguments);
-                    }
+                    handleUserInput(arguments);
                 }
             }
         }
@@ -112,7 +113,7 @@ public class CommandWorker implements Runnable
         }
     }
 
-    private void handleUserInput(String[] arguments)
+    protected void handleUserInput(String[] arguments)
     {
         try
         {
@@ -154,7 +155,7 @@ public class CommandWorker implements Runnable
         return sanitizeUserInput(in.readLine());
     }
 
-    private String sanitizeUserInput(String source)
+    protected static String sanitizeUserInput(String source)
     {
         String string = "";
         if (source != null)
@@ -166,7 +167,7 @@ public class CommandWorker implements Runnable
         return string;
     }
 
-    private String eraseBackspaces(String source)
+    protected static String eraseBackspaces(String source)
     {
         String str = source;
         while (str.contains("\b"))

@@ -66,8 +66,6 @@ public class CommandTest
     public void testCommandsByNameOrAliasWithValidNames()
     {
         assertEquals(Command.DATE, Command.getByNameOrAlias("date"));
-        assertEquals(Command.EXIT, Command.getByNameOrAlias("exit"));
-        assertEquals(Command.EXIT, Command.getByNameOrAlias("quit"));
         assertEquals(Command.HELP, Command.getByNameOrAlias("help"));
         assertEquals(Command.RESET, Command.getByNameOrAlias("reset"));
         assertEquals(Command.RUN, Command.getByNameOrAlias("run"));
@@ -277,7 +275,7 @@ public class CommandTest
     {
         Command.HELP.execute(null, new PrintWriter(out));
         assertOutputContains("agents", "show-agents", "threads", "show-threads", "start", "stop", "run", "reset",
-                "date", "uptime", "help", "exit", "quit");
+                "date", "uptime", "help");
     }
 
 }

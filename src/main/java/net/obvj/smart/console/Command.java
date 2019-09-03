@@ -227,15 +227,6 @@ public enum Command
             Arrays.stream(values()).forEachOrdered(
                     command -> out.println(" - " + command.name + (command.hasAlias() ? ", " + command.alias : "")));
         }
-    },
-
-    EXIT("exit", "quit")
-    {
-        @Override
-        public void execute(String[] parameters, PrintWriter out)
-        {
-            // Do nothing...
-        }
     };
 
     protected static final String MISSING_PARAMETER_AGENT_NAME = "Missing parameter: <agent-name>";
