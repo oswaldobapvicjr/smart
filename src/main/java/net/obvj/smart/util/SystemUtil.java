@@ -1,7 +1,6 @@
 package net.obvj.smart.util;
 
 import java.lang.management.ManagementFactory;
-import java.lang.management.RuntimeMXBean;
 import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
 import java.util.Arrays;
@@ -25,8 +24,7 @@ public class SystemUtil
 
     public static long getSystemUptime()
     {
-        RuntimeMXBean rMXBean = ManagementFactory.getRuntimeMXBean();
-        return rMXBean.getUptime();
+        return ManagementFactory.getRuntimeMXBean().getUptime();
     }
 
     private static ThreadInfo[] getAllSystemTheadsInfo()
@@ -37,9 +35,13 @@ public class SystemUtil
 
     public static Collection<ThreadDTO> getAllSystemTheadsDTOs()
     {
-        ThreadInfo[] allThreadsInfo = getAllSystemTheadsInfo();
+        return getSystemTheadsDTOs(getAllSystemTheadsInfo());
+    }
+    
+    protected static Collection<ThreadDTO> getSystemTheadsDTOs(ThreadInfo[] threadsInfo)
+    {
         return Arrays
-                .stream(allThreadsInfo).map(threadInfo -> new ThreadDTO(threadInfo.getThreadId(),
+                .stream(threadsInfo).map(threadInfo -> new ThreadDTO(threadInfo.getThreadId(),
                         threadInfo.getThreadName(), threadInfo.getThreadState().toString()))
                 .collect(Collectors.toList());
     }

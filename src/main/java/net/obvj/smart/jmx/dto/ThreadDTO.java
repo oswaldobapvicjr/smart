@@ -1,6 +1,7 @@
 package net.obvj.smart.jmx.dto;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * An object for common thread metadata interchange with client applications
@@ -21,6 +22,22 @@ public class ThreadDTO implements Serializable
         this.id = id;
         this.name = name;
         this.state = state;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(id, name, state);
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (!(obj instanceof ThreadDTO)) return false;
+        ThreadDTO other = (ThreadDTO) obj;
+        return id == other.id && Objects.equals(name, other.name) && Objects.equals(state, other.state);
     }
 
 }
