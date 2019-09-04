@@ -5,6 +5,7 @@ import static net.obvj.smart.console.Command.getByNameOrAlias;
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,13 +19,16 @@ import net.obvj.smart.util.ConsoleUtil;
  * @author oswaldo.bapvic.jr
  * @since 1.0
  */
-
 public class CommandWorker implements Runnable
 {
+    protected static final String LINE_SEPARATOR = System.getProperty("line.separator");
+    protected static final String MSG_SESSION_CLOSED_DUE_TO_INACTIVITY = "Sesion closed due to inactivity.";
+    protected static final String MSG_CLOSING_CONSOLE_SESSION = "Closing console session...";
 
-    public static final String LINE_SEPARATOR = System.getProperty("line.separator");
+    protected static final String PROMPT = SmartProperties.getInstance().getProperty(SmartProperties.CONSOLE_PROMPT) + " ";
 
-    private static final String PROMPT = SmartProperties.getInstance().getProperty(SmartProperties.CONSOLE_PROMPT) + " ";
+    protected static final List<String> HINTS = Arrays.asList(" Type 'help' for a list of available commands.",
+            " Type 'exit' to quit the console.");
 
     private Socket socket;
     private BufferedReader in;
@@ -39,23 +43,18 @@ public class CommandWorker implements Runnable
         this.out = new PrintWriter(this.socket.getOutputStream(), true);
     }
     
-    protected CommandWorker(PrintWriter out) throws IOException
+    protected CommandWorker(BufferedReader in, PrintWriter out)
     {
         this.socket = null;
-        this.in = null;
+        this.in = in;
         this.out = out;
     }
 
-    private void printCustomHeader()
+    protected void printCustomHeader()
     {
         sendLines(ConsoleUtil.readCustomHeaderLines());
-    }
-
-    private void printHints()
-    {
         sendLine();
-        sendLine(" Type 'help' for a list of available commands.");
-        sendLine(" Type 'exit' to quit the console.");
+        sendLines(HINTS);
     }
     
     public void run()
@@ -63,7 +62,6 @@ public class CommandWorker implements Runnable
         try
         {
             printCustomHeader();
-            printHints();
             while (true)
             {
                 sendLine();
@@ -87,8 +85,8 @@ public class CommandWorker implements Runnable
         }
         catch (SocketTimeoutException e)
         {
-            log.info("Sesion closed due to inactivity.");
-            sendLine(LINE_SEPARATOR + "Session timed-out due to inactivity.");
+            log.info(MSG_SESSION_CLOSED_DUE_TO_INACTIVITY);
+            sendLine(LINE_SEPARATOR + MSG_SESSION_CLOSED_DUE_TO_INACTIVITY);
         }
         catch (Exception e)
         {
@@ -96,11 +94,10 @@ public class CommandWorker implements Runnable
         }
         finally
         {
+            log.info(MSG_CLOSING_CONSOLE_SESSION);
+            sendLine(MSG_CLOSING_CONSOLE_SESSION);
             if (socket != null)
             {
-                String closingMessage = "Closing console session...";
-                sendLine(closingMessage);
-                log.info(closingMessage);
                 try
                 {
                     socket.close();
@@ -115,15 +112,8 @@ public class CommandWorker implements Runnable
 
     protected void handleUserInput(String[] arguments)
     {
-        try
-        {
-            Command command = getByNameOrAlias(arguments[0]);
-            command.execute(arguments, out);
-        }
-        catch (IllegalArgumentException ile)
-        {
-            sendLine(ile.getMessage());
-        }
+        Command command = getByNameOrAlias(arguments[0]);
+        command.execute(arguments, out);
     }
 
     public void sendLine()
@@ -150,7 +140,7 @@ public class CommandWorker implements Runnable
         out.flush();
     }
 
-    private String readLine() throws IOException
+    protected String readLine() throws IOException
     {
         return sanitizeUserInput(in.readLine());
     }
