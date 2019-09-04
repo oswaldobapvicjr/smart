@@ -1,16 +1,9 @@
 package net.obvj.smart.console;
 
 import java.io.IOException;
-import java.net.BindException;
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
+import java.net.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -55,7 +48,7 @@ public class ManagementConsole implements Runnable
             server = new ServerSocket(PORT, 0, InetAddress.getByAddress(new byte[] { 127, 0, 0, 1 }));
             log.info("Management Console listening on port " + server.getLocalPort());
             serverThread = new Thread(this, "MgmtConsole");
-            sessionExecutor = Executors.newCachedThreadPool(new MgmtConsoleSessionThreadFactory());
+            sessionExecutor = Executors.newCachedThreadPool(new MgmtConsoleWorkerThreadFactory());
 
         }
         catch (BindException e)
@@ -130,25 +123,6 @@ public class ManagementConsole implements Runnable
             {
                 log.log(Level.SEVERE, "Error closing server socket on port {0}", PORT);
             }
-        }
-    }
-
-    static class MgmtConsoleSessionThreadFactory implements ThreadFactory
-    {
-
-        static final String THREAD_NAME_PREFIX = "MgmtConsoleWorker(classic)-T";
-        static final AtomicInteger THREAD_NUMBER = new AtomicInteger(1);
-
-        public Thread newThread(Runnable runnable)
-        {
-            String name = THREAD_NAME_PREFIX + THREAD_NUMBER.getAndIncrement();
-            Thread thread = new Thread(runnable, name);
-            thread.setPriority(Thread.MIN_PRIORITY);
-            if (thread.isDaemon())
-            {
-                thread.setDaemon(false);
-            }
-            return thread;
         }
     }
 }
