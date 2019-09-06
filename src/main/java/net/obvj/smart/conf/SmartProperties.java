@@ -17,16 +17,16 @@ public class SmartProperties
     private static final Logger LOG = Logger.getLogger("smart-server");
 
     public static final String CONSOLE_PROMPT = "console.prompt";
-    private static final String CONSOLE_PROMPT_DEFAULT = "smart>";
+    protected static final String CONSOLE_PROMPT_DEFAULT = "smart>";
 
     public static final String CLASSIC_CONSOLE_ENABLED = "classic.console.enabled";
-    private static final String CLASSIC_CONSOLE_ENABLED_DEFAULT = "true";
+    protected static final String CLASSIC_CONSOLE_ENABLED_DEFAULT = "true";
 
     public static final String CLASSIC_CONSOLE_PORT = "classic.console.port";
-    private static final String CLASSIC_CONSOLE_PORT_DEFAULT = "1910";
+    protected static final String CLASSIC_CONSOLE_PORT_DEFAULT = "1910";
 
     public static final String CLASSIC_CONSOLE_SESSION_TIMEOUT_SECONDS = "classic.console.session.timeout.seconds";
-    private static final String CLASSIC_CONSOLE_SESSION_TIMEOUT_SECONDS_DEFAULT = "60";
+    protected static final String CLASSIC_CONSOLE_SESSION_TIMEOUT_SECONDS_DEFAULT = "60";
 
     private static final Properties defaults = new Properties();
     static
@@ -37,38 +37,55 @@ public class SmartProperties
         defaults.put(CLASSIC_CONSOLE_SESSION_TIMEOUT_SECONDS, CLASSIC_CONSOLE_SESSION_TIMEOUT_SECONDS_DEFAULT);
     }
 
-    private static final SmartProperties instance = new SmartProperties();
+    private static final SmartProperties INSTANCE = new SmartProperties();
 
-    private Properties properties = new Properties();
+    protected Properties properties = new Properties();
 
     private SmartProperties()
     {
-        readSmartPropertiesFile();
+        this("smart.properties");
     }
-
-    private void readSmartPropertiesFile()
+    
+    protected SmartProperties(String fileName)
     {
-        LOG.fine("Searching for smart.properties file...");
-        try (final InputStream stream = SmartProperties.class.getClassLoader().getResourceAsStream("smart.properties"))
+        try
         {
-            properties.load(stream);
-            LOG.fine("smart.properties loaded successfully");
+            properties = readPropertiesFile(fileName);
         }
         catch (NullPointerException e)
         {
-            LOG.warning("smart.properties not found. Using default properties...");
+            LOG.log(Level.WARNING, "{0} not found. Using default properties...", fileName);
         }
         catch (IOException e)
         {
-            LOG.log(Level.WARNING,
-                    "Unable to read smart.properties file. Using default properties. Error details: {0} ({1})",
-                    new String[] { e.getClass().getName(), e.getLocalizedMessage() });
+            LOG.log(Level.WARNING, "Unable to read {0}. Using default properties. Error details: {1} ({2})",
+                    new String[] { fileName, e.getClass().getName(), e.getLocalizedMessage() });
+        }
+    }
+
+    /**
+     * Loads properties from a given file name.
+     * 
+     * @param fileName the file name to be loaded
+     * @return a Properties object, filled with the content parsed from the given file
+     * @throws NullPointerException if the file is not found in the class path
+     * @throws IOException          if unable to parse properties file content
+     */
+    private static Properties readPropertiesFile(String fileName) throws IOException
+    {
+        LOG.log(Level.FINE, "Searching for {0} file...", fileName);
+        try (final InputStream stream = SmartProperties.class.getClassLoader().getResourceAsStream(fileName))
+        {
+            Properties properties = new Properties();
+            properties.load(stream);
+            LOG.log(Level.FINE, "{0} loaded successfully", fileName);
+            return properties;
         }
     }
 
     public static SmartProperties getInstance()
     {
-        return instance;
+        return INSTANCE;
     }
 
     public String getProperty(String key)

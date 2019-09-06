@@ -35,7 +35,7 @@ public class AgentConfiguration
 
     private static final String AGENTS_XML = "agents.xml";
 
-    private static AgentConfiguration instance;
+    private static final AgentConfiguration INSTANCE = new AgentConfiguration();
 
     private XmlSmart agents;
 
@@ -43,7 +43,12 @@ public class AgentConfiguration
     
     private AgentConfiguration()
     {
-        agents = loadAgentsXmlFile(AGENTS_XML);
+        this(AGENTS_XML);
+    }
+    
+    protected AgentConfiguration(String fileName)
+    {
+        agents = loadAgentsXmlFile(fileName);
         loadAgentsMap();
     }
 
@@ -104,11 +109,7 @@ public class AgentConfiguration
 
     public static AgentConfiguration getInstance()
     {
-        if (instance == null)
-        {
-            instance = new AgentConfiguration();
-        }
-        return instance;
+        return INSTANCE;
     }
 
 }

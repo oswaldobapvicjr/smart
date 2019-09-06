@@ -1,9 +1,9 @@
 package net.obvj.smart.conf;
 
+import static net.obvj.smart.TestUtil.assertException;
 import static org.junit.Assert.assertEquals;
 
 import java.io.FileNotFoundException;
-import java.util.function.Supplier;
 
 import javax.xml.bind.UnmarshalException;
 
@@ -23,36 +23,16 @@ public class AgentConfigurationTest
     // Test files
     private static final String XML_TIMER_AGENT_30_SECONDS = "testAgents/timerAgent30seconds.xml";
     private static final String XML_TIMER_AGENT_WITH_DEFAULT_VALUES = "testAgents/timerAgentWithDefaultValues.xml";
+    private static final String XML_TWO_AGENTS = "testAgents/twoAgents.xml";
 
     // Test data
     private static final String DUMMY_AGENT = "DummyAgent";
     private static final String DUMMY_AGENT_CLASS = "net.obvj.smart.agents.dummy.DummyAgent";
     private static final String TIMER = "timer";
 
-    /**
-     * A utility method to assert the expected throwable and cause classes thrown by a
-     * supplying function.
-     * 
-     * @param expectedThrowable the expected throwable class
-     * @param expectedCause     the expected throwable cause class (if applicable)
-     * @param expectedMessage   the expected message (if applicable)
-     * @param supplier          the supplying function that produces an exception to be
-     *                          validated
-     */
-    public void assertException(Class<? extends Throwable> expectedThrowable, String expectedMessage,
-            Class<? extends Throwable> expectedCause, Supplier<XmlSmart> supplier)
-    {
-        try
-        {
-            supplier.get();
-        }
-        catch (Throwable throwable)
-        {
-            assertEquals(expectedThrowable, throwable.getClass());
-            if (expectedMessage != null) assertEquals(expectedMessage, throwable.getMessage());
-            if (expectedCause != null) assertEquals(expectedCause, throwable.getCause().getClass());
-        }
-    }
+    private static final String DUMMY_DAEMON = "DummyDaemon";
+    private static final String DUMMY_DAEMON_CLASS = "net.obvj.smart.agents.dummy.DummyDaemonAgent";
+    private static final String DAEMON = "daemon";
 
     @Test
     public void testLoadTimerAgent30Seconds()
@@ -122,5 +102,23 @@ public class AgentConfigurationTest
     {
         assertException(AgentConfigurationException.class, null, FileNotFoundException.class,
                 () -> AgentConfiguration.loadAgentsXmlFile("testAgents/notfound.xml"));
+    }
+    
+    @Test
+    public void testLoadXmlWithTwoAgents()
+    {
+        AgentConfiguration config = new AgentConfiguration(XML_TWO_AGENTS);
+        assertEquals(2, config.getAgents().size());
+
+        XmlAgent dummyAgent = config.getAgentConfiguration(DUMMY_AGENT);
+        assertEquals(DUMMY_AGENT, dummyAgent.getName());
+        assertEquals(TIMER, dummyAgent.getType());
+        assertEquals(DUMMY_AGENT_CLASS, dummyAgent.getAgentClass());
+        assertEquals("30 seconds", dummyAgent.getInterval());
+
+        XmlAgent dummyDaemon = config.getAgentConfiguration(DUMMY_DAEMON);
+        assertEquals(DUMMY_DAEMON, dummyDaemon.getName());
+        assertEquals(DAEMON, dummyDaemon.getType());
+        assertEquals(DUMMY_DAEMON_CLASS, dummyDaemon.getAgentClass());
     }
 }

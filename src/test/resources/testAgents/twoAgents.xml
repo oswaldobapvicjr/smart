@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- A sample agent XML with two valid agents. -->
+
+<smart>
+    <agents>
+        <agent>
+            <name>DummyAgent</name>
+            <type>timer</type>
+            <class>net.obvj.smart.agents.dummy.DummyAgent</class>
+            <interval>30 seconds</interval>
+            <started>false</started>
+            <stopTimeoutInSeconds>5</stopTimeoutInSeconds>
+        </agent>
+        <agent>
+            <name>DummyDaemon</name>
+            <type>daemon</type>
+            <class>net.obvj.smart.agents.dummy.DummyDaemonAgent</class>
+            <started>false</started>
+        </agent>
+    </agents>
+</smart>

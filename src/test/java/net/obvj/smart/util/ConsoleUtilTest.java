@@ -2,6 +2,8 @@ package net.obvj.smart.util;
 
 import org.junit.Test;
 
+import net.obvj.smart.TestUtil;
+
 /**
  * Unit tests for the {@link ConsoleUtil} class.
  * 
@@ -18,7 +20,7 @@ public class ConsoleUtilTest
     @Test
     public void testNoInstancesAllowed() throws Exception
     {
-        UtilitiesCommons.testNoInstancesAllowed(ConsoleUtil.class, IllegalStateException.class, "Utility class");
+        TestUtil.testNoInstancesAllowed(ConsoleUtil.class, IllegalStateException.class, "Utility class");
     }
 
 }

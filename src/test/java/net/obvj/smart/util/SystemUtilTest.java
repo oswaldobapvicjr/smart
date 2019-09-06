@@ -10,6 +10,7 @@ import java.util.Collection;
 import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
 
+import net.obvj.smart.TestUtil;
 import net.obvj.smart.jmx.dto.ThreadDTO;
 
 /**
@@ -55,7 +56,7 @@ public class SystemUtilTest
     @Test
     public void testNoInstancesAllowed() throws Exception
     {
-        UtilitiesCommons.testNoInstancesAllowed(SystemUtil.class, IllegalStateException.class, "Utility class");
+        TestUtil.testNoInstancesAllowed(SystemUtil.class, IllegalStateException.class, "Utility class");
     }
 
 }

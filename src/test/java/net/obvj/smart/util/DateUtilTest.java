@@ -10,6 +10,7 @@ import java.util.TimeZone;
 
 import org.junit.Test;
 
+import net.obvj.smart.TestUtil;
 import net.obvj.smart.util.DateUtil.TimeUnit;
 
 /**
@@ -47,7 +48,7 @@ public class DateUtilTest
     @Test
     public void testNoInstancesAllowed() throws Exception
     {
-        UtilitiesCommons.testNoInstancesAllowed(DateUtil.class, IllegalStateException.class, "Utility class");
+        TestUtil.testNoInstancesAllowed(DateUtil.class, IllegalStateException.class, "Utility class");
     }
     
     /**
