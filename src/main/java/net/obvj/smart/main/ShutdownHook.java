@@ -1,10 +1,8 @@
 package net.obvj.smart.main;
 
-import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
 import net.obvj.smart.agents.api.Agent;
-import net.obvj.smart.console.ManagementConsole;
 import net.obvj.smart.manager.AgentManager;
 
 /**
@@ -14,18 +12,20 @@ import net.obvj.smart.manager.AgentManager;
  * @author oswaldo.bapvic.jr
  * @since 1.0
  */
-public class ShutdownHook implements Runnable
+public class ShutdownHook extends SmartServerSupport implements Runnable
 {
-
     private final Logger logger = Logger.getLogger("smart-server");
 
     public void run()
     {
         logger.info("Starting shutdown sequence...");
+        stopAllAgents();
+        closeClassicManagementConsole();
+        logger.info("Shutdown sequence complete.");
+    }
 
-        /*
-         * STEP 1: Stop agents
-         */
+    private void stopAllAgents()
+    {
         logger.info("Stopping agents...");
         for (Agent agent : AgentManager.getInstance().getAgents())
         {
@@ -33,23 +33,11 @@ public class ShutdownHook implements Runnable
             {
                 agent.stop();
             }
-            catch (IllegalStateException | TimeoutException | UnsupportedOperationException ex)
-            {
-                logger.warning(agent.getName() + ": " + ex.getMessage());
-
-            }
             catch (Exception ex)
             {
                 logger.severe(agent.getName() + ": " + ex.getMessage());
             }
         }
-
-        /*
-         * STEP 2: Close Management Console
-         */
-        logger.info("Closing Agent Management Console...");
-        ManagementConsole.getInstance().stop();
-
-        logger.info("Shutdown sequence complete.");
     }
+
 }

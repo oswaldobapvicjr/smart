@@ -13,9 +13,7 @@ import javax.management.OperationsException;
 import net.obvj.smart.agents.api.Agent;
 import net.obvj.smart.conf.AgentConfiguration;
 import net.obvj.smart.conf.AgentConfigurationException;
-import net.obvj.smart.conf.SmartProperties;
 import net.obvj.smart.conf.xml.XmlAgent;
-import net.obvj.smart.console.ManagementConsole;
 import net.obvj.smart.jmx.AgentManagerJMX;
 import net.obvj.smart.jmx.AgentManagerJMXMBean;
 import net.obvj.smart.manager.AgentManager;
@@ -26,13 +24,14 @@ import net.obvj.smart.manager.AgentManager;
  * @author oswaldo.bapvic.jr
  * @since 1.0
  */
-public class Main
+public class Main extends SmartServerSupport implements Runnable
 {
     public static final Logger LOG = Logger.getLogger("smart-server");
 
     private static boolean runFlag = true;
 
-    public static void main(String[] args)
+    @Override
+    public void run()
     {
         /*
          * STEP 1: Start Agent Manager
@@ -43,15 +42,7 @@ public class Main
         /*
          * STEP 2: Start classic management console
          */
-        if (SmartProperties.getInstance().getBooleanProperty(SmartProperties.CLASSIC_CONSOLE_ENABLED))
-        {
-            LOG.info("Starting classic Agent Management Console...");
-            ManagementConsole.getInstance().start();
-        }
-        else
-        {
-            LOG.info("Classic Agent Management Console not enabled");
-        }
+        startClassicManagementConsole();
 
         /*
          * STEP 3: Register Managed Beans
@@ -119,10 +110,9 @@ public class Main
             LOG.log(Level.SEVERE, "Unable to load agents configuration", e);
             System.exit(1);
         }
-
     }
 
-    private static void keepMainThreadBusy()
+   private void keepMainThreadBusy()
     {
         while (runFlag)
         {
@@ -136,4 +126,10 @@ public class Main
             }
         }
     }
+
+    public static void main(String[] args)
+    {
+        new Main().run();
+    }
+
 }
