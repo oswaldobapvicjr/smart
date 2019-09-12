@@ -2,7 +2,10 @@ package net.obvj.smart.agents.api;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
+import java.util.Calendar;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,7 +16,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import net.obvj.smart.agents.api.Agent.State;
 import net.obvj.smart.agents.dummy.DummyAgent;
 import net.obvj.smart.agents.dummy.DummyDaemonAgent;
-import net.obvj.smart.conf.xml.XmlAgent;
+import net.obvj.smart.conf.xml.AgentConfiguration;
 import net.obvj.smart.util.DateUtil.TimeUnit;
 
 /**
@@ -39,7 +42,7 @@ public class AgentTest
     @Test
     public void testParseTimerAgent30Seconds() throws Exception
     {
-        XmlAgent xmlAgent = new XmlAgent.Builder(DUMMY_AGENT)
+        AgentConfiguration xmlAgent = new AgentConfiguration.Builder(DUMMY_AGENT)
                 .type(TIMER)
                 .agentClass(DUMMY_AGENT_CLASS)
                 .interval("30 seconds")
@@ -64,7 +67,7 @@ public class AgentTest
     @Test
     public void testParseTimerAgentDefaultValues() throws Exception
     {
-        XmlAgent xmlAgent = new XmlAgent.Builder(DUMMY_AGENT)
+        AgentConfiguration xmlAgent = new AgentConfiguration.Builder(DUMMY_AGENT)
                 .type(TIMER)
                 .agentClass(DUMMY_AGENT_CLASS)
                 .build();
@@ -86,7 +89,7 @@ public class AgentTest
     @Test
     public void testParseDaemonAgent() throws Exception
     {
-        XmlAgent xmlAgent = new XmlAgent.Builder(DUMMY_DAEMON)
+        AgentConfiguration xmlAgent = new AgentConfiguration.Builder(DUMMY_DAEMON)
                 .type(DAEMON)
                 .agentClass(DUMMY_DAEMON_CLASS)
                 .automaticallyStarted(true)
@@ -107,7 +110,7 @@ public class AgentTest
     @Test
     public void testParseDaemonAgentDefaultValues() throws Exception
     {
-        XmlAgent xmlAgent = new XmlAgent.Builder(DUMMY_DAEMON)
+        AgentConfiguration xmlAgent = new AgentConfiguration.Builder(DUMMY_DAEMON)
                 .type(DAEMON)
                 .agentClass(DUMMY_DAEMON_CLASS)
                 .build();
@@ -157,6 +160,24 @@ public class AgentTest
         assertFalse("expected false on agent.isStarted()", agent.isStarted());
         assertFalse("expected false on agent.isRunning()", agent.isRunning());
         assertTrue("expected true on agent.isStopped()", agent.isStopped());
+    }
+    
+    @Test
+    public void testLastRunDate()
+    {
+        Calendar now = Calendar.getInstance();
+        agent.lastRunDate = now;
+        Calendar lastRunDate = agent.getLastRunDate();
+        assertFalse(now == lastRunDate);
+        assertEquals(now.getTime(), lastRunDate.getTime());
+    }
+    
+    @Test
+    public void testLastRunDateNull()
+    {
+        agent.lastRunDate = null;
+        Calendar lastRunDate = agent.getLastRunDate();
+        assertNull(lastRunDate);
     }
 
 }

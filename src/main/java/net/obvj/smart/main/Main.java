@@ -11,9 +11,9 @@ import javax.management.ObjectName;
 import javax.management.OperationsException;
 
 import net.obvj.smart.agents.api.Agent;
-import net.obvj.smart.conf.AgentConfiguration;
+import net.obvj.smart.conf.AgentsXml;
 import net.obvj.smart.conf.AgentConfigurationException;
-import net.obvj.smart.conf.xml.XmlAgent;
+import net.obvj.smart.conf.xml.AgentConfiguration;
 import net.obvj.smart.jmx.AgentManagerJMX;
 import net.obvj.smart.jmx.AgentManagerJMXMBean;
 import net.obvj.smart.manager.AgentManager;
@@ -72,7 +72,7 @@ public class Main extends SmartServerSupport implements Runnable
         try
         {
             LOG.info("Loading agents configuration...");
-            List<XmlAgent> xmlAgents = AgentConfiguration.getInstance().getAgents();
+            List<AgentConfiguration> xmlAgents = AgentsXml.getInstance().getAgents();
 
             /*
              * Step 6: Loading and starting agents objects
@@ -97,9 +97,7 @@ public class Main extends SmartServerSupport implements Runnable
                 System.exit(1);
             }
 
-            LOG.log(Level.INFO, "Starting agents...");
-            xmlAgents.stream().filter(XmlAgent::isAutomaticallyStarted)
-                    .forEach(xmlAgent -> manager.startAgent(xmlAgent.getName()));
+            startAutomaticAgents();
 
             LOG.info("Ready.");
 

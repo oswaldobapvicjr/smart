@@ -21,8 +21,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import net.obvj.smart.agents.api.Agent;
 import net.obvj.smart.agents.api.Agent.State;
 import net.obvj.smart.agents.api.dto.AgentDTO;
-import net.obvj.smart.conf.AgentConfiguration;
-import net.obvj.smart.conf.xml.XmlAgent;
+import net.obvj.smart.conf.AgentsXml;
+import net.obvj.smart.conf.xml.AgentConfiguration;
 
 /**
  * Unit tests for the {@link AgentManager} class.
@@ -31,7 +31,7 @@ import net.obvj.smart.conf.xml.XmlAgent;
  * @since 2.0
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(AgentConfiguration.class)
+@PrepareForTest(AgentsXml.class)
 @PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.dom.*"})
 public class AgentManagerTest
 {
@@ -46,9 +46,9 @@ public class AgentManagerTest
 
     private static final List<String> names = Arrays.asList(DUMMY_AGENT, DUMMY_DAEMON);
 
-    private static final XmlAgent XML_DUMMY_AGENT = new XmlAgent.Builder(DUMMY_AGENT).type(TIMER)
+    private static final AgentConfiguration XML_DUMMY_AGENT = new AgentConfiguration.Builder(DUMMY_AGENT).type(TIMER)
             .agentClass("net.obvj.smart.agents.dummy.DummyAgent").interval("1 hour").build();
-    private static final XmlAgent XML_DUMMY_DAEMON = new XmlAgent.Builder(DUMMY_DAEMON).type(DAEMON)
+    private static final AgentConfiguration XML_DUMMY_DAEMON = new AgentConfiguration.Builder(DUMMY_DAEMON).type(DAEMON)
             .agentClass("net.obvj.smart.agents.dummy.DummyDaemonAgent").build();
 
     private static final AgentDTO DUMMY_AGENT_DTO = new AgentDTO(DUMMY_AGENT, TIMER, "SET");
@@ -204,10 +204,10 @@ public class AgentManagerTest
     public void testResetAgentWithPreviousStateSet() throws ReflectiveOperationException
     {
         // Setup AgentConfiguration mocks
-        AgentConfiguration agentConfigMock = Mockito.mock(AgentConfiguration.class);
+        AgentsXml agentConfigMock = Mockito.mock(AgentsXml.class);
         Mockito.when(agentConfigMock.getAgentConfiguration(DUMMY_AGENT)).thenReturn(XML_DUMMY_AGENT);
-        PowerMockito.mockStatic(AgentConfiguration.class);
-        PowerMockito.when(AgentConfiguration.getInstance()).thenReturn(agentConfigMock);
+        PowerMockito.mockStatic(AgentsXml.class);
+        PowerMockito.when(AgentsXml.getInstance()).thenReturn(agentConfigMock);
         
         AgentManager manager = newAgentManager(dummyAgent);
         manager.resetAgent(DUMMY_AGENT);

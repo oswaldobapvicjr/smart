@@ -6,7 +6,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.obvj.smart.conf.xml.XmlAgent;
+import net.obvj.smart.conf.xml.AgentConfiguration;
 import net.obvj.smart.util.DateUtil;
 import net.obvj.smart.util.DateUtil.TimeUnit;
 import net.obvj.smart.util.TimeInterval;
@@ -55,7 +55,7 @@ public abstract class TimerAgent extends Agent
     }
 
     /**
-     * Creates a new DaemonAgent from the given XmlAgent
+     * Creates a new DaemonAgent from the given configuration.
      * 
      * @throws ReflectiveOperationException if the agent class or constructor cannot be found,
      *                                      or the constructor is not accessible, or the agent
@@ -63,18 +63,19 @@ public abstract class TimerAgent extends Agent
      * 
      * @since 2.0
      */
-    public static Agent parseAgent(XmlAgent xmlAgent) throws ReflectiveOperationException
+    public static Agent parseAgent(AgentConfiguration configuration) throws ReflectiveOperationException
     {
-        if (!"timer".equals(xmlAgent.getType()))
+        if (!"timer".equals(configuration.getType()))
         {
             throw new IllegalArgumentException("Not a timer agent");
         }
 
-        TimerAgent agent = (TimerAgent) Class.forName(xmlAgent.getAgentClass()).getConstructor().newInstance();
-        agent.setName(xmlAgent.getName());
-        agent.setStopTimeoutSeconds(xmlAgent.getStopTimeoutInSeconds());
+        TimerAgent agent = (TimerAgent) Class.forName(configuration.getAgentClass()).getConstructor().newInstance();
+        agent.setConfiguration(configuration);
+        agent.setName(configuration.getName());
+        agent.setStopTimeoutSeconds(configuration.getStopTimeoutInSeconds());
 
-        TimeInterval timeInterval = TimeInterval.of(xmlAgent.getInterval());
+        TimeInterval timeInterval = TimeInterval.of(configuration.getInterval());
         agent.interval = timeInterval.getDuration();
         agent.timeUnit = timeInterval.getTimeUnit();
 

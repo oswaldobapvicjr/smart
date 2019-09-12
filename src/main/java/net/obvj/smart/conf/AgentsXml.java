@@ -20,8 +20,8 @@ import javax.xml.validation.SchemaFactory;
 
 import org.xml.sax.SAXException;
 
-import net.obvj.smart.conf.xml.XmlAgent;
-import net.obvj.smart.conf.xml.XmlSmart;
+import net.obvj.smart.conf.xml.AgentConfiguration;
+import net.obvj.smart.conf.xml.SmartConfiguration;
 
 /**
  * An object that maintains agent configuration data retrieved from the {@code agents.xml} file
@@ -29,34 +29,34 @@ import net.obvj.smart.conf.xml.XmlSmart;
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
-public class AgentConfiguration
+public class AgentsXml
 {
     private static final Logger LOG = Logger.getLogger("smart-server");
 
     private static final String AGENTS_XML = "agents.xml";
 
-    private static final AgentConfiguration INSTANCE = new AgentConfiguration();
+    private static final AgentsXml INSTANCE = new AgentsXml();
 
-    private XmlSmart agents;
+    private SmartConfiguration agents;
 
-    private Map<String, XmlAgent> agentsByName = new HashMap<>();
+    private Map<String, AgentConfiguration> agentsByName = new HashMap<>();
     
-    private AgentConfiguration()
+    private AgentsXml()
     {
         this(AGENTS_XML);
     }
     
-    protected AgentConfiguration(String fileName)
+    protected AgentsXml(String fileName)
     {
         agents = loadAgentsXmlFile(fileName);
         loadAgentsMap();
     }
 
-    protected static XmlSmart loadAgentsXmlFile(String fileName)
+    protected static SmartConfiguration loadAgentsXmlFile(String fileName)
     {
-        XmlSmart xmlAgents = null;
+        SmartConfiguration xmlAgents = null;
         LOG.log(Level.INFO, "Searching for agents file: {0}", fileName);
-        try (final InputStream stream = AgentConfiguration.class.getClassLoader().getResourceAsStream(fileName))
+        try (final InputStream stream = AgentsXml.class.getClassLoader().getResourceAsStream(fileName))
         {
             if (stream == null)
             {
@@ -64,10 +64,10 @@ public class AgentConfiguration
             }
 
             LOG.log(Level.INFO, "{0} found", fileName);
-            JAXBContext jaxb = JAXBContext.newInstance(XmlSmart.class);
+            JAXBContext jaxb = JAXBContext.newInstance(SmartConfiguration.class);
             Unmarshaller unmarshaller = jaxb.createUnmarshaller();
             unmarshaller.setSchema(loadSchema());
-            xmlAgents = (XmlSmart) unmarshaller.unmarshal(stream);
+            xmlAgents = (SmartConfiguration) unmarshaller.unmarshal(stream);
 
             LOG.log(Level.INFO, "{0} agent(s) found", xmlAgents.getAgents().size());
         }
@@ -89,7 +89,7 @@ public class AgentConfiguration
     private static Schema loadSchema() throws SAXException
     {
         SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        return sf.newSchema(AgentConfiguration.class.getClassLoader().getResource("agents.xsd"));
+        return sf.newSchema(AgentsXml.class.getClassLoader().getResource("agents.xsd"));
     }
     
     private void loadAgentsMap()
@@ -97,17 +97,17 @@ public class AgentConfiguration
         agents.getAgents().forEach(agent -> agentsByName.put(agent.getName(), agent));
     }
 
-    public List<XmlAgent> getAgents()
+    public List<AgentConfiguration> getAgents()
     {
         return agents != null ? agents.getAgents() : Collections.emptyList();
     }
     
-    public XmlAgent getAgentConfiguration(String name)
+    public AgentConfiguration getAgentConfiguration(String name)
     {
         return agentsByName.get(name);
     }
 
-    public static AgentConfiguration getInstance()
+    public static AgentsXml getInstance()
     {
         return INSTANCE;
     }

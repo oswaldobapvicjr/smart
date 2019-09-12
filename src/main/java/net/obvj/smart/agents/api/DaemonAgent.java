@@ -6,7 +6,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.obvj.smart.conf.xml.XmlAgent;
+import net.obvj.smart.conf.xml.AgentConfiguration;
 import net.obvj.smart.util.DateUtil;
 
 /**
@@ -41,7 +41,7 @@ public abstract class DaemonAgent extends Agent
     }
 
     /**
-     * Creates a new DaemonAgent from the given XmlAgent
+     * Creates a new DaemonAgent from the given configuration.
      * 
      * @throws ReflectiveOperationException if the agent class or constructor cannot be found,
      *                                      or the constructor is not accessible, or the agent
@@ -49,15 +49,16 @@ public abstract class DaemonAgent extends Agent
      * 
      * @since 2.0
      */
-    public static Agent parseAgent(XmlAgent xmlAgent) throws ReflectiveOperationException
+    public static Agent parseAgent(AgentConfiguration configuration) throws ReflectiveOperationException
     {
-        if (!"daemon".equals(xmlAgent.getType()))
+        if (!"daemon".equals(configuration.getType()))
         {
             throw new IllegalArgumentException("Not a daemon agent");
         }
-        DaemonAgent agent = (DaemonAgent) Class.forName(xmlAgent.getAgentClass()).getConstructor().newInstance();
-        agent.setName(xmlAgent.getName());
-        agent.setStopTimeoutSeconds(xmlAgent.getStopTimeoutInSeconds());
+        DaemonAgent agent = (DaemonAgent) Class.forName(configuration.getAgentClass()).getConstructor().newInstance();
+        agent.setConfiguration(configuration);
+        agent.setName(configuration.getName());
+        agent.setStopTimeoutSeconds(configuration.getStopTimeoutInSeconds());
         return agent;
     }
     

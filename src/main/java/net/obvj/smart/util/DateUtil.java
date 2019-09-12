@@ -174,4 +174,12 @@ public class DateUtil
         return start.getTime();
     }
 
+    /**
+     * Creates and returns a copy of the given calendar object.
+     */
+    public static Calendar getClonedDate(Calendar calendar)
+    {
+        return calendar != null ? (Calendar) calendar.clone() : null;
+    }
+
 }

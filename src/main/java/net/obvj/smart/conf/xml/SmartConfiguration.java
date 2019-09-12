@@ -12,13 +12,13 @@ import javax.xml.bind.annotation.*;
  */
 @XmlRootElement(name = "smart")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class XmlSmart
+public class SmartConfiguration
 {
     @XmlElementWrapper(name = "agents")
     @XmlElement(name = "agent")
-    private List<XmlAgent> agents;
+    private List<AgentConfiguration> agents;
 
-    public List<XmlAgent> getAgents()
+    public List<AgentConfiguration> getAgents()
     {
         return agents;
     }

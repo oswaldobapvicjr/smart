@@ -9,7 +9,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.function.Supplier;
 
-import net.obvj.smart.conf.xml.XmlSmart;
+import net.obvj.smart.conf.xml.SmartConfiguration;
 
 /**
  * Common utilities for working with unit tests.
@@ -67,7 +67,7 @@ public class TestUtil
      *                          validated
      */
     public static void assertException(Class<? extends Throwable> expectedThrowable, String expectedMessage,
-            Class<? extends Throwable> expectedCause, Supplier<XmlSmart> supplier)
+            Class<? extends Throwable> expectedCause, Supplier<SmartConfiguration> supplier)
     {
         try
         {

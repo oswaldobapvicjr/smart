@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlElement;
  * @since 2.0
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class XmlAgent
+public class AgentConfiguration
 {
     private static final String DEFAULT_INTERVAL = "1";
     private static final int DEFAULT_STOP_TIMEOUT_IN_SECONDS = -1;
@@ -35,11 +35,11 @@ public class XmlAgent
     @XmlElement(name = "stopTimeoutInSeconds")
     private int stopTimeoutInSeconds = DEFAULT_STOP_TIMEOUT_IN_SECONDS;
 
-    public XmlAgent()
+    public AgentConfiguration()
     {
     }
 
-    private XmlAgent(Builder builder)
+    private AgentConfiguration(Builder builder)
     {
         this.name = builder.name;
         this.type = builder.type;
@@ -129,7 +129,7 @@ public class XmlAgent
             return this;
         }        
 
-        public XmlAgent build()
+        public AgentConfiguration build()
         {
             if (name == null) throw new IllegalStateException("name cannot be null");
             if (type == null) throw new IllegalStateException("type cannot be null");
@@ -138,7 +138,7 @@ public class XmlAgent
             // The default interval can only be set for timer agents 
             if (interval == null && type.equals("timer")) interval = DEFAULT_INTERVAL;
             
-            return new XmlAgent(this);
+            return new AgentConfiguration(this);
         }
     }
 }

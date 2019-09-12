@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 import net.obvj.smart.agents.api.Agent;
 import net.obvj.smart.agents.api.DaemonAgent;
 import net.obvj.smart.agents.api.dto.AgentDTO;
-import net.obvj.smart.conf.AgentConfiguration;
-import net.obvj.smart.conf.xml.XmlAgent;
+import net.obvj.smart.conf.AgentsXml;
+import net.obvj.smart.conf.xml.AgentConfiguration;
 
 /**
  * A single object for agents maintenance
@@ -94,7 +94,7 @@ public final class AgentManager
         {
             throw new IllegalStateException("'" + name + "' is started. Please stop this agent first.");
         }
-        XmlAgent agentConfig = AgentConfiguration.getInstance().getAgentConfiguration(name);
+        AgentConfiguration agentConfig = AgentsXml.getInstance().getAgentConfiguration(name);
         Agent newAgent = Agent.parseAgent(agentConfig);
         addAgent(newAgent);
     }

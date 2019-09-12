@@ -5,7 +5,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeoutException;
 
-import net.obvj.smart.conf.xml.XmlAgent;
+import net.obvj.smart.conf.xml.AgentConfiguration;
+import net.obvj.smart.util.DateUtil;
 
 /**
  * A common interface for all managed agents
@@ -20,6 +21,8 @@ public abstract class Agent implements Runnable
     {
         SET, STARTED, RUNNING, STOPPED, ERROR;
     }
+
+    private AgentConfiguration configuration;
 
     private String name;
     private String type;
@@ -77,6 +80,19 @@ public abstract class Agent implements Runnable
         this.stopTimeoutSeconds = stopTimeoutSeconds;
     }
 
+    protected void setConfiguration(AgentConfiguration configuration)
+    {
+        this.configuration = configuration;
+    }
+
+    /**
+     * @return This agent's source configuration data
+     */
+    public AgentConfiguration getConfiguration()
+    {
+        return configuration;
+    }
+
     protected void setState(State currentState)
     {
         this.currentState = currentState;
@@ -122,7 +138,7 @@ public abstract class Agent implements Runnable
      */
     public Calendar getStartDate()
     {
-        return (startDate != null ? (Calendar) startDate.clone() : null);
+        return DateUtil.getClonedDate(startDate);
     }
 
     /**
@@ -131,9 +147,9 @@ public abstract class Agent implements Runnable
      */
     public Calendar getLastRunDate()
     {
-        return (Calendar) lastRunDate.clone();
+        return DateUtil.getClonedDate(lastRunDate);
     }
-
+    
     public abstract void start();
 
     public abstract void stop() throws TimeoutException;
@@ -153,7 +169,7 @@ public abstract class Agent implements Runnable
      *                                      cannot be instantiated
      * @since 2.0
      */
-    public static Agent parseAgent(XmlAgent xmlAgent) throws ReflectiveOperationException
+    public static Agent parseAgent(AgentConfiguration xmlAgent) throws ReflectiveOperationException
     {
         if (xmlAgent.getType().equals("timer"))
         {
