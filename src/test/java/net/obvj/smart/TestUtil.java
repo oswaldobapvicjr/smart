@@ -60,6 +60,31 @@ public class TestUtil
     }
 
     /**
+     * A utility method to assert that a given throwable matches the expected class.
+     * 
+     * @param expectedThrowable the expected throwable class
+     * @param throwable         the throwable to be validated
+     */
+    public static void assertException(Class<? extends Throwable> expectedThrowable, Throwable throwable)
+    {
+        assertException(expectedThrowable, null, null, throwable);
+    }
+
+    /**
+     * A utility method to assert that a given throwable matches the expected class and
+     * message.
+     * 
+     * @param expectedThrowable the expected throwable class
+     * @param expectedMessage   the expected message (if applicable)
+     * @param throwable         the throwable to be validated
+     */
+    public static void assertException(Class<? extends Throwable> expectedThrowable, String expectedMessage,
+            Throwable throwable)
+    {
+        assertException(expectedThrowable, expectedMessage, null, throwable);
+    }
+
+    /**
      * A utility method to assert that a given throwable matches the expected class, cause and
      * message.
      * 
@@ -71,9 +96,50 @@ public class TestUtil
     public static void assertException(Class<? extends Throwable> expectedThrowable, String expectedMessage,
             Class<? extends Throwable> expectedCause, Throwable throwable)
     {
-        assertEquals(expectedThrowable, throwable.getClass());
-        if (expectedMessage != null) assertEquals(expectedMessage, throwable.getMessage());
-        if (expectedCause != null) assertEquals(expectedCause, throwable.getCause().getClass());
+        assertEquals("Unexpected throwable class:", expectedThrowable, throwable.getClass());
+        if (expectedMessage != null) assertEquals("Unexpected message:", expectedMessage, throwable.getMessage());
+        if (expectedCause != null) assertEquals("Unexpected cause:", expectedCause, throwable.getCause().getClass());
+    }
+
+    /**
+     * A utility method to assert the expected exception thrown by a supplying function.
+     * <p>
+     * Example of usage:
+     * <p>
+     * <code>
+     * assertException(AgentConfigurationException.class, "Invalid agents file",
+     *           () -> AgentConfiguration.loadAgentsXmlFile("testAgents/timerAgentWithoutName.xml"))
+     * </code>
+     * 
+     * @param expectedThrowable the expected throwable class
+     * @param supplier          the supplying function that throws an exception to be
+     *                          validated
+     */
+    public static void assertException(Class<? extends Throwable> expectedThrowable, Supplier<?> supplier)
+    {
+        assertException(expectedThrowable, null, null, supplier);
+    }
+
+    /**
+     * A utility method to assert the expected exception and message thrown by a supplying
+     * function.
+     * <p>
+     * Example of usage:
+     * <p>
+     * <code>
+     * assertException(AgentConfigurationException.class, "Invalid agents file",
+     *           () -> AgentConfiguration.loadAgentsXmlFile("testAgents/timerAgentWithoutName.xml"))
+     * </code>
+     * 
+     * @param expectedThrowable the expected throwable class
+     * @param expectedMessage   the expected message (if applicable)
+     * @param supplier          the supplying function that throws an exception to be
+     *                          validated
+     */
+    public static void assertException(Class<? extends Throwable> expectedThrowable, String expectedMessage,
+            Supplier<?> supplier)
+    {
+        assertException(expectedThrowable, expectedMessage, null, supplier);
     }
 
     /**
@@ -109,6 +175,47 @@ public class TestUtil
     }
 
     /**
+     * A utility method to assert the expected exception thrown by a given procedure, that is,
+     * a function that accepts no arguments and returns void (e.g., a Runnable's {@code run()}
+     * method).
+     * <p>
+     * Example of usage:
+     * <p>
+     * <code>
+     * assertException(IllegalStateException.class, () -> agent.start())
+     * </code>
+     * 
+     * @param expectedThrowable the expected throwable class
+     * @param procedure         the procedure that produces an exception to be * validated
+     */
+    public static void assertException(Class<? extends Throwable> expectedThrowable, Procedure procedure)
+    {
+        assertException(expectedThrowable, null, null, procedure);
+    }
+
+    /**
+     * A utility method to assert the expected exception and message thrown by a given
+     * procedure, that is, a function that accepts no arguments and returns void (e.g., a
+     * Runnable's {@code run()} method).
+     * <p>
+     * Example of usage:
+     * <p>
+     * <code>
+     * assertException(IllegalStateException.class, "Agent already started",
+     *           () -> agent.start())
+     * </code>
+     * 
+     * @param expectedThrowable the expected throwable class
+     * @param expectedMessage   the expected message (if applicable)
+     * @param procedure         the procedure that produces an exception to be * validated
+     */
+    public static void assertException(Class<? extends Throwable> expectedThrowable, String expectedMessage,
+            Procedure procedure)
+    {
+        assertException(expectedThrowable, expectedMessage, null, procedure);
+    }
+
+    /**
      * A utility method to assert the expected exception, message and cause thrown by a given
      * procedure, that is, a function that accepts no arguments and returns void (e.g., a
      * Runnable's {@code run()} method).
@@ -116,7 +223,7 @@ public class TestUtil
      * Example of usage:
      * <p>
      * <code>
-     * assertException(IllegalStateException.class, "Agent already started", null,
+     * assertException(AgentConfigurationException.class, "Agent already started", IllegalStateException.class,
      *           () -> agent.start())
      * </code>
      * 

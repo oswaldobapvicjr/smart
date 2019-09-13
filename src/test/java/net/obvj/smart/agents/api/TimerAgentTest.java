@@ -38,7 +38,7 @@ public class TimerAgentTest
     public void testStartAgentWithPreviousStateStarted()
     {
         Mockito.when(agent.getState()).thenReturn(State.STARTED);
-        TestUtil.assertException(IllegalStateException.class, TimerAgent.MSG_AGENT_ALREADY_STARTED, null,
+        TestUtil.assertException(IllegalStateException.class, TimerAgent.MSG_AGENT_ALREADY_STARTED,
                 () -> agent.start());
     }
 
@@ -49,7 +49,7 @@ public class TimerAgentTest
     public void testStartAgentWithPreviousStateStopped()
     {
         Mockito.when(agent.getState()).thenReturn(State.STOPPED);
-        TestUtil.assertException(IllegalStateException.class, null, null, () -> agent.start());
+        TestUtil.assertException(IllegalStateException.class, () -> agent.start());
     }
 
     /**
@@ -59,7 +59,7 @@ public class TimerAgentTest
     public void testStopAgentWithPreviousStateStopped()
     {
         Mockito.when(agent.isStopped()).thenReturn(true);
-        TestUtil.assertException(IllegalStateException.class, TimerAgent.MSG_AGENT_ALREADY_STOPPED, null, () ->
+        TestUtil.assertException(IllegalStateException.class, TimerAgent.MSG_AGENT_ALREADY_STOPPED, () ->
         {
             try
             {
