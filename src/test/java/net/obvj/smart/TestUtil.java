@@ -9,8 +9,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.function.Supplier;
 
-import net.obvj.smart.conf.xml.SmartConfiguration;
-
 /**
  * Common utilities for working with unit tests.
  *
@@ -19,6 +17,18 @@ import net.obvj.smart.conf.xml.SmartConfiguration;
  */
 public class TestUtil
 {
+    private static final String EXPECTED_BUT_NOT_THROWN = "Expected but not thrown: \"%s\"";
+
+    /**
+     * A utility function that accepts no argument and returns void, to allow testing methods
+     * with this type of signature (e.g., a Runnable's {@code run()} method).
+     */
+    @FunctionalInterface
+    public interface Procedure
+    {
+        void execute();
+    }
+
     /**
      * Tests that no instances of an utility class are created.
      *
@@ -50,7 +60,24 @@ public class TestUtil
     }
 
     /**
-     * A utility method to assert the expected throwable and cause classes thrown by a
+     * A utility method to assert that a given throwable matches the expected class, cause and
+     * message.
+     * 
+     * @param expectedThrowable the expected throwable class
+     * @param expectedMessage   the expected message (if applicable)
+     * @param expectedCause     the expected throwable cause class (if applicable)
+     * @param throwable         the throwable to be validated
+     */
+    public static void assertException(Class<? extends Throwable> expectedThrowable, String expectedMessage,
+            Class<? extends Throwable> expectedCause, Throwable throwable)
+    {
+        assertEquals(expectedThrowable, throwable.getClass());
+        if (expectedMessage != null) assertEquals(expectedMessage, throwable.getMessage());
+        if (expectedCause != null) assertEquals(expectedCause, throwable.getCause().getClass());
+    }
+
+    /**
+     * A utility method to assert the expected exception, message and cause thrown by a
      * supplying function.
      * <p>
      * Example of usage:
@@ -61,13 +88,13 @@ public class TestUtil
      * </code>
      * 
      * @param expectedThrowable the expected throwable class
-     * @param expectedCause     the expected throwable cause class (if applicable)
      * @param expectedMessage   the expected message (if applicable)
-     * @param supplier          the supplying function that produces an exception to be
+     * @param expectedCause     the expected throwable cause class (if applicable)
+     * @param supplier          the supplying function that throws an exception to be
      *                          validated
      */
     public static void assertException(Class<? extends Throwable> expectedThrowable, String expectedMessage,
-            Class<? extends Throwable> expectedCause, Supplier<SmartConfiguration> supplier)
+            Class<? extends Throwable> expectedCause, Supplier<?> supplier)
     {
         try
         {
@@ -75,9 +102,41 @@ public class TestUtil
         }
         catch (Throwable throwable)
         {
-            assertEquals(expectedThrowable, throwable.getClass());
-            if (expectedMessage != null) assertEquals(expectedMessage, throwable.getMessage());
-            if (expectedCause != null) assertEquals(expectedCause, throwable.getCause().getClass());
+            assertException(expectedThrowable, expectedMessage, expectedCause, throwable);
+            return;
         }
+        fail(String.format(EXPECTED_BUT_NOT_THROWN, expectedThrowable));
+    }
+
+    /**
+     * A utility method to assert the expected exception, message and cause thrown by a given
+     * procedure, that is, a function that accepts no arguments and returns void (e.g., a
+     * Runnable's {@code run()} method).
+     * <p>
+     * Example of usage:
+     * <p>
+     * <code>
+     * assertException(IllegalStateException.class, "Agent already started", null,
+     *           () -> agent.start())
+     * </code>
+     * 
+     * @param expectedThrowable the expected throwable class
+     * @param expectedMessage   the expected message (if applicable)
+     * @param expectedCause     the expected throwable cause class (if applicable)
+     * @param procedure         the procedure that produces an exception to be * validated
+     */
+    public static void assertException(Class<? extends Throwable> expectedThrowable, String expectedMessage,
+            Class<? extends Throwable> expectedCause, Procedure procedure)
+    {
+        try
+        {
+            procedure.execute();
+        }
+        catch (Throwable throwable)
+        {
+            assertException(expectedThrowable, expectedMessage, expectedCause, throwable);
+            return;
+        }
+        fail(String.format(EXPECTED_BUT_NOT_THROWN, expectedThrowable));
     }
 }

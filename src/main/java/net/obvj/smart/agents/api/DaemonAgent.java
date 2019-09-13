@@ -21,9 +21,9 @@ import net.obvj.smart.util.DateUtil;
  */
 public abstract class DaemonAgent extends Agent
 {
-
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
-    private static final Logger logger = Logger.getLogger("smart-server");
+    private static final String DAEMON = "DAEMON";
+    private static final Logger LOG = Logger.getLogger("smart-server");
 
     private Object runLock;
     
@@ -35,7 +35,7 @@ public abstract class DaemonAgent extends Agent
     public DaemonAgent(String name)
     {
         setName(name == null ? this.getClass().getSimpleName() : name);
-        setType("DAEMON");
+        setType(DAEMON);
         setState(State.SET);
         this.runLock = new Object();
     }
@@ -51,7 +51,7 @@ public abstract class DaemonAgent extends Agent
      */
     public static Agent parseAgent(AgentConfiguration configuration) throws ReflectiveOperationException
     {
-        if (!"daemon".equals(configuration.getType()))
+        if (!DAEMON.equalsIgnoreCase(configuration.getType()))
         {
             throw new IllegalArgumentException("Not a daemon agent");
         }
@@ -69,7 +69,7 @@ public abstract class DaemonAgent extends Agent
     {
         if (isRunning())
         {
-            logger.info("Agent task already in execution.");
+            LOG.info("Agent task already in execution.");
         }
         else
         {
@@ -77,7 +77,7 @@ public abstract class DaemonAgent extends Agent
             {
                 setState(State.RUNNING);
                 lastRunDate = Calendar.getInstance();
-                logger.log(Level.INFO, "{0} - Agent task started.", DateUtil.formatDate(lastRunDate.getTime()));
+                LOG.log(Level.INFO, "{0} - Agent task started.", DateUtil.formatDate(lastRunDate.getTime()));
                 try
                 {
                     runTask();
@@ -85,7 +85,7 @@ public abstract class DaemonAgent extends Agent
                 }
                 catch (Exception e)
                 {
-                    logger.severe(e.getClass().getName() + ": " + e.getMessage());
+                    LOG.severe(e.getClass().getName() + ": " + e.getMessage());
                     setState(State.ERROR);
                 }
             }
@@ -112,9 +112,9 @@ public abstract class DaemonAgent extends Agent
             {
                 throw new IllegalStateException("Agent already started");
             }
-            logger.info("Starting agent...");
+            LOG.info("Starting agent...");
             schedule.schedule(this, 0, TimeUnit.SECONDS);
-            logger.info("Daemon agent started");
+            LOG.info("Daemon agent started");
             setState(State.STARTED);
             startDate = Calendar.getInstance();
         }
@@ -140,19 +140,19 @@ public abstract class DaemonAgent extends Agent
             stopTask();
             schedule.shutdown();
 
-            logger.info("Stopping agent...");
+            LOG.info("Stopping agent...");
             int sleepSeconds = 2;
             int attempts = getStopTimeoutSeconds() / sleepSeconds;
             while (isRunning() && attempts-- > 0)
             {
                 try
                 {
-                    logger.info("Agent task in execution. Waiting for its completion.");
+                    LOG.info("Agent task in execution. Waiting for its completion.");
                     wait(sleepSeconds * 1000l);
                 }
                 catch (InterruptedException e)
                 {
-                    logger.log(Level.WARNING, "Thread was interrupted.", e);
+                    LOG.log(Level.WARNING, "Thread was interrupted.", e);
                     // Restore interrupted state
                     Thread.currentThread().interrupt();
                 }
@@ -165,7 +165,7 @@ public abstract class DaemonAgent extends Agent
 
             setState(State.STOPPED);
             startDate = null;
-            logger.info("Agent stopped successfully.");
+            LOG.info("Agent stopped successfully.");
         }
     }
 

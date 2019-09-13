@@ -23,7 +23,11 @@ public abstract class TimerAgent extends Agent
 {
 
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
-    private static final Logger logger = Logger.getLogger("smart-server");
+    private static final String TIMER = "TIMER";
+    private static final Logger LOG = Logger.getLogger("smart-server");
+
+    protected static final String MSG_AGENT_ALREADY_STARTED = "Agent already started";
+    protected static final String MSG_AGENT_ALREADY_STOPPED = "Agent already stopped";
 
     private int interval;
     private TimeUnit timeUnit;
@@ -39,15 +43,10 @@ public abstract class TimerAgent extends Agent
         this(null, 1, TimeUnit.DEFAULT);
     }
 
-    public TimerAgent(String name)
-    {
-        this(name, 1, TimeUnit.DEFAULT);
-    }
-
     public TimerAgent(String name, int interval, TimeUnit timeUnit)
     {
         setName(name == null ? this.getClass().getSimpleName() : name);
-        setType("TIMER");
+        setType(TIMER);
         this.interval = interval;
         this.timeUnit = timeUnit;
         setState(State.SET);
@@ -65,7 +64,7 @@ public abstract class TimerAgent extends Agent
      */
     public static Agent parseAgent(AgentConfiguration configuration) throws ReflectiveOperationException
     {
-        if (!"timer".equals(configuration.getType()))
+        if (!TIMER.equalsIgnoreCase(configuration.getType()))
         {
             throw new IllegalArgumentException("Not a timer agent");
         }
@@ -89,7 +88,7 @@ public abstract class TimerAgent extends Agent
     {
         if (isRunning())
         {
-            logger.info("Agent task already in execution.");
+            LOG.info("Agent task already in execution.");
         }
         else
         {
@@ -98,19 +97,19 @@ public abstract class TimerAgent extends Agent
                 State previousState = getState();
                 setState(State.RUNNING);
                 lastRunDate = Calendar.getInstance();
-                logger.log(Level.INFO, "{0} - Agent task started.", DateUtil.formatDate(lastRunDate.getTime()));
+                LOG.log(Level.INFO, "{0} - Agent task started.", DateUtil.formatDate(lastRunDate.getTime()));
                 try
                 {
                     runTask();
                 }
                 catch (Exception e)
                 {
-                    logger.severe(e.getClass().getName() + ": " + e.getMessage());
+                    LOG.severe(e.getClass().getName() + ": " + e.getMessage());
                 }
                 finally
                 {
                     setState(previousState);
-                    logger.log(Level.INFO, "{0} - Agent task complete.", DateUtil.now());
+                    LOG.log(Level.INFO, "{0} - Agent task complete.", DateUtil.now());
                 }
             }
         }
@@ -124,9 +123,9 @@ public abstract class TimerAgent extends Agent
         switch (getState())
         {
         case STARTED:
-            throw new IllegalStateException("Agent already started");
+            throw new IllegalStateException(MSG_AGENT_ALREADY_STARTED);
         case STOPPED:
-            throw new IllegalStateException("Illegal state: agent task already cancelled");
+            throw new IllegalStateException("Agent was stopped. Please reset this agent before restarting");
         default:
             break;
         }
@@ -134,15 +133,15 @@ public abstract class TimerAgent extends Agent
         {
             if (isStarted())
             {
-                throw new IllegalStateException("Agent already started");
+                throw new IllegalStateException(MSG_AGENT_ALREADY_STARTED);
             }
-            logger.log(Level.INFO, "Starting agent: {0}", getName());
+            LOG.log(Level.INFO, "Starting agent: {0}", getName());
             Date start = DateUtil.getExactStartDateEvery(interval, timeUnit);
 
             schedule.scheduleAtFixedRate(this, (start.getTime() - System.currentTimeMillis()),
                     timeUnit.toMillis(interval), java.util.concurrent.TimeUnit.MILLISECONDS);
 
-            logger.log(Level.INFO, "Agent {0} scheduled to run every {1} {2}. Start programmed to {3}",
+            LOG.log(Level.INFO, "Agent {0} scheduled to run every {1} {2}. Start programmed to {3}",
                     new Object[] { getName(), interval, timeUnit, DateUtil.formatDate(start) });
             setState(State.STARTED);
             startDate = Calendar.getInstance();
@@ -157,27 +156,27 @@ public abstract class TimerAgent extends Agent
     {
         if (isStopped())
         {
-            throw new IllegalStateException("Agent already stopped");
+            throw new IllegalStateException(MSG_AGENT_ALREADY_STOPPED);
         }
         synchronized (this)
         {
             if (isStopped())
             {
-                throw new IllegalStateException("Agent already stopped");
+                throw new IllegalStateException(MSG_AGENT_ALREADY_STOPPED);
             }
-            logger.info("Stopping agent...");
+            LOG.info("Stopping agent...");
             int sleepSeconds = 2;
             int attempts = getStopTimeoutSeconds() / sleepSeconds;
             while (isRunning() && attempts-- > 0)
             {
                 try
                 {
-                    logger.info("Agent task in execution. Waiting for its completion.");
+                    LOG.info("Agent task in execution. Waiting for its completion.");
                     wait(sleepSeconds * 1000l);
                 }
                 catch (InterruptedException e)
                 {
-                    logger.log(Level.WARNING, "Thread was interrupted.", e);
+                    LOG.log(Level.WARNING, "Thread was interrupted.", e);
                     // Restore interrupted state
                     Thread.currentThread().interrupt();
                 }
@@ -189,7 +188,7 @@ public abstract class TimerAgent extends Agent
             schedule.shutdown();
             setState(State.STOPPED);
             startDate = null;
-            logger.info("Agent stopped successfully.");
+            LOG.info("Agent stopped successfully.");
         }
     }
 

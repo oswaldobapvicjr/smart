@@ -126,6 +126,17 @@ public class AgentTest
         assertFalse(daemonAgent.isStarted());
     }
     
+    @Test(expected = IllegalArgumentException.class)
+    public void testParseUnknownAgentType() throws Exception
+    {
+        AgentConfiguration xmlAgent = new AgentConfiguration.Builder(DUMMY_DAEMON)
+                .type("unknown")
+                .agentClass(DUMMY_DAEMON_CLASS)
+                .build();
+
+        Agent.parseAgent(xmlAgent);
+    }
+    
     @Test
     public void testStatusMethodsForAgentStatusSet()
     {

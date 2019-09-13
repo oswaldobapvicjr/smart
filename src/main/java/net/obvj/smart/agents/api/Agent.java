@@ -112,7 +112,7 @@ public abstract class Agent implements Runnable
      */
     public boolean isStarted()
     {
-        return (currentState == State.STARTED);
+        return (getState() == State.STARTED);
     }
 
     /**
@@ -121,7 +121,7 @@ public abstract class Agent implements Runnable
      */
     public boolean isRunning()
     {
-        return (currentState == State.RUNNING);
+        return (getState() == State.RUNNING);
     }
 
     /**
@@ -130,7 +130,7 @@ public abstract class Agent implements Runnable
      */
     public boolean isStopped()
     {
-        return (currentState == State.STOPPED);
+        return (getState() == State.STOPPED);
     }
 
     /**
@@ -162,20 +162,27 @@ public abstract class Agent implements Runnable
     public abstract String getStatusString();
 
     /**
-     * Creates a new Agent from the given XmlAgent
+     * Creates a new Agent from the given {@link AgentConfiguration}.
      * 
      * @throws ReflectiveOperationException if the agent class or constructor cannot be found,
      *                                      or the constructor is not accessible, or the agent
      *                                      cannot be instantiated
+     * @throws NullPointerException         if a null agent configuration is received
+     * @throws IllegalArgumentException     if an unknown agent type is received
      * @since 2.0
      */
-    public static Agent parseAgent(AgentConfiguration xmlAgent) throws ReflectiveOperationException
+    public static Agent parseAgent(AgentConfiguration configuration) throws ReflectiveOperationException
     {
-        if (xmlAgent.getType().equals("timer"))
+        String lType = configuration.getType();
+        if (lType.equalsIgnoreCase("timer"))
         {
-            return TimerAgent.parseAgent(xmlAgent);
+            return TimerAgent.parseAgent(configuration);
         }
-        return DaemonAgent.parseAgent(xmlAgent);
+        else if (lType.equalsIgnoreCase("daemon"))
+        {
+            return DaemonAgent.parseAgent(configuration);
+        }
+        throw new IllegalArgumentException(String.format("Unknown agent type: \"%s\"", lType));
     }
 
 }
