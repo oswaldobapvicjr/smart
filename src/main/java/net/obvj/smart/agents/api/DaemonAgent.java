@@ -25,6 +25,9 @@ public abstract class DaemonAgent extends Agent
     private static final String DAEMON = "DAEMON";
     private static final Logger LOG = Logger.getLogger("smart-server");
 
+    protected static final String MSG_AGENT_ALREADY_STARTED = "Agent already started";
+    protected static final String MSG_AGENT_ALREADY_STOPPED = "Agent already stopped";
+
     private Object runLock;
     
     public DaemonAgent()
@@ -100,7 +103,7 @@ public abstract class DaemonAgent extends Agent
         switch (getState())
         {
         case STARTED:
-            throw new IllegalStateException("Agent already started");
+            throw new IllegalStateException(MSG_AGENT_ALREADY_STARTED);
         case STOPPED:
             throw new IllegalStateException("Agent has been stopped. Try to reset this agent before restarting");
         default:
@@ -110,7 +113,7 @@ public abstract class DaemonAgent extends Agent
         {
             if (isStarted())
             {
-                throw new IllegalStateException("Agent already started");
+                throw new IllegalStateException(MSG_AGENT_ALREADY_STARTED);
             }
             LOG.info("Starting agent...");
             schedule.schedule(this, 0, TimeUnit.SECONDS);
@@ -129,13 +132,13 @@ public abstract class DaemonAgent extends Agent
     {
         if (isStopped())
         {
-            throw new IllegalStateException("Agent already stopped");
+            throw new IllegalStateException(MSG_AGENT_ALREADY_STOPPED);
         }
         synchronized (this)
         {
             if (isStopped())
             {
-                throw new IllegalStateException("Agent already stopped");
+                throw new IllegalStateException(MSG_AGENT_ALREADY_STOPPED);
             } 
             stopTask();
             schedule.shutdown();
