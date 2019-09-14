@@ -1,10 +1,8 @@
 package net.obvj.smart.util;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
-
-import net.obvj.smart.util.DateUtil.TimeUnit;
 
 /**
  * Unit tests for the {@link TimeInterval} class.

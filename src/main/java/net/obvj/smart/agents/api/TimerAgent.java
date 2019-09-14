@@ -8,8 +8,8 @@ import java.util.logging.Logger;
 
 import net.obvj.smart.conf.xml.AgentConfiguration;
 import net.obvj.smart.util.DateUtil;
-import net.obvj.smart.util.DateUtil.TimeUnit;
 import net.obvj.smart.util.TimeInterval;
+import net.obvj.smart.util.TimeUnit;
 
 /**
  * A thread-safe extensible Agent for tasks that are scheduled in the system to run

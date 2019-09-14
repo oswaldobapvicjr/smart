@@ -23,7 +23,7 @@ import net.obvj.smart.console.ManagementConsole;
 import net.obvj.smart.manager.AgentManager;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ SmartProperties.class, ManagementConsole.class, AgentManager.class })
+@PrepareForTest({ SmartProperties.class, ManagementConsole.class, AgentManager.class, Agent.class })
 public class SmartServerSupportTest
 {
     private static final AgentConfiguration DUMMY_AGENT_CONFIG = new AgentConfiguration.Builder("DummyAgent")
@@ -32,6 +32,9 @@ public class SmartServerSupportTest
     private static final AgentConfiguration DUMMY_DAEMON_CONFIG = new AgentConfiguration.Builder("DummyDaemon")
             .type("daemon").agentClass("net.obvj.smart.agents.dummy.DummyDaemonAgent").automaticallyStarted(true)
             .build();
+
+    private static final List<AgentConfiguration> ALL_AGENT_CONFIGS = Arrays.asList(DUMMY_AGENT_CONFIG,
+            DUMMY_DAEMON_CONFIG);
 
     // Mock objects
     private SmartProperties properties;
@@ -67,6 +70,8 @@ public class SmartServerSupportTest
         dummyDaemon = spy(Agent.parseAgent(DUMMY_DAEMON_CONFIG));
         allAgents = Arrays.asList(dummyAgent, dummyDaemon);
 
+        // Allow usage of static method parseAgent
+        mockStatic(Agent.class);
     }
 
     @Test
@@ -108,6 +113,16 @@ public class SmartServerSupportTest
         support.startAutomaticAgents();
         verify(manager, never()).startAgent("DummyAgent");
         verify(manager).startAgent("DummyDaemon");
+    }
+
+    @Test
+    public void testLoadAgents() throws ReflectiveOperationException
+    {
+        when(Agent.parseAgent(DUMMY_AGENT_CONFIG)).thenReturn(dummyAgent);
+        when(Agent.parseAgent(DUMMY_DAEMON_CONFIG)).thenReturn(dummyDaemon);
+        support.loadAgents(ALL_AGENT_CONFIGS);
+        verify(manager).addAgent(dummyAgent);
+        verify(manager).addAgent(dummyDaemon);
     }
 
 }

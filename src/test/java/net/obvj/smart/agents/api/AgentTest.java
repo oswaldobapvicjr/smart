@@ -17,7 +17,7 @@ import net.obvj.smart.agents.api.Agent.State;
 import net.obvj.smart.agents.dummy.DummyAgent;
 import net.obvj.smart.agents.dummy.DummyDaemonAgent;
 import net.obvj.smart.conf.xml.AgentConfiguration;
-import net.obvj.smart.util.DateUtil.TimeUnit;
+import net.obvj.smart.util.TimeUnit;
 
 /**
  * Unit tests for the {@link Agent} class.

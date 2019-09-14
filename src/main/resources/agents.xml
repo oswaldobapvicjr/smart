@@ -13,13 +13,6 @@
         </agent>
 
         <agent>
-            <name>PMReporter</name>
-            <type>timer</type>
-            <class>net.obvj.smart.agents.dummy.PMReporter</class>
-            <started>false</started>
-        </agent>
-        
-        <agent>
             <name>DummyDaemon</name>
             <type>daemon</type>
             <class>net.obvj.smart.agents.dummy.DummyDaemonAgent</class>

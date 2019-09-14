@@ -3,8 +3,6 @@ package net.obvj.smart.util;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.obvj.smart.util.DateUtil.TimeUnit;
-
 /**
  * An object that represents a time interval.
  * 
