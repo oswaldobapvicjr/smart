@@ -1,12 +1,14 @@
 package net.obvj.smart;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.function.Supplier;
 
 /**
@@ -245,5 +247,33 @@ public class TestUtil
             return;
         }
         fail(String.format(EXPECTED_BUT_NOT_THROWN, expectedThrowable));
+    }
+
+    /**
+     * Tests that the given test string contains all of the expected strings.
+     * 
+     * @param testString      the string to be tested
+     * @param expectedStrings the strings to be expected inside the {@code testString}
+     */
+    public static void assertStringContains(String testString, String... expectedStrings)
+    {
+        Arrays.stream(expectedStrings)
+                .forEach(expectedString -> assertTrue(
+                        String.format("Expected string \"%s\" was not found in test string: \"%s\"", expectedString,
+                                testString),
+                        testString.contains(expectedString)));
+    }
+
+    /**
+     * Tests that the given test string does not contain any of the expected strings.
+     * 
+     * @param testString      the string to be tested
+     * @param expectedStrings the strings not to be expected inside the {@code testString}
+     */
+    public static void assertStringDoesNotContain(String testString, String... expectedStrings)
+    {
+        Arrays.stream(expectedStrings).forEach(expectedString -> assertFalse(
+                String.format("Unexpected string \"%s\" was found in test string: \"%s\"", expectedString, testString),
+                testString.contains(expectedString)));
     }
 }

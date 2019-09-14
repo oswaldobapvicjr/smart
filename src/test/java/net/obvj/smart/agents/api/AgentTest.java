@@ -56,6 +56,7 @@ public class AgentTest
         assertEquals(TIMER, timerAgent.getType());
         assertEquals(DummyAgent.class, timerAgent.getClass());
         assertEquals(5, timerAgent.getStopTimeoutSeconds());
+        assertEquals(xmlAgent, timerAgent.getConfiguration());
         
         assertEquals(30, timerAgent.getInterval());
         assertEquals(TimeUnit.SECONDS, timerAgent.getTimeUnit());
@@ -78,6 +79,7 @@ public class AgentTest
         assertEquals(TIMER, timerAgent.getType());
         assertEquals(DummyAgent.class, timerAgent.getClass());
         assertEquals(-1, timerAgent.getStopTimeoutSeconds());
+        assertEquals(xmlAgent, timerAgent.getConfiguration());
         
         assertEquals(1, timerAgent.getInterval());
         assertEquals(TimeUnit.MINUTES, timerAgent.getTimeUnit());
@@ -102,6 +104,7 @@ public class AgentTest
         assertEquals(DAEMON, daemonAgent.getType());
         assertEquals(DummyDaemonAgent.class, daemonAgent.getClass());
         assertEquals(1, daemonAgent.getStopTimeoutSeconds());
+        assertEquals(xmlAgent, daemonAgent.getConfiguration());
         
         assertEquals(State.SET, daemonAgent.getState());
         assertFalse(daemonAgent.isStarted());
@@ -121,6 +124,7 @@ public class AgentTest
         assertEquals(DAEMON, daemonAgent.getType());
         assertEquals(DummyDaemonAgent.class, daemonAgent.getClass());
         assertEquals(-1, daemonAgent.getStopTimeoutSeconds());
+        assertEquals(xmlAgent, daemonAgent.getConfiguration());
         
         assertEquals(State.SET, daemonAgent.getState());
         assertFalse(daemonAgent.isStarted());

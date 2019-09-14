@@ -72,4 +72,17 @@ public class TimerAgentTest
         });
     }
 
+    @Test
+    public void testGetAgentStatusStr() throws ReflectiveOperationException
+    {
+        AgentConfiguration config = new AgentConfiguration.Builder("DummyAgent").type("timer")
+                .agentClass("net.obvj.smart.agents.dummy.DummyAgent").interval("30 seconds").automaticallyStarted(false)
+                .stopTimeoutInSeconds(5).build();
+
+        TimerAgent timerAgent = (TimerAgent) Agent.parseAgent(config);
+        String statusWithoutSpaces = timerAgent.getStatusString().replace(" ", "");
+        TestUtil.assertStringContains(statusWithoutSpaces, "DummyAgent", "type:timer", "status:SET", "startDate:null",
+                "lastRun:null", "frequency:30second(s)");
+    }
+
 }

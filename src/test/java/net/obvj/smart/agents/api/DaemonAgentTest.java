@@ -20,7 +20,7 @@ import net.obvj.smart.conf.xml.AgentConfiguration;
 public class DaemonAgentTest
 {
     private DaemonAgent agent = Mockito.mock(DaemonAgent.class);
-    
+
     /**
      * Tests that a non-daemon agent will not be parsed by this class
      */
@@ -71,5 +71,18 @@ public class DaemonAgentTest
             }
         });
     }
-    
+
+    @Test
+    public void testGetAgentStatusStr() throws ReflectiveOperationException
+    {
+        AgentConfiguration config = new AgentConfiguration.Builder("DummyDaemonAgent").type("daemon")
+                .agentClass("net.obvj.smart.agents.dummy.DummyDaemonAgent").build();
+
+        DaemonAgent daemonAgent = (DaemonAgent) Agent.parseAgent(config);
+        String statusWithoutSpaces = daemonAgent.getStatusString().replace(" ", "");
+        TestUtil.assertStringContains(statusWithoutSpaces, "DummyDaemonAgent", "type:daemon", "status:SET",
+                "startDate:null");
+        TestUtil.assertStringDoesNotContain(statusWithoutSpaces, "frequency", "lastRun");
+    }
+
 }
