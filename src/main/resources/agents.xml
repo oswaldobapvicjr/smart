@@ -9,7 +9,6 @@
             <type>timer</type>
             <class>net.obvj.smart.agents.dummy.DummyAgent</class>
             <interval>30 seconds</interval>
-            <stopTimeoutInSeconds>5</stopTimeoutInSeconds>
         </agent>
 
         <agent>
@@ -17,6 +16,7 @@
             <type>daemon</type>
             <class>net.obvj.smart.agents.dummy.DummyDaemonAgent</class>
             <started>true</started>
+            <stopTimeoutInSeconds>6</stopTimeoutInSeconds>
         </agent>
 
     </agents>

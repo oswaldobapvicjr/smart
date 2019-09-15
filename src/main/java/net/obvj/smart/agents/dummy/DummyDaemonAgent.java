@@ -25,7 +25,7 @@ public class DummyDaemonAgent extends DaemonAgent
             try
             {
                 LOG.info("DummyDaemonAgent says hello.");
-                Thread.sleep(10000);
+                Thread.sleep(5000);
             }
             catch (InterruptedException e)
             {

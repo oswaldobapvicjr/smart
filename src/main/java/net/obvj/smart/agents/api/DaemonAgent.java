@@ -175,7 +175,7 @@ public abstract class DaemonAgent extends Agent
     @Override
     public boolean isRunning()
     {
-        return isStarted();
+        return super.isStarted() || super.isRunning();
     }
     
     /**

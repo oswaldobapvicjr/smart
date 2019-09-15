@@ -1,9 +1,11 @@
 package net.obvj.smart.agents.api;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.util.concurrent.TimeoutException;
 
+import org.awaitility.Awaitility;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -19,7 +21,10 @@ import net.obvj.smart.conf.xml.AgentConfiguration;
  */
 public class DaemonAgentTest
 {
-    private DaemonAgent agent = Mockito.mock(DaemonAgent.class, Mockito.CALLS_REAL_METHODS);
+    private DaemonAgent agentMock = Mockito.mock(DaemonAgent.class, Mockito.CALLS_REAL_METHODS);
+
+    private static final AgentConfiguration DUMMY_AGENT_CONFIG = new AgentConfiguration.Builder("DummyDaemonAgent")
+            .type("daemon").agentClass("net.obvj.smart.agents.dummy.DummyDaemonAgent").stopTimeoutInSeconds(10).build();
 
     /**
      * Tests that a non-daemon agent will not be parsed by this class
@@ -37,9 +42,9 @@ public class DaemonAgentTest
     @Test
     public void testStartAgentWithPreviousStateStarted()
     {
-        Mockito.when(agent.getState()).thenReturn(State.STARTED);
+        Mockito.when(agentMock.getState()).thenReturn(State.STARTED);
         TestUtil.assertException(IllegalStateException.class, DaemonAgent.MSG_AGENT_ALREADY_STARTED,
-                () -> agent.start());
+                () -> agentMock.start());
     }
 
     /**
@@ -48,22 +53,38 @@ public class DaemonAgentTest
     @Test
     public void testStartAgentWithPreviousStateStopped()
     {
-        Mockito.when(agent.getState()).thenReturn(State.STOPPED);
-        TestUtil.assertException(IllegalStateException.class, () -> agent.start());
+        Mockito.when(agentMock.getState()).thenReturn(State.STOPPED);
+        TestUtil.assertException(IllegalStateException.class, () -> agentMock.start());
     }
 
     /**
-     * Tests that no action is taken when stop() is called on a stoppedAgent.
+     * Tests agent execution when start() is called on a set agent.
+     * 
+     * @throws ReflectiveOperationException
+     * @throws TimeoutException 
+     */
+    @Test
+    public void testStartAgentWithPreviousStateSet() throws ReflectiveOperationException
+    {
+        DaemonAgent agent = Mockito.spy((DaemonAgent) Agent.parseAgent(DUMMY_AGENT_CONFIG));
+        assertEquals("State before start()", State.SET, agent.getState());
+        agent.start();
+        Awaitility.await().until(agent::isRunning);
+        Awaitility.await().untilAsserted(() -> Mockito.verify(agent).run());
+    }
+
+    /**
+     * Tests that no action is taken when stop() is called on a stopped agent.
      */
     @Test
     public void testStopAgentWithPreviousStateStopped()
     {
-        Mockito.when(agent.isStopped()).thenReturn(true);
+        Mockito.when(agentMock.isStopped()).thenReturn(true);
         TestUtil.assertException(IllegalStateException.class, DaemonAgent.MSG_AGENT_ALREADY_STOPPED, () ->
         {
             try
             {
-                agent.stop();
+                agentMock.stop();
             }
             catch (TimeoutException e)
             {
@@ -75,11 +96,8 @@ public class DaemonAgentTest
     @Test
     public void testGetAgentStatusStr() throws ReflectiveOperationException
     {
-        AgentConfiguration config = new AgentConfiguration.Builder("DummyDaemonAgent").type("daemon")
-                .agentClass("net.obvj.smart.agents.dummy.DummyDaemonAgent").build();
-
-        DaemonAgent daemonAgent = (DaemonAgent) Agent.parseAgent(config);
-        String statusWithoutSpaces = daemonAgent.getStatusString().replace(" ", "");
+        DaemonAgent agent = (DaemonAgent) Agent.parseAgent(DUMMY_AGENT_CONFIG);
+        String statusWithoutSpaces = agent.getStatusString().replace(" ", "");
         TestUtil.assertStringContains(statusWithoutSpaces, "DummyDaemonAgent", "type:daemon", "status:SET",
                 "startDate:null");
         TestUtil.assertStringDoesNotContain(statusWithoutSpaces, "frequency", "lastRun");
