@@ -28,6 +28,7 @@ public abstract class TimerAgent extends Agent
 
     protected static final String MSG_AGENT_ALREADY_STARTED = "Agent already started";
     protected static final String MSG_AGENT_ALREADY_STOPPED = "Agent already stopped";
+    protected static final String MSG_AGENT_ALREADY_RUNNING = "Agent task already in execution";
 
     private int interval;
     private TimeUnit timeUnit;
@@ -88,7 +89,7 @@ public abstract class TimerAgent extends Agent
     {
         if (isRunning())
         {
-            LOG.info("Agent task already in execution.");
+            LOG.info(MSG_AGENT_ALREADY_RUNNING);
         }
         else
         {
@@ -199,10 +200,11 @@ public abstract class TimerAgent extends Agent
     public String getStatusString()
     {
 
-        return new StringBuilder(getName()).append(" {").append(LINE_SEPARATOR).append("   type:       ").append(getType())
-                .append(LINE_SEPARATOR).append("   status:     ").append(getState()).append(LINE_SEPARATOR)
-                .append("   startDate:  ").append(startDate != null ? DateUtil.formatDate(startDate.getTime()) : "null")
-                .append(LINE_SEPARATOR).append("   lastRun:    ")
+        return new StringBuilder(getName()).append(" {").append(LINE_SEPARATOR).append("   type:       ")
+                .append(getType()).append(LINE_SEPARATOR).append("   status:     ").append(getState())
+                .append(LINE_SEPARATOR).append("   startDate:  ")
+                .append(startDate != null ? DateUtil.formatDate(startDate.getTime()) : "null").append(LINE_SEPARATOR)
+                .append("   lastRun:    ")
                 .append(lastRunDate != null ? DateUtil.formatDate(lastRunDate.getTime()) : "null")
                 .append(LINE_SEPARATOR).append("   frequency:  ").append(interval).append(" ").append(timeUnit)
                 .append(LINE_SEPARATOR).append("}").toString();
@@ -217,7 +219,7 @@ public abstract class TimerAgent extends Agent
     {
         return timeUnit;
     }
-    
+
     /**
      * Implements the logic for concrete agents. This method cannot be accessed externally.
      * Its functionality will be available via the run() method.

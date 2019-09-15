@@ -19,7 +19,7 @@ import net.obvj.smart.conf.xml.AgentConfiguration;
  */
 public class DaemonAgentTest
 {
-    private DaemonAgent agent = Mockito.mock(DaemonAgent.class);
+    private DaemonAgent agent = Mockito.mock(DaemonAgent.class, Mockito.CALLS_REAL_METHODS);
 
     /**
      * Tests that a non-daemon agent will not be parsed by this class

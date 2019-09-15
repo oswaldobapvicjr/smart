@@ -1,6 +1,13 @@
 package net.obvj.smart.agents.api;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.spy;
 
 import java.util.concurrent.TimeoutException;
 
@@ -19,7 +26,11 @@ import net.obvj.smart.conf.xml.AgentConfiguration;
  */
 public class TimerAgentTest
 {
-    private TimerAgent agent = Mockito.mock(TimerAgent.class);
+    private TimerAgent agentMock = mock(TimerAgent.class, Mockito.CALLS_REAL_METHODS);
+
+    private static final AgentConfiguration DUMMY_AGENT_CONFIG = new AgentConfiguration.Builder("DummyAgent")
+            .type("timer").agentClass("net.obvj.smart.agents.dummy.DummyAgent").interval("30 seconds")
+            .automaticallyStarted(false).stopTimeoutInSeconds(5).build();
 
     /**
      * Tests that a non-timer agent will not be parsed by this class
@@ -37,9 +48,9 @@ public class TimerAgentTest
     @Test
     public void testStartAgentWithPreviousStateStarted()
     {
-        Mockito.when(agent.getState()).thenReturn(State.STARTED);
+        when(agentMock.getState()).thenReturn(State.STARTED);
         TestUtil.assertException(IllegalStateException.class, TimerAgent.MSG_AGENT_ALREADY_STARTED,
-                () -> agent.start());
+                () -> agentMock.start());
     }
 
     /**
@@ -48,8 +59,8 @@ public class TimerAgentTest
     @Test
     public void testStartAgentWithPreviousStateStopped()
     {
-        Mockito.when(agent.getState()).thenReturn(State.STOPPED);
-        TestUtil.assertException(IllegalStateException.class, () -> agent.start());
+        when(agentMock.getState()).thenReturn(State.STOPPED);
+        TestUtil.assertException(IllegalStateException.class, () -> agentMock.start());
     }
 
     /**
@@ -58,12 +69,12 @@ public class TimerAgentTest
     @Test
     public void testStopAgentWithPreviousStateStopped()
     {
-        Mockito.when(agent.isStopped()).thenReturn(true);
+        when(agentMock.isStopped()).thenReturn(true);
         TestUtil.assertException(IllegalStateException.class, TimerAgent.MSG_AGENT_ALREADY_STOPPED, () ->
         {
             try
             {
-                agent.stop();
+                agentMock.stop();
             }
             catch (TimeoutException e)
             {
@@ -72,15 +83,34 @@ public class TimerAgentTest
         });
     }
 
+    /**
+     * Tests that no action is taken when run() is called on a running agent.
+     */
+    @Test
+    public void testRunAgentWithPreviousStateRunning()
+    {
+        when(agentMock.isRunning()).thenReturn(true);
+        agentMock.run();
+        verify(agentMock, never()).runTask();
+    }
+
+    @Test
+    public void testRunAgentWithPreviousStateSet() throws ReflectiveOperationException
+    {
+        TimerAgent agent = spy((TimerAgent) Agent.parseAgent(DUMMY_AGENT_CONFIG));
+        assertEquals("State before run()", State.SET, agent.getState());
+        agent.run();
+        verify(agent).runTask();
+        assertEquals("State after run()", State.SET, agent.getState());
+        assertNotNull(agent.getLastRunDate());
+        
+    }
+
     @Test
     public void testGetAgentStatusStr() throws ReflectiveOperationException
     {
-        AgentConfiguration config = new AgentConfiguration.Builder("DummyAgent").type("timer")
-                .agentClass("net.obvj.smart.agents.dummy.DummyAgent").interval("30 seconds").automaticallyStarted(false)
-                .stopTimeoutInSeconds(5).build();
-
-        TimerAgent timerAgent = (TimerAgent) Agent.parseAgent(config);
-        String statusWithoutSpaces = timerAgent.getStatusString().replace(" ", "");
+        TimerAgent agent = (TimerAgent) Agent.parseAgent(DUMMY_AGENT_CONFIG);
+        String statusWithoutSpaces = agent.getStatusString().replace(" ", "");
         TestUtil.assertStringContains(statusWithoutSpaces, "DummyAgent", "type:timer", "status:SET", "startDate:null",
                 "lastRun:null", "frequency:30second(s)");
     }

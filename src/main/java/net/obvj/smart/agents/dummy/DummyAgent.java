@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 import net.obvj.smart.agents.api.TimerAgent;
 
 /**
- * A dummy agent that executes for 10 seconds for testing purposes
+ * A dummy agent that executes for 5 seconds for testing purposes
  * 
  * @author oswaldo.bapvic.jr
  * @since 1.0
@@ -18,7 +18,7 @@ public class DummyAgent extends TimerAgent
     @Override
     protected void runTask()
     {
-        for (int i = 9; i >= 0; i--)
+        for (int i = 5; i >= 0; i--)
         {
             try
             {
