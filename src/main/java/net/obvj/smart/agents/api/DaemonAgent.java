@@ -28,7 +28,8 @@ public abstract class DaemonAgent extends Agent
     protected static final String MSG_AGENT_ALREADY_STARTED = "Agent already started";
     protected static final String MSG_AGENT_ALREADY_STOPPED = "Agent already stopped";
 
-    private Object runLock;
+    private Object runLock = new Object();
+    private Object changeLock = new Object();
     
     public DaemonAgent()
     {
@@ -40,7 +41,6 @@ public abstract class DaemonAgent extends Agent
         setName(name == null ? this.getClass().getSimpleName() : name);
         setType(DAEMON);
         setState(State.SET);
-        this.runLock = new Object();
     }
 
     /**
@@ -109,7 +109,7 @@ public abstract class DaemonAgent extends Agent
         default:
             break;
         }
-        synchronized (this)
+        synchronized (changeLock)
         {
             if (isStarted())
             {
@@ -134,7 +134,7 @@ public abstract class DaemonAgent extends Agent
         {
             throw new IllegalStateException(MSG_AGENT_ALREADY_STOPPED);
         }
-        synchronized (this)
+        synchronized (changeLock)
         {
             if (isStopped())
             {

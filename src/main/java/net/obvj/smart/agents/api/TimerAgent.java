@@ -37,7 +37,8 @@ public abstract class TimerAgent extends Agent
      * This object is used to control access to the task execution independently of other
      * operations.
      */
-    private final Object runLock;
+    private final Object runLock = new Object();
+    private final Object changeLock = new Object();
 
     public TimerAgent()
     {
@@ -51,7 +52,6 @@ public abstract class TimerAgent extends Agent
         this.interval = interval;
         this.timeUnit = timeUnit;
         setState(State.SET);
-        this.runLock = new Object();
     }
 
     /**
@@ -130,7 +130,7 @@ public abstract class TimerAgent extends Agent
         default:
             break;
         }
-        synchronized (this)
+        synchronized (changeLock)
         {
             if (isStarted())
             {
@@ -159,7 +159,7 @@ public abstract class TimerAgent extends Agent
         {
             throw new IllegalStateException(MSG_AGENT_ALREADY_STOPPED);
         }
-        synchronized (this)
+        synchronized (changeLock)
         {
             if (isStopped())
             {

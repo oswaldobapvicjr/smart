@@ -25,7 +25,7 @@ public class ResetCommand implements Runnable
     @Option(names = {"-h", "--help"}, usageHelp = true, description = "Display this help message.")
     boolean usageHelpRequested;
     
-    @Parameters(paramLabel = "<agent>", description = "The agent to be reset.")
+    @Parameters(paramLabel = "<agent>", description = "The agent to be reset", completionCandidates = AgentCompletionCandidates.class)
     private String agent;
     
     @ParentCommand

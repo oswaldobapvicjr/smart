@@ -27,7 +27,7 @@ public class StopCommand implements Runnable
     @Option(names = {"-h", "--help"}, usageHelp = true, description = "Display this help message.")
     boolean usageHelpRequested;
     
-    @Parameters(paramLabel = "<agent>", description = "The agent to be stopped.")
+    @Parameters(paramLabel = "<agent>", description = "The agent to be stopped.", completionCandidates = AgentCompletionCandidates.class)
     private String agent;
     
     @ParentCommand

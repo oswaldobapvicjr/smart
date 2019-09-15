@@ -25,10 +25,17 @@ import net.obvj.smart.util.ConsoleUtil;
 @PrepareForTest({ ConsoleUtil.class, AgentManagerJMXClient.class })
 public class EnhancedManagementConsoleTest
 {
+    private AgentManagerJMXMBean agentManagerJMXBeanMock = PowerMockito.mock(AgentManagerJMXMBean.class);
+
     @Before
     public void setup()
     {
         PowerMockito.mockStatic(ConsoleUtil.class);
+
+        // JMX client mock
+        PowerMockito.mockStatic(AgentManagerJMXClient.class);
+        PowerMockito.when(AgentManagerJMXClient.getMBeanProxy()).thenReturn(agentManagerJMXBeanMock);
+        PowerMockito.when(agentManagerJMXBeanMock.getAgentNames()).thenReturn(new String[] { "agent1", "agent2" });
     }
 
     @Test
@@ -53,7 +60,8 @@ public class EnhancedManagementConsoleTest
         // Building a console with interactive mode
         EnhancedManagementConsole console = new EnhancedManagementConsole();
 
-        PowerMockito.when(ConsoleUtil.readCustomHeaderLines()).thenReturn(Arrays.asList("Header line 1", "Header line 2"));
+        PowerMockito.when(ConsoleUtil.readCustomHeaderLines())
+                .thenReturn(Arrays.asList("Header line 1", "Header line 2"));
         StringWriter sw = new StringWriter();
         console.printHeader(sw);
 
@@ -70,7 +78,8 @@ public class EnhancedManagementConsoleTest
         // Building a console with single-command mode
         EnhancedManagementConsole console = new EnhancedManagementConsole("threads");
 
-        PowerMockito.when(ConsoleUtil.readCustomHeaderLines()).thenReturn(Arrays.asList("Header line 1", "Header line 2"));
+        PowerMockito.when(ConsoleUtil.readCustomHeaderLines())
+                .thenReturn(Arrays.asList("Header line 1", "Header line 2"));
         StringWriter sw = new StringWriter();
         console.printHeader(sw);
 
@@ -86,16 +95,10 @@ public class EnhancedManagementConsoleTest
     @Test
     public void testHandleCommandLine() throws IOException
     {
-        // Mock
-        AgentManagerJMXMBean agentManagerJMXBeanMock = PowerMockito.mock(AgentManagerJMXMBean.class);
-        PowerMockito.mockStatic(AgentManagerJMXClient.class);
-        PowerMockito.when(AgentManagerJMXClient.getMBeanProxy()).thenReturn(agentManagerJMXBeanMock);
-
         EnhancedManagementConsole console = new EnhancedManagementConsole();
         console.handleCommandLine("start AgentName");
 
         Mockito.verify(agentManagerJMXBeanMock, Mockito.times(1)).startAgent("AgentName");
-
     }
 
 }

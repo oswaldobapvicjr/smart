@@ -25,7 +25,7 @@ public class RunCommand implements Runnable
     @Option(names = {"-h", "--help"}, usageHelp = true, description = "Display this help message.")
     boolean usageHelpRequested;
     
-    @Parameters(paramLabel = "<agent>", description = "The agent to be run.")
+    @Parameters(paramLabel = "<agent>", description = "The agent to be run.", completionCandidates = AgentCompletionCandidates.class)
     private String agent;
     
     @ParentCommand
