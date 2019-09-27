@@ -22,6 +22,12 @@ import net.obvj.smart.conf.xml.AgentConfiguration;
 import net.obvj.smart.console.ManagementConsole;
 import net.obvj.smart.manager.AgentManager;
 
+/**
+ * Unit tests for operations inside {@link SmartServerSupport}, with mocks.
+ * 
+ * @author oswaldo.bapvic.jr
+ * @since 2.0
+ */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ SmartProperties.class, ManagementConsole.class, AgentManager.class, Agent.class })
 public class SmartServerSupportTest

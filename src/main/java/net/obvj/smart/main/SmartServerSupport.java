@@ -1,13 +1,18 @@
 package net.obvj.smart.main;
 
+import java.lang.management.ManagementFactory;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.management.*;
 
 import net.obvj.smart.agents.api.Agent;
 import net.obvj.smart.conf.SmartProperties;
 import net.obvj.smart.conf.xml.AgentConfiguration;
 import net.obvj.smart.console.ManagementConsole;
+import net.obvj.smart.jmx.AgentManagerJMX;
+import net.obvj.smart.jmx.AgentManagerJMXMBean;
 import net.obvj.smart.manager.AgentManager;
 
 /**
@@ -18,6 +23,8 @@ import net.obvj.smart.manager.AgentManager;
  */
 public class SmartServerSupport
 {
+    protected static final String AGENT_MANAGER_JMX_OBJECT_NAME = "net.obvj.smart.jmx:type=AgentManagerJMX";
+
     protected static final Logger LOG = Logger.getLogger("smart-server");
 
     protected static boolean runFlag = true;
@@ -74,6 +81,14 @@ public class SmartServerSupport
         AgentManager manager = AgentManager.getInstance();
         manager.getAgents().stream().filter(agent -> agent.getConfiguration().isAutomaticallyStarted())
                 .forEach(agent -> manager.startAgent(agent.getName()));
+    }
+
+    protected void registerManagedBean() throws JMException
+    {
+        LOG.info("Creating and registering Managed Beans...");
+        AgentManagerJMXMBean mBean = new AgentManagerJMX();
+        ObjectName name = new ObjectName(AGENT_MANAGER_JMX_OBJECT_NAME);
+        ManagementFactory.getPlatformMBeanServer().registerMBean(mBean, name);
     }
 
 }
