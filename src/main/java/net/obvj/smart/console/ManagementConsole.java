@@ -18,15 +18,8 @@ import net.obvj.smart.conf.SmartProperties;
  */
 public class ManagementConsole implements Runnable
 {
-
-    private static final SmartProperties PROPERTIES = SmartProperties.getInstance();
-
-    private static final int PORT = PROPERTIES.getIntProperty(SmartProperties.CLASSIC_CONSOLE_PORT);
-    private static final int SESSION_TIMEOUT_SECONDS = PROPERTIES
-            .getIntProperty(SmartProperties.CLASSIC_CONSOLE_SESSION_TIMEOUT_SECONDS);
-    
     private static ManagementConsole instance = new ManagementConsole();
-    
+
     private boolean started;
     private Thread serverThread;
     private ExecutorService sessionExecutor;
@@ -45,15 +38,14 @@ public class ManagementConsole implements Runnable
     {
         try
         {
-            server = new ServerSocket(PORT, 0, InetAddress.getByAddress(new byte[] { 127, 0, 0, 1 }));
+            server = new ServerSocket(getPort(), 0, InetAddress.getByAddress(new byte[] { 127, 0, 0, 1 }));
             log.info("Management Console listening on port " + server.getLocalPort());
             serverThread = new Thread(this, "MgmtConsole");
             sessionExecutor = Executors.newCachedThreadPool(new MgmtConsoleWorkerThreadFactory());
-
         }
         catch (BindException e)
         {
-            log.log(Level.SEVERE, "Unable to open system port {0}. Please make sure this port is not in use.", PORT);
+            log.log(Level.SEVERE, "Unable to bind to {0}. Please make sure this port is not in use.", getPort());
         }
         catch (IOException e)
         {
@@ -63,7 +55,12 @@ public class ManagementConsole implements Runnable
 
     public static int getPort()
     {
-        return PORT;
+        return SmartProperties.getInstance().getIntProperty(SmartProperties.CLASSIC_CONSOLE_PORT);
+    }
+
+    public static int getSessionTimeoutSeconds()
+    {
+        return SmartProperties.getInstance().getIntProperty(SmartProperties.CLASSIC_CONSOLE_SESSION_TIMEOUT_SECONDS);
     }
 
     public void run()
@@ -73,10 +70,9 @@ public class ManagementConsole implements Runnable
             try
             {
                 Socket socket = server.accept();
-                socket.setSoTimeout(SESSION_TIMEOUT_SECONDS * 1000);
+                socket.setSoTimeout(getSessionTimeoutSeconds() * 1000);
                 log.info("Connection received from " + socket.getInetAddress().getHostName());
                 sessionExecutor.submit(new CommandWorker(socket));
-
             }
             catch (SocketTimeoutException e)
             {
@@ -84,10 +80,7 @@ public class ManagementConsole implements Runnable
             }
             catch (SocketException e)
             {
-                if (server.isClosed())
-                {
-                    return;
-                }
+                if (server.isClosed()) return;
                 log.warning(e.getMessage());
             }
             catch (Exception e)
@@ -121,7 +114,7 @@ public class ManagementConsole implements Runnable
             }
             catch (IOException e)
             {
-                log.log(Level.SEVERE, "Error closing server socket on port {0}", PORT);
+                log.log(Level.SEVERE, "Error closing server socket", e);
             }
         }
     }

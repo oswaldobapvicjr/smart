@@ -23,7 +23,8 @@ import net.obvj.smart.manager.AgentManager;
  */
 public class SmartServerSupport
 {
-    protected static final String AGENT_MANAGER_JMX_OBJECT_NAME = "net.obvj.smart.jmx:type=AgentManagerJMX";
+    protected static final String AGENT_MANAGER_JMX_OBJECT_NAME = SmartProperties.getInstance()
+            .getProperty(SmartProperties.JMX_AGENT_MANAGER_OBJECT_NAME);
 
     protected static final Logger LOG = Logger.getLogger("smart-server");
 

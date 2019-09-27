@@ -12,6 +12,7 @@ import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
 
+import net.obvj.smart.conf.SmartProperties;
 import net.obvj.smart.jmx.AgentManagerJMXMBean;
 
 /**
@@ -23,17 +24,18 @@ import net.obvj.smart.jmx.AgentManagerJMXMBean;
  */
 public class AgentManagerJMXClient
 {
+
     private static final Logger LOG = Logger.getLogger("smart-console");
 
     private static final String SERVICE_JMX_RMI_URL = "service:jmx:rmi:///jndi/rmi://:9999/jmxrmi";
-    
+
     private static AgentManagerJMXMBean mbeanProxy;
-    
+
     private AgentManagerJMXClient()
     {
         // No instances allowed
     }
-    
+
     private static AgentManagerJMXMBean createMBeanProxy()
     {
         try
@@ -41,8 +43,7 @@ public class AgentManagerJMXClient
             LOG.fine("Connecting to remote management console...");
             JMXConnector jmxc = JMXConnectorFactory.connect(new JMXServiceURL(SERVICE_JMX_RMI_URL));
             MBeanServerConnection mbsc = jmxc.getMBeanServerConnection();
-            ObjectName mbeanName = new ObjectName("net.obvj.smart.jmx:type=AgentManagerJMX");
-            return JMX.newMBeanProxy(mbsc, mbeanName, AgentManagerJMXMBean.class, true);
+            return JMX.newMBeanProxy(mbsc, getAgentManagerJMXBeanObjectName(), AgentManagerJMXMBean.class, true);
         }
         catch (MalformedObjectNameException | IOException e)
         {
@@ -50,7 +51,12 @@ public class AgentManagerJMXClient
             return null;
         }
     }
-    
+
+    protected static ObjectName getAgentManagerJMXBeanObjectName() throws MalformedObjectNameException
+    {
+        return new ObjectName(SmartProperties.getInstance().getProperty(SmartProperties.JMX_AGENT_MANAGER_OBJECT_NAME));
+    }
+
     public static AgentManagerJMXMBean getMBeanProxy()
     {
         if (mbeanProxy == null)
