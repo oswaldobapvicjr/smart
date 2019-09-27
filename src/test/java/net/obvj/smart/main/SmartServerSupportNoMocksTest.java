@@ -17,7 +17,7 @@ import org.junit.Test;
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
-public class SmartServerSupportTestNoMocks
+public class SmartServerSupportNoMocksTest
 {
     private static final List<String> ALL_METHODS = Arrays.asList("startAgent", "isAgentRunning", "runNow", "stopAgent",
             "resetAgent", "isAgentStarted", "getAgentStatusStr");
