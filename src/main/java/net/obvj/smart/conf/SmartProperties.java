@@ -7,7 +7,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * An object that maintains configuration data retrieved from the {@code smart.properties} file
+ * An object that maintains configuration data retrieved from the {@code smart.properties}
+ * file
  * 
  * @author oswaldo.bapvic.jr
  * @since 2.0
@@ -28,9 +29,18 @@ public class SmartProperties
     public static final String CLASSIC_CONSOLE_SESSION_TIMEOUT_SECONDS = "classic.console.session.timeout.seconds";
     protected static final String CLASSIC_CONSOLE_SESSION_TIMEOUT_SECONDS_DEFAULT = "60";
 
+    public static final String JMX_REMOTE_PORT = "jmx.remote.port";
+    protected static final String JMX_REMOTE_PORT_DEFAULT = "9999";
+
+    public static final String JMX_REMOTE_AUTHENTICATE = "jmx.remote.authenticate";
+    protected static final String JMX_REMOTE_AUTHENTICATE_DEFAULT = "false";
+
+    public static final String JMX_REMOTE_SSL = "jmx.remote.ssl";
+    protected static final String JMX_REMOTE_SSL_DEFAULT = "false";
+
     public static final String JMX_AGENT_MANAGER_OBJECT_NAME = "jmx.agent.manager.object.name";
     protected static final String JMX_OBJECT_NAME_DEFAULT = "net.obvj.smart.jmx:type=AgentManagerJMX";
-    
+
     private static final Properties defaults = new Properties();
     static
     {
@@ -38,6 +48,9 @@ public class SmartProperties
         defaults.put(CLASSIC_CONSOLE_ENABLED, CLASSIC_CONSOLE_ENABLED_DEFAULT);
         defaults.put(CLASSIC_CONSOLE_PORT, CLASSIC_CONSOLE_PORT_DEFAULT);
         defaults.put(CLASSIC_CONSOLE_SESSION_TIMEOUT_SECONDS, CLASSIC_CONSOLE_SESSION_TIMEOUT_SECONDS_DEFAULT);
+        defaults.put(JMX_REMOTE_PORT, JMX_REMOTE_PORT_DEFAULT);
+        defaults.put(JMX_REMOTE_AUTHENTICATE, JMX_REMOTE_AUTHENTICATE_DEFAULT);
+        defaults.put(JMX_REMOTE_SSL, JMX_REMOTE_SSL_DEFAULT);
         defaults.put(JMX_AGENT_MANAGER_OBJECT_NAME, JMX_OBJECT_NAME_DEFAULT);
     }
 
@@ -49,7 +62,7 @@ public class SmartProperties
     {
         this("smart.properties");
     }
-    
+
     protected SmartProperties(String fileName)
     {
         try

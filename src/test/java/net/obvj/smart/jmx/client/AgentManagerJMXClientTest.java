@@ -34,9 +34,7 @@ public class AgentManagerJMXClientTest
     @Test
     public void testGetJMXObjectName() throws MalformedObjectNameException
     {
-        properties = mock(SmartProperties.class);
-        mockStatic(SmartProperties.class);
-        when(SmartProperties.getInstance()).thenReturn(properties);
+        mockSmartProperties();
         when(properties.getProperty(SmartProperties.JMX_AGENT_MANAGER_OBJECT_NAME))
                 .thenReturn(JMX_OBJECT_CANONICAL_NAME);
 
@@ -45,6 +43,21 @@ public class AgentManagerJMXClientTest
         assertEquals(JMX_OBJECT_CANONICAL_NAME, name.getCanonicalName());
         assertEquals(JMX_OBJECT_DOMAIN, name.getDomain());
         assertEquals(JMX_OBJECT_TYPE, name.getKeyProperty("type"));
+    }
+
+    @Test
+    public void testGetJMXRemotePort()
+    {
+        mockSmartProperties();
+        when(properties.getIntProperty(SmartProperties.JMX_REMOTE_PORT)).thenReturn(1234);
+        assertEquals(1234, AgentManagerJMXClient.getJMXRemotePort());
+    }
+
+    private void mockSmartProperties()
+    {
+        properties = mock(SmartProperties.class);
+        mockStatic(SmartProperties.class);
+        when(SmartProperties.getInstance()).thenReturn(properties);
     }
 
 }

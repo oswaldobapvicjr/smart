@@ -27,7 +27,8 @@ public class AgentManagerJMXClient
 
     private static final Logger LOG = Logger.getLogger("smart-console");
 
-    private static final String SERVICE_JMX_RMI_URL = "service:jmx:rmi:///jndi/rmi://:9999/jmxrmi";
+    private static final String SERVICE_JMX_RMI_URL = "service:jmx:rmi:///jndi/rmi://:" + getJMXRemotePort()
+            + "/jmxrmi";
 
     private static AgentManagerJMXMBean mbeanProxy;
 
@@ -50,6 +51,11 @@ public class AgentManagerJMXClient
             LOG.log(Level.SEVERE, "Unable to find remote agent manager stub", e);
             return null;
         }
+    }
+
+    protected static int getJMXRemotePort()
+    {
+        return SmartProperties.getInstance().getIntProperty(SmartProperties.JMX_REMOTE_PORT);
     }
 
     protected static ObjectName getAgentManagerJMXBeanObjectName() throws MalformedObjectNameException
