@@ -186,6 +186,11 @@
                         <version>2.2.3</version>
                     </dependency>
                 </dependencies>
+                <configuration>
+                    <sourceDirectories>
+                        <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
+                    </sourceDirectories>
+                </configuration>
             </plugin>
         </plugins>
     </build>
