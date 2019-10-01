@@ -56,10 +56,12 @@ public class AgentsCommand implements Runnable
         parent.out.println();
         parent.out.println("Name                                       Type   State");
         parent.out.println("------------------------------------------ ------ -------");
+        agents.forEach(this::printAgent);
+    }
 
-        agents.forEach(agent -> parent.out
-                .printf(String.format(NAME_TYPE_STATE_PATTERN, agent.name, agent.type, agent.state)));
-
+    private void printAgent(AgentDTO agent)
+    {
+        parent.out.printf(String.format(NAME_TYPE_STATE_PATTERN, agent.name, agent.type, agent.state));
     }
 
     protected void setType(String type)

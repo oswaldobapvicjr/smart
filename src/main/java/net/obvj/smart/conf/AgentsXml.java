@@ -94,7 +94,12 @@ public class AgentsXml
     
     private void loadAgentsMap()
     {
-        agents.getAgents().forEach(agent -> agentsByName.put(agent.getName(), agent));
+        agents.getAgents().forEach(this::registerAgentConfiguration);
+    }
+
+    private void registerAgentConfiguration(AgentConfiguration agent)
+    {
+        agentsByName.put(agent.getName(), agent);
     }
 
     public List<AgentConfiguration> getAgents()

@@ -43,7 +43,12 @@ public class ThreadsCommand implements Runnable
         parent.out.println();
         parent.out.println("ID   Name                                   State");
         parent.out.println("---- -------------------------------------- -------------");
-        allThreads.forEach(thread -> parent.out.printf(ID_NAME_STATE_PATTERN, thread.id, thread.name, thread.state));
+        allThreads.forEach(this::printThread);
+    }
+
+    private void printThread(ThreadDTO thread)
+    {
+        parent.out.printf(ID_NAME_STATE_PATTERN, thread.id, thread.name, thread.state);
     }
 
     protected void setParent(Commands parent)

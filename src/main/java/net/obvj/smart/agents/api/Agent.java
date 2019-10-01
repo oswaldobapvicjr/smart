@@ -93,6 +93,14 @@ public abstract class Agent implements Runnable
         return configuration;
     }
 
+    /**
+     * @return This agent is configured to start automatically
+     */
+    public boolean isAutomaticallyStarted()
+    {
+        return getConfiguration().isAutomaticallyStarted();
+    }
+
     protected void setState(State currentState)
     {
         this.currentState = currentState;

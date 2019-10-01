@@ -224,8 +224,12 @@ public enum Command
         public void execute(String[] parameters, PrintWriter out)
         {
             out.println("Available commands:");
-            Arrays.stream(values()).forEachOrdered(
-                    command -> out.println(" - " + command.name + (command.hasAlias() ? ", " + command.alias : "")));
+            Arrays.stream(values()).forEachOrdered(command -> printCommand(out, command));
+        }
+
+        private void printCommand(PrintWriter out, Command command)
+        {
+            out.println(" - " + command.name + (command.hasAlias() ? ", " + command.alias : ""));
         }
     };
 

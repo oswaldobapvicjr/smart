@@ -130,7 +130,7 @@ public class CommandWorker implements Runnable
 
     public void sendLines(List<String> lines)
     {
-        lines.forEach(line -> out.println(line));
+        lines.forEach(out::println);
         out.flush();
     }
 

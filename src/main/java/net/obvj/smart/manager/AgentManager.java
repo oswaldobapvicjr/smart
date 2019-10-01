@@ -157,9 +157,16 @@ public final class AgentManager
      */
     public Collection<AgentDTO> getAgentDTOs()
     {
-        return agents.values().stream()
-                .map(agent -> new AgentDTO(agent.getName(), agent.getType(), agent.getState().toString()))
-                .collect(Collectors.toList());
+        return agents.values().stream().map(this::toAgentDTO).collect(Collectors.toList());
+    }
+
+    /**
+     * @return an {@link AgentDTO} from the given {@link Agent}
+     * @since 2.0
+     */
+    protected AgentDTO toAgentDTO(Agent agent)
+    {
+        return new AgentDTO(agent.getName(), agent.getType(), agent.getState().toString());
     }
 
     /**

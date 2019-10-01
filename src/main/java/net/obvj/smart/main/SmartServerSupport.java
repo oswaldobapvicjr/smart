@@ -61,27 +61,31 @@ public class SmartServerSupport
     protected void loadAgents(List<AgentConfiguration> agents)
     {
         LOG.info("Loading agents...");
-        AgentManager manager = AgentManager.getInstance();
-        agents.forEach(agentConfig ->
+        agents.forEach(this::parseAndLoadAgentConfig);
+        LOG.log(Level.INFO, "{0} agents loaded", AgentManager.getInstance().getAgents().size());
+    }
+
+    private void parseAndLoadAgentConfig(AgentConfiguration agentConfig)
+    {
+        try
         {
-            try
-            {
-                manager.addAgent(Agent.parseAgent(agentConfig));
-            }
-            catch (Exception e)
-            {
-                LOG.log(Level.SEVERE, "Unable to load agent: " + agentConfig.getName(), e);
-            }
-        });
-        LOG.log(Level.INFO, "{0} agents loaded", manager.getAgents().size());
+            AgentManager.getInstance().addAgent(Agent.parseAgent(agentConfig));
+        }
+        catch (Exception e)
+        {
+            LOG.log(Level.SEVERE, "Unable to load agent: " + agentConfig.getName(), e);
+        }
     }
 
     protected void startAutomaticAgents()
     {
         LOG.log(Level.INFO, "Starting agents...");
-        AgentManager manager = AgentManager.getInstance();
-        manager.getAgents().stream().filter(agent -> agent.getConfiguration().isAutomaticallyStarted())
-                .forEach(agent -> manager.startAgent(agent.getName()));
+        AgentManager.getInstance().getAgents().stream().filter(Agent::isAutomaticallyStarted).forEach(this::startAgent);
+    }
+
+    protected void startAgent(Agent agent)
+    {
+        AgentManager.getInstance().startAgent(agent.getName());
     }
 
     protected void registerManagedBean() throws JMException
