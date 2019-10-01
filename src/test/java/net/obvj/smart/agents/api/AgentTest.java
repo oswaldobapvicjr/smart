@@ -195,4 +195,17 @@ public class AgentTest
         assertNull(lastRunDate);
     }
 
+    @Test
+    public void testIsAutomaticallyStarted() throws Exception
+    {
+        AgentConfiguration xmlAgent = new AgentConfiguration.Builder(DUMMY_DAEMON)
+                .type(DAEMON)
+                .agentClass(DUMMY_DAEMON_CLASS)
+                .automaticallyStarted(true)
+                .build();
+
+        DaemonAgent daemonAgent = (DaemonAgent) Agent.parseAgent(xmlAgent);
+        assertTrue(daemonAgent.isAutomaticallyStarted());
+    }
+    
 }
