@@ -11,13 +11,5 @@
             <interval>30 seconds</interval>
         </agent>
 
-        <agent>
-            <name>DummyDaemon</name>
-            <type>daemon</type>
-            <class>net.obvj.smart.agents.dummy.DummyDaemonAgent</class>
-            <started>true</started>
-            <stopTimeoutInSeconds>6</stopTimeoutInSeconds>
-        </agent>
-
     </agents>
 </smart>

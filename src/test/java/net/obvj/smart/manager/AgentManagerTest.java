@@ -121,13 +121,11 @@ public class AgentManagerTest
     @Test
     public void testStartDaemonAgentWithPreviousStateSet()
     {
+        dummyDaemonAgent = Mockito.spy(dummyDaemonAgent);
         AgentManager manager = newAgentManager(dummyDaemonAgent);
         assertEquals(State.SET, dummyDaemonAgent.getState());
         manager.startAgent(DUMMY_DAEMON);
-        Awaitility.await().until(dummyDaemonAgent::isStarted);
-        assertNotNull(dummyDaemonAgent.getStartDate());
-        assertTrue(manager.isAgentStarted(DUMMY_DAEMON));
-        assertTrue(manager.isAgentRunning(DUMMY_DAEMON));
+        Mockito.verify(dummyDaemonAgent).run();
     }
 
     @Test
