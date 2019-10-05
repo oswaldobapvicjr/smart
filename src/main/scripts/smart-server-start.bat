@@ -15,7 +15,7 @@ REM --------------------------------------------------
 REM Fetching configuration...
 REM --------------------------------------------------
 
-FOR /F "tokens=1,2 delims==" %%G IN (%SMART_PROPERTIES%) DO (set %%G=%%H)  
+FOR /F "tokens=1,2 delims==" %%G IN (%SMART_PROPERTIES%) DO (set %%G=%%H)
 
 ECHO ------------------------------------------
 ECHO jmx.remote.port=%jmx.remote.port%
