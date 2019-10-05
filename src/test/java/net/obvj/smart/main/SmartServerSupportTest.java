@@ -17,6 +17,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import net.obvj.smart.agents.api.Agent;
+import net.obvj.smart.conf.AgentConfigurationException;
 import net.obvj.smart.conf.SmartProperties;
 import net.obvj.smart.conf.xml.AgentConfiguration;
 import net.obvj.smart.console.ManagementConsole;
@@ -129,6 +130,16 @@ public class SmartServerSupportTest
         support.loadAgents(ALL_AGENT_CONFIGS);
         verify(manager).addAgent(dummyAgent);
         verify(manager).addAgent(dummyDaemon);
+    }
+    
+    @Test
+    public void testLoadAgentsWithOneException() throws ReflectiveOperationException
+    {
+        when(Agent.parseAgent(DUMMY_AGENT_CONFIG)).thenReturn(dummyAgent);
+        when(Agent.parseAgent(DUMMY_DAEMON_CONFIG)).thenThrow(new AgentConfigurationException("dummyException"));
+        support.loadAgents(ALL_AGENT_CONFIGS);
+        verify(manager).addAgent(dummyAgent);
+        verify(manager, never()).addAgent(dummyDaemon);
     }
 
 }

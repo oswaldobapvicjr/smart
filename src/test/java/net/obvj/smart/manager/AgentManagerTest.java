@@ -21,7 +21,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import net.obvj.smart.agents.api.Agent;
 import net.obvj.smart.agents.api.Agent.State;
 import net.obvj.smart.agents.api.dto.AgentDTO;
-import net.obvj.smart.agents.dummy.DummyAgent;
 import net.obvj.smart.conf.AgentsXml;
 import net.obvj.smart.conf.xml.AgentConfiguration;
 
@@ -219,6 +218,15 @@ public class AgentManagerTest
         AgentManager manager = newAgentManager(dummyAgent);
         manager.startAgent(DUMMY_AGENT);
         manager.resetAgent(DUMMY_AGENT);
+    }
+    
+    @Test
+    public void testIsAgentRunning()
+    {
+        Agent agent = Mockito.mock(Agent.class);
+        Mockito.when(agent.isRunning()).thenReturn(true);
+        Mockito.when(agent.getName()).thenReturn("agent1");
+        assertTrue(newAgentManager(agent).isAgentRunning("agent1"));
     }
     
 }

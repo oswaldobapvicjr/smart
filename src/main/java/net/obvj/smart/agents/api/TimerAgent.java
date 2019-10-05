@@ -98,19 +98,19 @@ public abstract class TimerAgent extends Agent
                 State previousState = getState();
                 setState(State.RUNNING);
                 lastRunDate = Calendar.getInstance();
-                LOG.log(Level.INFO, "{0} - Agent task started.", DateUtil.formatDate(lastRunDate.getTime()));
+                LOG.log(Level.INFO, "Agent task started");
                 try
                 {
                     runTask();
                 }
                 catch (Exception e)
                 {
-                    LOG.severe(e.getClass().getName() + ": " + e.getMessage());
+                    LOG.log(Level.SEVERE, "Agent task ended with an exception", e);
                 }
                 finally
                 {
                     setState(previousState);
-                    LOG.log(Level.INFO, "{0} - Agent task complete.", DateUtil.now());
+                    LOG.log(Level.INFO, "Agent task complete.");
                 }
             }
         }
