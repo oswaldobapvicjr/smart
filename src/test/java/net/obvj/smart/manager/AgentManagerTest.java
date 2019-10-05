@@ -21,6 +21,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import net.obvj.smart.agents.api.Agent;
 import net.obvj.smart.agents.api.Agent.State;
 import net.obvj.smart.agents.api.dto.AgentDTO;
+import net.obvj.smart.agents.dummy.DummyAgent;
 import net.obvj.smart.conf.AgentsXml;
 import net.obvj.smart.conf.xml.AgentConfiguration;
 
@@ -116,16 +117,6 @@ public class AgentManagerTest
         Awaitility.await().until(dummyAgent::isStarted);
         assertNotNull(dummyAgent.getStartDate());
         assertTrue(manager.isAgentStarted(DUMMY_AGENT));
-    }
-
-    @Test
-    public void testStartDaemonAgentWithPreviousStateSet()
-    {
-        dummyDaemonAgent = Mockito.spy(dummyDaemonAgent);
-        AgentManager manager = newAgentManager(dummyDaemonAgent);
-        assertEquals(State.SET, dummyDaemonAgent.getState());
-        manager.startAgent(DUMMY_DAEMON);
-        Mockito.verify(dummyDaemonAgent).run();
     }
 
     @Test
