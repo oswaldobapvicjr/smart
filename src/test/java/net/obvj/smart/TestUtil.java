@@ -39,11 +39,14 @@ public class TestUtil
      *                               constructor is called
      * @param expectedErrorMessage   the expected error message to be checked in case the
      *                               constructor is called
-     * @throws Exception in case of errors getting constructor metadata or instantiating the
-     *                   private constructor via Reflection
+     * @throws IllegalArgumentException
+     * @throws IllegalAccessException
+     * @throws InstantiationException
+     * @throws Exception                in case of errors getting constructor metadata or
+     *                                  instantiating the private constructor via Reflection
      */
     public static void testNoInstancesAllowed(Class<?> utilityClass, Class<? extends Throwable> expectedThrowableClass,
-            String expectedErrorMessage) throws Exception
+            String expectedErrorMessage) throws ReflectiveOperationException
     {
         try
         {

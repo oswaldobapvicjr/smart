@@ -44,7 +44,7 @@ public enum TimeUnit
     {
         return Arrays.stream(TimeUnit.values()).filter(timeUnit -> isTimeUnitIdentifiableBy(identifier, timeUnit))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Invalid time unit identifier: " + identifier));
+                .orElseThrow(() -> Exceptions.illegalArgument("Invalid time unit identifier: \"%s\"", identifier));
     }
 
     private static boolean isTimeUnitIdentifiableBy(String identifier, TimeUnit timeUnit)

@@ -7,6 +7,7 @@ import java.util.concurrent.TimeoutException;
 
 import net.obvj.smart.conf.xml.AgentConfiguration;
 import net.obvj.smart.util.DateUtil;
+import net.obvj.smart.util.Exceptions;
 
 /**
  * A common interface for all managed agents
@@ -190,7 +191,7 @@ public abstract class Agent implements Runnable
         {
             return DaemonAgent.parseAgent(configuration);
         }
-        throw new IllegalArgumentException(String.format("Unknown agent type: \"%s\"", lType));
+        throw Exceptions.illegalArgument("Unknown agent type: \"%s\"", lType);
     }
 
 }

@@ -11,6 +11,7 @@ import net.obvj.smart.agents.api.dto.AgentDTO;
 import net.obvj.smart.jmx.dto.ThreadDTO;
 import net.obvj.smart.manager.AgentManager;
 import net.obvj.smart.util.DateUtil;
+import net.obvj.smart.util.Exceptions;
 import net.obvj.smart.util.SystemUtil;
 
 /**
@@ -265,7 +266,7 @@ public enum Command
     public static Command getByNameOrAlias(String string)
     {
         return getOptionalByNameOrAlias(string)
-                .orElseThrow(() -> new IllegalArgumentException("Unknown command: " + string));
+                .orElseThrow(() -> Exceptions.illegalArgument("Unknown command: %s", string));
     }
 
     public static Command getByNameOrAliasOrNull(String string)

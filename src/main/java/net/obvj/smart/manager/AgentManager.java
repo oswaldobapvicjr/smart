@@ -11,6 +11,7 @@ import net.obvj.smart.agents.api.DaemonAgent;
 import net.obvj.smart.agents.api.dto.AgentDTO;
 import net.obvj.smart.conf.AgentsXml;
 import net.obvj.smart.conf.xml.AgentConfiguration;
+import net.obvj.smart.util.Exceptions;
 
 /**
  * A single object for agents maintenance
@@ -20,7 +21,8 @@ import net.obvj.smart.conf.xml.AgentConfiguration;
  */
 public final class AgentManager
 {
-    private static final String MSG_PATTERN_INVALID_AGENT = "Invalid agent: %s";
+    private static final String MSG_INVALID_AGENT = "Invalid agent: %s";
+    private static final String MSG_AGENT_STARTED_PLEASE_STOP_FIRST = "'%s' is started. Please stop the agent before this operation.";
 
     private static final AgentManager instance = new AgentManager();
 
@@ -58,7 +60,7 @@ public final class AgentManager
         {
             return agents.get(name);
         }
-        throw new IllegalArgumentException(String.format(MSG_PATTERN_INVALID_AGENT, name));
+        throw Exceptions.illegalArgument(MSG_INVALID_AGENT, name);
     }
 
     /**
@@ -73,7 +75,7 @@ public final class AgentManager
         Agent agent = findAgentByName(name);
         if (agent.isStarted() || agent.isRunning())
         {
-            throw new IllegalStateException("'" + name + "' is started. Please stop this agent first.");
+            throw Exceptions.illegalState(MSG_AGENT_STARTED_PLEASE_STOP_FIRST, name);
         }
         agents.remove(name);
     }
@@ -92,7 +94,7 @@ public final class AgentManager
         Agent agent = findAgentByName(name);
         if (agent.isStarted() || agent.isRunning())
         {
-            throw new IllegalStateException("'" + name + "' is started. Please stop this agent first.");
+            throw Exceptions.illegalState(MSG_AGENT_STARTED_PLEASE_STOP_FIRST, name);
         }
         AgentConfiguration agentConfig = AgentsXml.getInstance().getAgentConfiguration(name);
         Agent newAgent = Agent.parseAgent(agentConfig);

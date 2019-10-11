@@ -50,7 +50,7 @@ public class TimeInterval
         {
             return Integer.parseInt(matcher.group(0));
         }
-        throw new IllegalArgumentException("No digit found in input string: " + input);
+        throw Exceptions.illegalArgument("No digit found in input string: \"%s\"", input);
     }
 
     /**
