@@ -2,7 +2,7 @@ package net.obvj.smart.util;
 
 import org.junit.Test;
 
-import net.obvj.smart.TestUtil;
+import static net.obvj.smart.TestUtil.*;
 
 /**
  * Unit tests for the {@link Exceptions} class.
@@ -20,34 +20,33 @@ public class ExceptionsTest
     @Test
     public void testNoInstances() throws Exception
     {
-        TestUtil.testNoInstancesAllowed(Exceptions.class, IllegalStateException.class, "Utility class");
+        checkNoInstancesAllowed(Exceptions.class, IllegalStateException.class, "Utility class");
     }
-    
+
     @Test
     public void testIllegalArgumentWithMessageAndParams()
     {
-        TestUtil.assertException(IllegalArgumentException.class, EXPECTED_MSG,
+        assertException(IllegalArgumentException.class, EXPECTED_MSG,
                 Exceptions.illegalArgument(MSG_PATTERN, ARG1, ARG2));
     }
 
     @Test
     public void testIllegalArgumentWithMessageAndParamsAndCause()
     {
-        TestUtil.assertException(IllegalArgumentException.class, EXPECTED_MSG, NullPointerException.class,
+        assertException(IllegalArgumentException.class, EXPECTED_MSG, NullPointerException.class,
                 Exceptions.illegalArgument(new NullPointerException(), MSG_PATTERN, ARG1, ARG2));
     }
 
     @Test
     public void testIllegalStateWithMessageAndParams()
     {
-        TestUtil.assertException(IllegalStateException.class, EXPECTED_MSG,
-                Exceptions.illegalState(MSG_PATTERN, ARG1, ARG2));
+        assertException(IllegalStateException.class, EXPECTED_MSG, Exceptions.illegalState(MSG_PATTERN, ARG1, ARG2));
     }
 
     @Test
     public void testIllegalStateWithMessageAndParamsAndCause()
     {
-        TestUtil.assertException(IllegalStateException.class, EXPECTED_MSG, NullPointerException.class,
+        assertException(IllegalStateException.class, EXPECTED_MSG, NullPointerException.class,
                 Exceptions.illegalState(new NullPointerException(), MSG_PATTERN, ARG1, ARG2));
     }
 

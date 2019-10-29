@@ -1,13 +1,10 @@
 package net.obvj.smart.agents.api;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.*;
 
 import java.util.concurrent.TimeoutException;
 
@@ -98,11 +95,11 @@ public class TimerAgentTest
     public void testRunAgentWithPreviousStateSet() throws ReflectiveOperationException
     {
         TimerAgent agent = spy((TimerAgent) Agent.parseAgent(DUMMY_AGENT_CONFIG));
-        assertEquals("State before run()", State.SET, agent.getState());
+        assertThat("State before run() should be SET", agent.getState(), is(State.SET));
         agent.run();
         verify(agent).runTask();
-        assertEquals("State after run()", State.SET, agent.getState());
-        assertNotNull(agent.getLastRunDate());
+        assertThat("State after start() should be SET", agent.getState(), is(State.SET));
+        assertThat(agent.getLastRunDate(), is(notNullValue()));
         
     }
 

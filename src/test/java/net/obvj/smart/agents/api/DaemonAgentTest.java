@@ -1,6 +1,7 @@
 package net.obvj.smart.agents.api;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 import java.util.concurrent.TimeoutException;
@@ -67,7 +68,7 @@ public class DaemonAgentTest
     public void testStartAgentWithPreviousStateSet() throws ReflectiveOperationException
     {
         DaemonAgent agent = Mockito.spy((DaemonAgent) Agent.parseAgent(DUMMY_AGENT_CONFIG));
-        assertEquals("State before start()", State.SET, agent.getState());
+        assertThat("State before start() should be SET", agent.getState(), is(State.SET));
         agent.start();
         Awaitility.await().until(agent::isRunning);
         Awaitility.await().untilAsserted(() -> Mockito.verify(agent).run());

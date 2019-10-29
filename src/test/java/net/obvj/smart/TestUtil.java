@@ -1,9 +1,7 @@
 package net.obvj.smart;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -20,6 +18,8 @@ import java.util.function.Supplier;
 public class TestUtil
 {
     private static final String EXPECTED_BUT_NOT_THROWN = "Expected but not thrown: \"%s\"";
+    private static final String EXPECTED_STRING_NOT_FOUND = "Expected string \"%s\" not found in: \"%s\"";
+    private static final String UNEXPECTED_STRING_FOUND = "Unexpected string \"%s\" found in: \"%s\"";
 
     /**
      * A utility function that accepts no argument and returns void, to allow testing methods
@@ -45,13 +45,13 @@ public class TestUtil
      * @throws Exception                in case of errors getting constructor metadata or
      *                                  instantiating the private constructor via Reflection
      */
-    public static void testNoInstancesAllowed(Class<?> utilityClass, Class<? extends Throwable> expectedThrowableClass,
+    public static void checkNoInstancesAllowed(Class<?> utilityClass, Class<? extends Throwable> expectedThrowableClass,
             String expectedErrorMessage) throws ReflectiveOperationException
     {
         try
         {
             Constructor<?> constructor = utilityClass.getDeclaredConstructor();
-            assertTrue("Constructor is not private", Modifier.isPrivate(constructor.getModifiers()));
+            assertTrue("Constructor should be private", Modifier.isPrivate(constructor.getModifiers()));
             constructor.setAccessible(true);
             constructor.newInstance();
             fail("Class was instantiated");
@@ -59,8 +59,8 @@ public class TestUtil
         catch (InvocationTargetException ite)
         {
             Throwable cause = ite.getCause();
-            assertEquals(expectedThrowableClass, cause.getClass());
-            assertEquals(expectedErrorMessage, cause.getMessage());
+            assertThat(cause, is(instanceOf(expectedThrowableClass)));
+            assertThat(cause.getMessage(), is(expectedErrorMessage));
         }
     }
 
@@ -101,9 +101,9 @@ public class TestUtil
     public static void assertException(Class<? extends Throwable> expectedThrowable, String expectedMessage,
             Class<? extends Throwable> expectedCause, Throwable throwable)
     {
-        assertEquals("Unexpected throwable class:", expectedThrowable, throwable.getClass());
-        if (expectedMessage != null) assertEquals("Unexpected message:", expectedMessage, throwable.getMessage());
-        if (expectedCause != null) assertEquals("Unexpected cause:", expectedCause, throwable.getCause().getClass());
+        assertThat("Unexpected throwable class:", throwable, is(instanceOf(expectedThrowable)));
+        if (expectedMessage != null) assertThat("Unexpected message:", throwable.getMessage(), is(expectedMessage));
+        if (expectedCause != null) assertThat("Unexpected cause:", throwable.getCause(), is(instanceOf(expectedCause)));
     }
 
     /**
@@ -262,8 +262,7 @@ public class TestUtil
     {
         Arrays.stream(expectedStrings)
                 .forEach(expectedString -> assertTrue(
-                        String.format("Expected string \"%s\" was not found in test string: \"%s\"", expectedString,
-                                testString),
+                        String.format(EXPECTED_STRING_NOT_FOUND, expectedString, testString),
                         testString.contains(expectedString)));
     }
 
@@ -275,8 +274,9 @@ public class TestUtil
      */
     public static void assertStringDoesNotContain(String testString, String... expectedStrings)
     {
-        Arrays.stream(expectedStrings).forEach(expectedString -> assertFalse(
-                String.format("Unexpected string \"%s\" was found in test string: \"%s\"", expectedString, testString),
-                testString.contains(expectedString)));
+        Arrays.stream(expectedStrings)
+                .forEach(expectedString -> assertFalse(
+                        String.format(UNEXPECTED_STRING_FOUND, expectedString, testString),
+                        testString.contains(expectedString)));
     }
 }

@@ -1,6 +1,7 @@
 package net.obvj.smart.util;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
@@ -12,70 +13,70 @@ import org.junit.Test;
  */
 public class TimeIntervalTest
 {
-    private void assertTimeIntervalOf(String input, int expectedDuration, TimeUnit expectedTimeUnit)
+    private void assertTimeIntervalOf(int expectedDuration, TimeUnit expectedTimeUnit, String input)
     {
         TimeInterval timeInterval = TimeInterval.of(input);
-        assertEquals(expectedDuration, timeInterval.getDuration());
-        assertEquals(expectedTimeUnit, timeInterval.getTimeUnit());
+        assertThat(timeInterval.getDuration(), is(expectedDuration));
+        assertThat(timeInterval.getTimeUnit(), is(expectedTimeUnit));
     }
 
     @Test
     public void testExtractFirstDigitsFromValidString()
     {
-        assertEquals(1, TimeInterval.extractFirstDigitGroupFromString("1minute"));
-        assertEquals(5, TimeInterval.extractFirstDigitGroupFromString("5m"));
-        assertEquals(10, TimeInterval.extractFirstDigitGroupFromString("10minutes"));
-        assertEquals(15, TimeInterval.extractFirstDigitGroupFromString("15 minutes"));
-        assertEquals(20, TimeInterval.extractFirstDigitGroupFromString("20 m"));
-        assertEquals(25, TimeInterval.extractFirstDigitGroupFromString("25"));
-        assertEquals(30, TimeInterval.extractFirstDigitGroupFromString(" 30 "));
-        assertEquals(35, TimeInterval.extractFirstDigitGroupFromString("35.5s"));
-        assertEquals(40, TimeInterval.extractFirstDigitGroupFromString("40,5s"));
+        assertThat(TimeInterval.extractFirstDigitGroupFromString("1minute"), is(1));
+        assertThat(TimeInterval.extractFirstDigitGroupFromString("5m"), is(5));
+        assertThat(TimeInterval.extractFirstDigitGroupFromString("10minutes"), is(10));
+        assertThat(TimeInterval.extractFirstDigitGroupFromString("15 minutes"), is(15));
+        assertThat(TimeInterval.extractFirstDigitGroupFromString("20 m"), is(20));
+        assertThat(TimeInterval.extractFirstDigitGroupFromString("25"), is(25));
+        assertThat(TimeInterval.extractFirstDigitGroupFromString(" 30 "), is(30));
+        assertThat(TimeInterval.extractFirstDigitGroupFromString("35.5s"), is(35));
+        assertThat(TimeInterval.extractFirstDigitGroupFromString("40,5s"), is(40));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testExtractFirstDigitsFromInvalidString()
     {
-        assertEquals(1, TimeInterval.extractFirstDigitGroupFromString("minute"));
+        TimeInterval.extractFirstDigitGroupFromString("minute");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testExtractFirstDigitsFromEmptyString()
     {
-        assertEquals(5, TimeInterval.extractFirstDigitGroupFromString(""));
+        TimeInterval.extractFirstDigitGroupFromString("");
     }
 
     @Test
     public void testExtractLetterFromValidString()
     {
-        assertEquals("minute", TimeInterval.extractFirstLetterGroupFromString("1minute"));
-        assertEquals("minutes", TimeInterval.extractFirstLetterGroupFromString("10 minutes"));
-        assertEquals("m", TimeInterval.extractFirstLetterGroupFromString("5m"));
-        assertEquals("H", TimeInterval.extractFirstLetterGroupFromString("15 H"));
-        assertEquals("seconds", TimeInterval.extractFirstLetterGroupFromString("20 seconds "));
-        assertEquals("", TimeInterval.extractFirstLetterGroupFromString("25"));
-        assertEquals("", TimeInterval.extractFirstLetterGroupFromString(" 30 "));
-        assertEquals("hours", TimeInterval.extractFirstLetterGroupFromString("35.5 hours"));
-        assertEquals("s", TimeInterval.extractFirstLetterGroupFromString("40,5s"));
+        assertThat(TimeInterval.extractFirstLetterGroupFromString("1minute"), is("minute"));
+        assertThat(TimeInterval.extractFirstLetterGroupFromString("10 minutes"), is("minutes"));
+        assertThat(TimeInterval.extractFirstLetterGroupFromString("5m"), is("m"));
+        assertThat(TimeInterval.extractFirstLetterGroupFromString("15 H"), is("H"));
+        assertThat(TimeInterval.extractFirstLetterGroupFromString("20 seconds "), is("seconds"));
+        assertThat(TimeInterval.extractFirstLetterGroupFromString("25"), is(""));
+        assertThat(TimeInterval.extractFirstLetterGroupFromString(" 30 "), is(""));
+        assertThat(TimeInterval.extractFirstLetterGroupFromString("35.5 hours"), is("hours"));
+        assertThat(TimeInterval.extractFirstLetterGroupFromString("40,5s"), is("s"));
     }
 
     @Test
     public void testTimeIntervalOfValidStrings()
     {
-        assertTimeIntervalOf("1minute", 1, TimeUnit.MINUTES);
-        assertTimeIntervalOf("5m", 5, TimeUnit.MINUTES);
-        assertTimeIntervalOf("10minutes", 10, TimeUnit.MINUTES);
-        assertTimeIntervalOf("15 Minutes", 15, TimeUnit.MINUTES);
-        assertTimeIntervalOf("20 m", 20, TimeUnit.MINUTES);
-        assertTimeIntervalOf("25", 25, TimeUnit.MINUTES);
-        assertTimeIntervalOf(" 30 ", 30, TimeUnit.MINUTES);
-        assertTimeIntervalOf("35_MINUTE", 35, TimeUnit.MINUTES);
-        assertTimeIntervalOf("1H", 1, TimeUnit.HOURS);
-        assertTimeIntervalOf("2h", 2, TimeUnit.HOURS);
-        assertTimeIntervalOf("12-HOURS", 12, TimeUnit.HOURS);
-        assertTimeIntervalOf("hour=3", 3, TimeUnit.HOURS);
-        assertTimeIntervalOf("seconds=15", 15, TimeUnit.SECONDS);
-        assertTimeIntervalOf("SeCoNd:3", 3, TimeUnit.SECONDS);
+        assertTimeIntervalOf(1, TimeUnit.MINUTES, "1minute");
+        assertTimeIntervalOf(5, TimeUnit.MINUTES, "5m");
+        assertTimeIntervalOf(10, TimeUnit.MINUTES, "10minutes");
+        assertTimeIntervalOf(15, TimeUnit.MINUTES, "15 Minutes");
+        assertTimeIntervalOf(20, TimeUnit.MINUTES, "20 m");
+        assertTimeIntervalOf(25, TimeUnit.MINUTES, "25");
+        assertTimeIntervalOf(30, TimeUnit.MINUTES, " 30 ");
+        assertTimeIntervalOf(35, TimeUnit.MINUTES, "35_MINUTE");
+        assertTimeIntervalOf(1, TimeUnit.HOURS, "1H");
+        assertTimeIntervalOf(2, TimeUnit.HOURS, "2h");
+        assertTimeIntervalOf(12, TimeUnit.HOURS, "12-HOURS");
+        assertTimeIntervalOf(3, TimeUnit.HOURS, "hour=3");
+        assertTimeIntervalOf(15, TimeUnit.SECONDS, "seconds=15");
+        assertTimeIntervalOf(3, TimeUnit.SECONDS, "SeCoNd:3");
     }
 
     @Test(expected = IllegalArgumentException.class)

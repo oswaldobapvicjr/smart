@@ -20,7 +20,7 @@ public class ConsoleUtilTest
     @Test
     public void testNoInstancesAllowed() throws Exception
     {
-        TestUtil.testNoInstancesAllowed(ConsoleUtil.class, IllegalStateException.class, "Utility class");
+        TestUtil.checkNoInstancesAllowed(ConsoleUtil.class, IllegalStateException.class, "Utility class");
     }
 
 }

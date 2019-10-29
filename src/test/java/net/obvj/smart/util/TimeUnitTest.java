@@ -1,6 +1,7 @@
 package net.obvj.smart.util;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 import java.util.Calendar;
 
@@ -20,26 +21,26 @@ public class TimeUnitTest
     @Test
     public void testFindTimeUnitByKnownIdentifiers()
     {
-        assertEquals(TimeUnit.SECONDS, TimeUnit.findByIdentifier("second"));
-        assertEquals(TimeUnit.SECONDS, TimeUnit.findByIdentifier("SECOND"));
-        assertEquals(TimeUnit.SECONDS, TimeUnit.findByIdentifier("seconds"));
-        assertEquals(TimeUnit.SECONDS, TimeUnit.findByIdentifier("SECONDS"));
-        assertEquals(TimeUnit.SECONDS, TimeUnit.findByIdentifier("s"));
-        assertEquals(TimeUnit.SECONDS, TimeUnit.findByIdentifier("S"));
+        assertThat(TimeUnit.findByIdentifier("second"), is(TimeUnit.SECONDS));
+        assertThat(TimeUnit.findByIdentifier("SECOND"), is(TimeUnit.SECONDS));
+        assertThat(TimeUnit.findByIdentifier("seconds"), is(TimeUnit.SECONDS));
+        assertThat(TimeUnit.findByIdentifier("SECONDS"), is(TimeUnit.SECONDS));
+        assertThat(TimeUnit.findByIdentifier("s"), is(TimeUnit.SECONDS));
+        assertThat(TimeUnit.findByIdentifier("S"), is(TimeUnit.SECONDS));
 
-        assertEquals(TimeUnit.MINUTES, TimeUnit.findByIdentifier("minute"));
-        assertEquals(TimeUnit.MINUTES, TimeUnit.findByIdentifier("MINUTE"));
-        assertEquals(TimeUnit.MINUTES, TimeUnit.findByIdentifier("minutes"));
-        assertEquals(TimeUnit.MINUTES, TimeUnit.findByIdentifier("MINUTES"));
-        assertEquals(TimeUnit.MINUTES, TimeUnit.findByIdentifier("m"));
-        assertEquals(TimeUnit.MINUTES, TimeUnit.findByIdentifier("M"));
+        assertThat(TimeUnit.findByIdentifier("minute"), is(TimeUnit.MINUTES));
+        assertThat(TimeUnit.findByIdentifier("MINUTE"), is(TimeUnit.MINUTES));
+        assertThat(TimeUnit.findByIdentifier("minutes"), is(TimeUnit.MINUTES));
+        assertThat(TimeUnit.findByIdentifier("MINUTES"), is(TimeUnit.MINUTES));
+        assertThat(TimeUnit.findByIdentifier("m"), is(TimeUnit.MINUTES));
+        assertThat(TimeUnit.findByIdentifier("M"), is(TimeUnit.MINUTES));
 
-        assertEquals(TimeUnit.HOURS, TimeUnit.findByIdentifier("hour"));
-        assertEquals(TimeUnit.HOURS, TimeUnit.findByIdentifier("HOUR"));
-        assertEquals(TimeUnit.HOURS, TimeUnit.findByIdentifier("hours"));
-        assertEquals(TimeUnit.HOURS, TimeUnit.findByIdentifier("HOURS"));
-        assertEquals(TimeUnit.HOURS, TimeUnit.findByIdentifier("h"));
-        assertEquals(TimeUnit.HOURS, TimeUnit.findByIdentifier("H"));
+        assertThat(TimeUnit.findByIdentifier("hour"), is(TimeUnit.HOURS));
+        assertThat(TimeUnit.findByIdentifier("HOUR"), is(TimeUnit.HOURS));
+        assertThat(TimeUnit.findByIdentifier("hours"), is(TimeUnit.HOURS));
+        assertThat(TimeUnit.findByIdentifier("HOURS"), is(TimeUnit.HOURS));
+        assertThat(TimeUnit.findByIdentifier("h"), is(TimeUnit.HOURS));
+        assertThat(TimeUnit.findByIdentifier("H"), is(TimeUnit.HOURS));
     }
 
     /**
@@ -66,9 +67,9 @@ public class TimeUnitTest
     @Test
     public void testTimeUnitCalendarConstants()
     {
-        assertEquals(Calendar.SECOND, TimeUnit.SECONDS.getCalendarConstant());
-        assertEquals(Calendar.MINUTE, TimeUnit.MINUTES.getCalendarConstant());
-        assertEquals(Calendar.HOUR_OF_DAY, TimeUnit.HOURS.getCalendarConstant());
+        assertThat(TimeUnit.SECONDS.getCalendarConstant(), is(Calendar.SECOND));
+        assertThat(TimeUnit.MINUTES.getCalendarConstant(), is(Calendar.MINUTE));
+        assertThat(TimeUnit.HOURS.getCalendarConstant(), is(Calendar.HOUR_OF_DAY));
     }
 
     /**
@@ -77,9 +78,9 @@ public class TimeUnitTest
     @Test
     public void testTimeUnitDisplayStrings()
     {
-        assertEquals("second(s)", TimeUnit.SECONDS.toString());
-        assertEquals("minute(s)", TimeUnit.MINUTES.toString());
-        assertEquals("hour(s)", TimeUnit.HOURS.toString());
+        assertThat(TimeUnit.SECONDS.toString(), is("second(s)"));
+        assertThat(TimeUnit.MINUTES.toString(), is("minute(s)"));
+        assertThat(TimeUnit.HOURS.toString(), is("hour(s)"));
     }
 
     /**
@@ -88,8 +89,8 @@ public class TimeUnitTest
     @Test
     public void testTimeUnitToMilliseconds()
     {
-        assertEquals(1000, TimeUnit.SECONDS.toMillis(1));
-        assertEquals(60000, TimeUnit.MINUTES.toMillis(1));
-        assertEquals(3600000, TimeUnit.HOURS.toMillis(1));
+        assertThat(TimeUnit.SECONDS.toMillis(1), is(1000l));
+        assertThat(TimeUnit.MINUTES.toMillis(1), is(60000l));
+        assertThat(TimeUnit.HOURS.toMillis(1), is(3600000l));
     }
 }

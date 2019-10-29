@@ -1,6 +1,9 @@
 package net.obvj.smart.util;
 
+import static net.obvj.smart.TestUtil.checkNoInstancesAllowed;
 import static org.junit.Assert.assertTrue;
+import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 import java.lang.Thread.State;
 import java.lang.management.ThreadInfo;
@@ -8,9 +11,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.junit.Test;
-import org.powermock.api.mockito.PowerMockito;
 
-import net.obvj.smart.TestUtil;
 import net.obvj.smart.jmx.dto.ThreadDTO;
 
 /**
@@ -34,10 +35,10 @@ public class SystemUtilTest
      */
     private static ThreadInfo mockThreadInfo(long id, String name, State state)
     {
-        ThreadInfo threadInfo = PowerMockito.mock(ThreadInfo.class);
-        PowerMockito.when(threadInfo.getThreadId()).thenReturn(id);
-        PowerMockito.when(threadInfo.getThreadName()).thenReturn(name);
-        PowerMockito.when(threadInfo.getThreadState()).thenReturn(state);
+        ThreadInfo threadInfo = mock(ThreadInfo.class);
+        when(threadInfo.getThreadId()).thenReturn(id);
+        when(threadInfo.getThreadName()).thenReturn(name);
+        when(threadInfo.getThreadState()).thenReturn(state);
         return threadInfo;
     }
 
@@ -56,7 +57,7 @@ public class SystemUtilTest
     @Test
     public void testNoInstancesAllowed() throws Exception
     {
-        TestUtil.testNoInstancesAllowed(SystemUtil.class, IllegalStateException.class, "Utility class");
+        checkNoInstancesAllowed(SystemUtil.class, IllegalStateException.class, "Utility class");
     }
 
 }

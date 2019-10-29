@@ -1,9 +1,7 @@
 package net.obvj.smart.agents.api;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 import java.util.Calendar;
 
@@ -51,18 +49,18 @@ public class AgentTest
                 .build();
 
         TimerAgent timerAgent = (TimerAgent) Agent.parseAgent(xmlAgent);
-        
-        assertEquals(DUMMY_AGENT, timerAgent.getName());
-        assertEquals(TIMER, timerAgent.getType());
-        assertEquals(DummyAgent.class, timerAgent.getClass());
-        assertEquals(5, timerAgent.getStopTimeoutSeconds());
-        assertEquals(xmlAgent, timerAgent.getConfiguration());
-        
-        assertEquals(30, timerAgent.getInterval());
-        assertEquals(TimeUnit.SECONDS, timerAgent.getTimeUnit());
-        
-        assertEquals(State.SET, timerAgent.getState());
-        assertFalse(timerAgent.isStarted());
+
+        assertThat(timerAgent.getName(), is(DUMMY_AGENT));
+        assertThat(timerAgent.getType(), is(TIMER));
+        assertThat(timerAgent.getClass(), is(equalTo(DummyAgent.class)));
+        assertThat(timerAgent.getStopTimeoutSeconds(), is(5));
+        assertThat(timerAgent.getConfiguration(), is(xmlAgent));
+
+        assertThat(timerAgent.getInterval(), is(30));
+        assertThat(timerAgent.getTimeUnit(), is(TimeUnit.SECONDS));
+
+        assertThat(timerAgent.getState(), is(State.SET));
+        assertThat(timerAgent.isStarted(), is(false));
     }
     
     @Test
@@ -74,18 +72,18 @@ public class AgentTest
                 .build();
 
         TimerAgent timerAgent = (TimerAgent) Agent.parseAgent(xmlAgent);
-        
-        assertEquals(DUMMY_AGENT, timerAgent.getName());
-        assertEquals(TIMER, timerAgent.getType());
-        assertEquals(DummyAgent.class, timerAgent.getClass());
-        assertEquals(-1, timerAgent.getStopTimeoutSeconds());
-        assertEquals(xmlAgent, timerAgent.getConfiguration());
-        
-        assertEquals(1, timerAgent.getInterval());
-        assertEquals(TimeUnit.MINUTES, timerAgent.getTimeUnit());
-        
-        assertEquals(State.SET, timerAgent.getState());
-        assertFalse(timerAgent.isStarted());
+
+        assertThat(timerAgent.getName(), is(DUMMY_AGENT));
+        assertThat(timerAgent.getType(), is(TIMER));
+        assertThat(timerAgent.getClass(), is(equalTo(DummyAgent.class)));
+        assertThat(timerAgent.getStopTimeoutSeconds(), is(-1));
+        assertThat(timerAgent.getConfiguration(), is(xmlAgent));
+
+        assertThat(timerAgent.getInterval(), is(1));
+        assertThat(timerAgent.getTimeUnit(), is(TimeUnit.MINUTES));
+
+        assertThat(timerAgent.getState(), is(State.SET));
+        assertThat(timerAgent.isStarted(), is(false));
     }
     
     @Test
@@ -99,15 +97,15 @@ public class AgentTest
                 .build();
 
         DaemonAgent daemonAgent = (DaemonAgent) Agent.parseAgent(xmlAgent);
-        
-        assertEquals(DUMMY_DAEMON, daemonAgent.getName());
-        assertEquals(DAEMON, daemonAgent.getType());
-        assertEquals(DummyDaemonAgent.class, daemonAgent.getClass());
-        assertEquals(1, daemonAgent.getStopTimeoutSeconds());
-        assertEquals(xmlAgent, daemonAgent.getConfiguration());
-        
-        assertEquals(State.SET, daemonAgent.getState());
-        assertFalse(daemonAgent.isStarted());
+
+        assertThat(daemonAgent.getName(), is(DUMMY_DAEMON));
+        assertThat(daemonAgent.getType(), is(DAEMON));
+        assertThat(daemonAgent.getClass(), is(equalTo(DummyDaemonAgent.class)));
+        assertThat(daemonAgent.getStopTimeoutSeconds(), is(1));
+        assertThat(daemonAgent.getConfiguration(), is(xmlAgent));
+
+        assertThat(daemonAgent.getState(), is(State.SET));
+        assertThat(daemonAgent.isStarted(), is(false));
     }
     
     @Test
@@ -120,14 +118,14 @@ public class AgentTest
 
         DaemonAgent daemonAgent = (DaemonAgent) Agent.parseAgent(xmlAgent);
         
-        assertEquals(DUMMY_DAEMON, daemonAgent.getName());
-        assertEquals(DAEMON, daemonAgent.getType());
-        assertEquals(DummyDaemonAgent.class, daemonAgent.getClass());
-        assertEquals(-1, daemonAgent.getStopTimeoutSeconds());
-        assertEquals(xmlAgent, daemonAgent.getConfiguration());
-        
-        assertEquals(State.SET, daemonAgent.getState());
-        assertFalse(daemonAgent.isStarted());
+        assertThat(daemonAgent.getName(), is(DUMMY_DAEMON));
+        assertThat(daemonAgent.getType(), is(DAEMON));
+        assertThat(daemonAgent.getClass(), is(equalTo(DummyDaemonAgent.class)));
+        assertThat(daemonAgent.getStopTimeoutSeconds(), is(-1));
+        assertThat(daemonAgent.getConfiguration(), is(xmlAgent));
+
+        assertThat(daemonAgent.getState(), is(State.SET));
+        assertThat(daemonAgent.isStarted(), is(false));
     }
     
     @Test(expected = IllegalArgumentException.class)
@@ -183,8 +181,8 @@ public class AgentTest
         Calendar now = Calendar.getInstance();
         agent.lastRunDate = now;
         Calendar lastRunDate = agent.getLastRunDate();
-        assertFalse(now == lastRunDate);
-        assertEquals(now.getTime(), lastRunDate.getTime());
+        assertNotSame(now, lastRunDate);
+        assertThat(lastRunDate.getTime(), is(now.getTime()));
     }
     
     @Test
