@@ -78,5 +78,17 @@ public enum TimeUnit
     {
         return javaTimeUnit.toMillis(amount);
     }
+    
+    /**
+     * Converts the given time duration in the given unit to this unit.
+     * 
+     * @param amount the time duration to be converted
+     * @return the converted amount
+     * @since 2.0
+     */
+    public long convert(long amount, TimeUnit sourceTimeUnit)
+    {
+        return javaTimeUnit.convert(amount, sourceTimeUnit.javaTimeUnit);
+    }
 
 }

@@ -93,4 +93,15 @@ public class TimeUnitTest
         assertThat(TimeUnit.MINUTES.toMillis(1), is(60000l));
         assertThat(TimeUnit.HOURS.toMillis(1), is(3600000l));
     }
+    
+    /**
+     * Test time unit conversion, based on another source time unit
+     */
+    @Test
+    public void testTimeUnitConvert()
+    {
+        assertThat(TimeUnit.SECONDS.convert(1, TimeUnit.MINUTES), is(60l));
+        assertThat(TimeUnit.SECONDS.convert(1, TimeUnit.HOURS), is(3600l));
+        assertThat(TimeUnit.MINUTES.convert(1, TimeUnit.HOURS), is(60l));
+    }
 }
