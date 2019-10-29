@@ -1,6 +1,5 @@
 package net.obvj.smart.conf;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
@@ -22,6 +21,7 @@ import org.xml.sax.SAXException;
 
 import net.obvj.smart.conf.xml.AgentConfiguration;
 import net.obvj.smart.conf.xml.SmartConfiguration;
+import net.obvj.smart.util.Exceptions;
 
 /**
  * An object that maintains agent configuration data retrieved from the {@code agents.xml} file
@@ -60,7 +60,7 @@ public class AgentsXml
         {
             if (stream == null)
             {
-                throw new FileNotFoundException(String.format("Unable to find %s in class path", fileName));
+                throw Exceptions.fileNotFound("\"%s\" not found in the class path", fileName);
             }
 
             LOG.log(Level.INFO, "{0} found", fileName);

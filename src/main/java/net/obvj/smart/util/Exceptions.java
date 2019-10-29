@@ -1,5 +1,7 @@
 package net.obvj.smart.util;
 
+import java.io.FileNotFoundException;
+
 /**
  * Shorthands creating exceptions with a formatted message.
  * 
@@ -63,6 +65,18 @@ public final class Exceptions
             final Object... args)
     {
         return new IllegalStateException(String.format(format, args), throwable);
+    }
+
+    /**
+     * Creates a {@link FileNotFoundException} with a formatted message.
+     * 
+     * @param format See {@link String#format(String, Object...)}
+     * @param args   See {@link String#format(String, Object...)}
+     * @return a {@link FileNotFoundException} with a formatted message
+     */
+    public static FileNotFoundException fileNotFound(final String format, final Object... args)
+    {
+        return new FileNotFoundException(String.format(format, args));
     }
 
 }

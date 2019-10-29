@@ -38,7 +38,6 @@ public class Main extends SmartServerSupport implements Runnable
 
             LOG.info("Ready.");
 
-            keepMainThreadBusy();
         }
         catch (JMException e)
         {
@@ -49,21 +48,6 @@ public class Main extends SmartServerSupport implements Runnable
         {
             LOG.log(Level.SEVERE, "Unable to load agents configuration", e);
             System.exit(1);
-        }
-    }
-
-    private void keepMainThreadBusy()
-    {
-        while (runFlag)
-        {
-            try
-            {
-                Thread.sleep(1000);
-            }
-            catch (InterruptedException e)
-            {
-                Thread.currentThread().interrupt();
-            }
         }
     }
 

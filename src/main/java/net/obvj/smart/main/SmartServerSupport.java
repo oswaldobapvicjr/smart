@@ -28,8 +28,6 @@ public class SmartServerSupport
 
     protected static final Logger LOG = Logger.getLogger("smart-server");
 
-    protected static boolean runFlag = true;
-
     public boolean isClassicConsoleEnabled()
     {
         return SmartProperties.getInstance().getBooleanProperty(SmartProperties.CLASSIC_CONSOLE_ENABLED);

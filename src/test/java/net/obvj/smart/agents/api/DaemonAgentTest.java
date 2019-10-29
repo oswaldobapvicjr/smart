@@ -70,7 +70,6 @@ public class DaemonAgentTest
         DaemonAgent agent = Mockito.spy((DaemonAgent) Agent.parseAgent(DUMMY_AGENT_CONFIG));
         assertThat("State before start() should be SET", agent.getState(), is(State.SET));
         agent.start();
-        Awaitility.await().until(agent::isRunning);
         Awaitility.await().untilAsserted(() -> Mockito.verify(agent).run());
     }
 
