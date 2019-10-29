@@ -38,18 +38,14 @@ public class ManagementConsole implements Runnable
     {
         try
         {
-            server = new ServerSocket(getPort(), 0, InetAddress.getByAddress(new byte[] { 127, 0, 0, 1 }));
-            log.info("Management Console listening on port " + server.getLocalPort());
             serverThread = new Thread(this, "MgmtConsole");
             sessionExecutor = Executors.newCachedThreadPool(new MgmtConsoleWorkerThreadFactory());
-        }
-        catch (BindException e)
-        {
-            log.log(Level.SEVERE, "Unable to bind to {0}. Please make sure this port is not in use.", getPort());
+            server = new ServerSocket(getPort(), 0, InetAddress.getByAddress(new byte[] { 127, 0, 0, 1 }));
+            log.info("Management Console listening on port " + server.getLocalPort());
         }
         catch (IOException e)
         {
-            log.severe(e.getMessage());
+            log.log(Level.SEVERE, String.format("Unable to bind to system port %s.", getPort()), e);
         }
     }
 
