@@ -49,5 +49,14 @@ public class ThreadDTOTest
         set.add(THREAD1_2);
         assertEquals(1, set.size());
     }
+    
+    /**
+     * Test the equal
+     */
+    @Test
+    public void testEqualsNullReturnsFalse()
+    {
+        assertFalse(THREAD1_1.equals(null));
+    }
 
 }

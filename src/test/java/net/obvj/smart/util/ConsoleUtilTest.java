@@ -22,5 +22,11 @@ public class ConsoleUtilTest
     {
         TestUtil.checkNoInstancesAllowed(ConsoleUtil.class, IllegalStateException.class, "Utility class");
     }
+    
+    @Test
+    public void testReadFileFromClasspathReturnsContent()
+    {
+        TestUtil.assertStringContains(ConsoleUtil.readCustomHeaderLines().toString(), "S.M.A.R.T. Console");
+    }
 
 }

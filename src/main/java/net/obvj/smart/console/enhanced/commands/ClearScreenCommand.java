@@ -30,7 +30,12 @@ public class ClearScreenCommand implements Callable<Void>
     @Override
     public Void call() throws IOException
     {
-        parent.reader.clearScreen();
+        parent.getConsoleReader().clearScreen();
         return null;
+    }
+
+    protected void setParent(Commands parent)
+    {
+        this.parent = parent;
     }
 }

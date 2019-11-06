@@ -27,7 +27,7 @@ import picocli.CommandLine.Command;
          footer = { "", "Press <Ctrl> + D to exit." })
 public class Commands implements Runnable
 {
-    protected final ConsoleReader reader;
+    private final ConsoleReader reader;
     protected final PrintWriter out;
 
     public Commands(ConsoleReader reader)
@@ -45,5 +45,10 @@ public class Commands implements Runnable
     public void run()
     {
         out.println(new CommandLine(this).getUsageMessage());
+    }
+    
+    protected ConsoleReader getConsoleReader()
+    {
+        return reader;
     }
 }
