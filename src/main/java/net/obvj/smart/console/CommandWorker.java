@@ -25,7 +25,8 @@ public class CommandWorker implements Runnable
     protected static final String MSG_SESSION_CLOSED_DUE_TO_INACTIVITY = "Sesion closed due to inactivity.";
     protected static final String MSG_CLOSING_CONSOLE_SESSION = "Closing console session...";
 
-    protected static final String PROMPT = SmartProperties.getInstance().getProperty(SmartProperties.CONSOLE_PROMPT) + " ";
+    protected static final String PROMPT = SmartProperties.getInstance().getProperty(SmartProperties.CONSOLE_PROMPT)
+            + " ";
 
     protected static final List<String> HINTS = Arrays.asList(" Type 'help' for a list of available commands.",
             " Type 'exit' to quit the console.");
@@ -42,7 +43,7 @@ public class CommandWorker implements Runnable
         this.in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
         this.out = new PrintWriter(this.socket.getOutputStream(), true);
     }
-    
+
     protected CommandWorker(BufferedReader in, PrintWriter out)
     {
         this.socket = null;
@@ -56,7 +57,7 @@ public class CommandWorker implements Runnable
         sendLine();
         sendLines(HINTS);
     }
-    
+
     public void run()
     {
         try
@@ -71,7 +72,7 @@ public class CommandWorker implements Runnable
                 if (!"".equals(commandLine))
                 {
                     log.log(Level.INFO, "Command received: {0}", commandLine);
-                    
+
                     String[] arguments = commandLine.split(" ");
                     String command = arguments[0];
 
@@ -121,7 +122,7 @@ public class CommandWorker implements Runnable
         out.println();
         out.flush();
     }
-    
+
     public void sendLine(String message)
     {
         out.println(message);
@@ -165,6 +166,16 @@ public class CommandWorker implements Runnable
             str = str.replaceAll("^\b+|[^\b]\b", "");
         }
         return str;
+    }
+
+    protected BufferedReader getInputStream()
+    {
+        return in;
+    }
+
+    protected PrintWriter getOutputStream()
+    {
+        return out;
     }
 
 }

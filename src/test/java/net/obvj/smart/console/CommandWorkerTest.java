@@ -1,14 +1,19 @@
 package net.obvj.smart.console;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.*;
+import java.net.Socket;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -28,6 +33,20 @@ public class CommandWorkerTest
 {
     private static final String STR_TEST_DATE = "2019-09-03 17:03:06";
 
+    @Mock
+    private Socket socket;
+    @Mock
+    private InputStream in;
+    @Mock
+    private OutputStream out;
+    
+    @Before
+    public void setup() throws IOException
+    {
+        Mockito.when(socket.getInputStream()).thenReturn(in);
+        Mockito.when(socket.getOutputStream()).thenReturn(out);
+    }
+    
     /**
      * Creates a new command worker that will read from and print onto the given StringReader
      * and StringWriter objects
@@ -35,6 +54,16 @@ public class CommandWorkerTest
     private CommandWorker newCommandWorker(StringReader in, StringWriter out)
     {
         return new CommandWorker(in != null ? new BufferedReader(in) : null, out != null ? new PrintWriter(out) : null);
+    }
+    
+    @Test
+    public void testConstructor() throws IOException
+    {
+        CommandWorker worker = new CommandWorker(socket);
+        Mockito.verify(socket).getInputStream();
+        Mockito.verify(socket).getOutputStream();
+        assertNotNull(worker.getInputStream());
+        assertNotNull(worker.getOutputStream());
     }
 
     @Test

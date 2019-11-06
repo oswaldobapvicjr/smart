@@ -12,11 +12,11 @@ import java.util.List;
  */
 public enum TimeUnit
 {
-    SECONDS(java.util.concurrent.TimeUnit.SECONDS, Calendar.SECOND, Arrays.asList("second", "seconds", "s", "S"),
+    SECONDS(java.util.concurrent.TimeUnit.SECONDS, Calendar.SECOND, Arrays.asList("second", "seconds", "s"),
             "second(s)"),
-    MINUTES(java.util.concurrent.TimeUnit.MINUTES, Calendar.MINUTE, Arrays.asList("minute", "minutes", "m", "M"),
+    MINUTES(java.util.concurrent.TimeUnit.MINUTES, Calendar.MINUTE, Arrays.asList("minute", "minutes", "m"),
             "minute(s)"),
-    HOURS(java.util.concurrent.TimeUnit.HOURS, Calendar.HOUR_OF_DAY, Arrays.asList("hour", "hours", "h", "H"),
+    HOURS(java.util.concurrent.TimeUnit.HOURS, Calendar.HOUR_OF_DAY, Arrays.asList("hour", "hours", "h"),
             "hour(s)");
 
     public static final TimeUnit DEFAULT = TimeUnit.MINUTES;
@@ -78,7 +78,7 @@ public enum TimeUnit
     {
         return javaTimeUnit.toMillis(amount);
     }
-    
+
     /**
      * Converts the given time duration in the given unit to this unit.
      * 
