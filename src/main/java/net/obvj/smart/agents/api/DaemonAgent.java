@@ -184,10 +184,12 @@ public abstract class DaemonAgent extends Agent
      */
     public String getStatusString()
     {
-        return new StringBuilder(getName()).append(" {").append(LINE_SEPARATOR).append("   type:       ").append(getType())
-                .append(LINE_SEPARATOR).append("   status:     ").append(getState()).append(LINE_SEPARATOR)
-                .append("   startDate:  ").append(startDate != null ? DateUtil.formatDate(startDate.getTime()) : "null")
-                .append(LINE_SEPARATOR).append("}").toString();
+        StringBuilder sb = new StringBuilder(getName()).append(" {")
+                .append(LINE_SEPARATOR).append("   type:       ").append(getType())
+                .append(LINE_SEPARATOR).append("   status:     ").append(getState())
+                .append(LINE_SEPARATOR).append("   startDate:  ").append(DateUtil.formatDate(startDate))
+                .append(LINE_SEPARATOR).append("}");
+        return sb.toString();
     }
 
     /**

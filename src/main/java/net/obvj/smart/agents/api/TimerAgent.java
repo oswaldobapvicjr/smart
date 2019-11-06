@@ -199,15 +199,14 @@ public abstract class TimerAgent extends Agent
      */
     public String getStatusString()
     {
-
-        return new StringBuilder(getName()).append(" {").append(LINE_SEPARATOR).append("   type:       ")
-                .append(getType()).append(LINE_SEPARATOR).append("   status:     ").append(getState())
-                .append(LINE_SEPARATOR).append("   startDate:  ")
-                .append(startDate != null ? DateUtil.formatDate(startDate.getTime()) : "null").append(LINE_SEPARATOR)
-                .append("   lastRun:    ")
-                .append(lastRunDate != null ? DateUtil.formatDate(lastRunDate.getTime()) : "null")
+        StringBuilder sb = new StringBuilder(getName()).append(" {")
+                .append(LINE_SEPARATOR).append("   type:       ").append(getType())
+                .append(LINE_SEPARATOR).append("   status:     ").append(getState())
+                .append(LINE_SEPARATOR).append("   startDate:  ").append(DateUtil.formatDate(startDate))
+                .append(LINE_SEPARATOR).append("   lastRun:    ").append(DateUtil.formatDate(lastRunDate))
                 .append(LINE_SEPARATOR).append("   frequency:  ").append(interval).append(" ").append(timeUnit)
-                .append(LINE_SEPARATOR).append("}").toString();
+                .append(LINE_SEPARATOR).append("}");
+        return sb.toString();
     }
 
     public int getInterval()

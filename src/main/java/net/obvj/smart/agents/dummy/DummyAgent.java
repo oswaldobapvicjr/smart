@@ -27,7 +27,6 @@ public class DummyAgent extends TimerAgent
             }
             catch (InterruptedException e)
             {
-                LOG.log(Level.WARNING, "Interrupted while sleeping", e);
                 Thread.currentThread().interrupt();
             }
         }

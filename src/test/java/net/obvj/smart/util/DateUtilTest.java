@@ -60,6 +60,36 @@ public class DateUtilTest
     }
 
     /**
+     * Test date formatting with null date
+     */
+    @Test
+    public void testFormatDateWithNullDate()
+    {
+        Date date = null;
+        assertThat(DateUtil.formatDate(date), is("null"));
+    }
+
+    /**
+     * Test successful calendar formatting to common string format
+     */
+    @Test
+    public void testFormatCalendarWithValidDate()
+    {
+        Calendar calendar = toCalendar(2019, 6, 12, 18, 15, 1, 123);
+        assertThat(DateUtil.formatDate(calendar), is("2019-06-12 18:15:01"));
+    }
+
+    /**
+     * Test calendar formatting with null date
+     */
+    @Test
+    public void testFormatCalendarWithNullCalendar()
+    {
+        Calendar calendar = null;
+        assertThat(DateUtil.formatDate(calendar), is("null"));
+    }
+
+    /**
      * Test successful exact start date calculation every 1 minute with the
      * {@code getExactStartDateEveryMinute(int, Calendar)} method and a given base date.
      * <p>

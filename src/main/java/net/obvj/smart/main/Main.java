@@ -1,7 +1,6 @@
 package net.obvj.smart.main;
 
 import java.util.List;
-import java.util.logging.Level;
 
 import javax.management.JMException;
 
@@ -15,45 +14,36 @@ import net.obvj.smart.conf.xml.AgentConfiguration;
  * @author oswaldo.bapvic.jr
  * @since 1.0
  */
-public class Main extends SmartServerSupport implements Runnable
+public class Main extends SmartServerSupport
 {
-    @Override
-    public void run()
+    /**
+     * S.M.A.R.T. Server startup sequence.
+     * 
+     * @throws JMException                 if unable to register S.M.A.R.T. management beans
+     * @throws AgentConfigurationException if unable to load agents configuration file
+     */
+    public void start() throws JMException
     {
-        try
-        {
-            LOG.info("Starting S.M.A.R.T. Agent Manager...");
-            startClassicManagementConsole();
-            registerManagedBean();
+        LOG.info("Starting S.M.A.R.T. Agent Manager...");
+        startClassicManagementConsole();
+        registerManagedBean();
 
-            // Create shutdown hook
-            Runtime.getRuntime().addShutdownHook(new Thread(new ShutdownHook(), "Shutdown"));
+        // Create shutdown hook
+        Runtime.getRuntime().addShutdownHook(new Thread(new ShutdownHook(), "Shutdown"));
 
-            // Loading agents
-            LOG.info("Loading agents configuration...");
-            List<AgentConfiguration> xmlAgents = AgentsXml.getInstance().getAgents();
+        // Loading agents
+        LOG.info("Loading agents configuration...");
+        List<AgentConfiguration> xmlAgents = AgentsXml.getInstance().getAgents();
 
-            loadAgents(xmlAgents);
-            startAutomaticAgents();
+        loadAgents(xmlAgents);
+        startAutomaticAgents();
 
-            LOG.info("Ready.");
-
-        }
-        catch (JMException e)
-        {
-            LOG.log(Level.SEVERE, "Unable to register S.M.A.R.T. management bean", e);
-            System.exit(1);
-        }
-        catch (AgentConfigurationException e)
-        {
-            LOG.log(Level.SEVERE, "Unable to load agents configuration", e);
-            System.exit(1);
-        }
+        LOG.info("Ready.");
     }
 
-    public static void main(String[] args)
+    public static void main(String[] args) throws JMException
     {
-        new Main().run();
+        new Main().start();
     }
 
 }

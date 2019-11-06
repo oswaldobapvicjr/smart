@@ -30,6 +30,17 @@ public class DateUtil
     }
 
     /**
+     * Formats the given calendar using internally standardized date format
+     * 
+     * @param calendar the calendar to be formatted
+     * @return a formatted date
+     */
+    public static String formatDate(Calendar calendar)
+    {
+        return calendar != null ? formatDate(calendar.getTime()) : "null";
+    }
+    
+    /**
      * Formats the given date using internally standardized date format
      * 
      * @param date the date to be formatted
@@ -37,7 +48,7 @@ public class DateUtil
      */
     public static String formatDate(Date date)
     {
-        return SIMPLE_FORMAT.get().format(date);
+        return date != null ? SIMPLE_FORMAT.get().format(date) : "null";
     }
 
     /**
