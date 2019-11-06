@@ -12,7 +12,6 @@ import jline.console.completer.ArgumentCompleter.ArgumentList;
 import jline.console.completer.ArgumentCompleter.WhitespaceArgumentDelimiter;
 import net.obvj.smart.conf.SmartProperties;
 import net.obvj.smart.console.enhanced.commands.Commands;
-import net.obvj.smart.jmx.client.AgentManagerJMXClient;
 import net.obvj.smart.util.ConsoleUtil;
 import picocli.CommandLine;
 import picocli.shell.jline2.PicocliJLineCompleter;
@@ -72,9 +71,6 @@ public class EnhancedManagementConsole implements Runnable
     {
         try
         {
-            // Set up connection to JMX
-            AgentManagerJMXClient.getMBeanProxy();
-
             // Print custom header and hints
             printHeader(reader.getOutput());
 
@@ -119,10 +115,6 @@ public class EnhancedManagementConsole implements Runnable
             ArgumentList list = new WhitespaceArgumentDelimiter().delimit(line, line.length());
             new CommandLine(commands).execute(list.getArguments());
             reader.println();
-        }
-        catch (Exception e)
-        {
-            reader.println(e.getClass().getName() + ": " + e.getMessage() + "\n");
         }
         finally
         {
