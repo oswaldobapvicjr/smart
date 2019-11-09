@@ -30,7 +30,7 @@ public class AgentManagerJMXClient
     private static final String SERVICE_JMX_RMI_URL = "service:jmx:rmi:///jndi/rmi://:" + getJMXRemotePort()
             + "/jmxrmi";
 
-    private static AgentManagerJMXMBean mbeanProxy;
+    private static final AgentManagerJMXMBean mbeanProxy = createMBeanProxy();
 
     private AgentManagerJMXClient()
     {
@@ -65,10 +65,6 @@ public class AgentManagerJMXClient
 
     public static AgentManagerJMXMBean getMBeanProxy()
     {
-        if (mbeanProxy == null)
-        {
-            mbeanProxy = createMBeanProxy();
-        }
         return mbeanProxy;
     }
 
