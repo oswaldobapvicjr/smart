@@ -218,6 +218,15 @@ public enum Command
             out.println(DateUtil.now());
         }
     },
+    
+    JAVA_VERSION("java", "")
+    {
+        @Override
+        public void execute(String[] parameters, PrintWriter out)
+        {
+            out.println(SystemUtil.getJavaVersion());
+        }
+    },
 
     HELP("help", "")
     {

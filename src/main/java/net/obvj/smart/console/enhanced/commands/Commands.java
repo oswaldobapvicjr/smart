@@ -17,6 +17,7 @@ import picocli.CommandLine.Command;
          subcommands = { AgentsCommand.class,
                          ClearScreenCommand.class,
                          DateCommand.class,
+                         JavaVersionCommand.class,
                          StatusCommand.class,
                          StartCommand.class,
                          StopCommand.class,

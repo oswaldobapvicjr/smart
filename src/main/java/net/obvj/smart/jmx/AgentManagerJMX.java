@@ -71,5 +71,10 @@ public class AgentManagerJMX implements AgentManagerJMXMBean
     {
         return SystemUtil.getAllSystemTheadsDTOs();
     }
+    
+    public String getJavaVersion()
+    {
+        return SystemUtil.getJavaVersion();
+    }
 
 }

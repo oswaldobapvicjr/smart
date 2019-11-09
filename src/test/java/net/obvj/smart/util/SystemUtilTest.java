@@ -1,5 +1,6 @@
 package net.obvj.smart.util;
 
+import static net.obvj.smart.TestUtil.assertStringContains;
 import static net.obvj.smart.TestUtil.checkNoInstancesAllowed;
 import static org.junit.Assert.assertTrue;
 import static org.powermock.api.mockito.PowerMockito.mock;
@@ -10,6 +11,7 @@ import java.lang.management.ThreadInfo;
 import java.util.Arrays;
 import java.util.Collection;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.junit.Test;
 
 import net.obvj.smart.jmx.dto.ThreadDTO;
@@ -58,6 +60,14 @@ public class SystemUtilTest
     public void testNoInstancesAllowed() throws Exception
     {
         checkNoInstancesAllowed(SystemUtil.class, IllegalStateException.class, "Utility class");
+    }
+
+    @Test
+    public void testGetJavaVersion()
+    {
+        assertStringContains(SystemUtil.getJavaVersion(), SystemUtils.JAVA_RUNTIME_NAME,
+                SystemUtils.JAVA_RUNTIME_VERSION, SystemUtils.JAVA_VM_NAME, SystemUtils.JAVA_VM_VERSION,
+                SystemUtils.JAVA_VM_VENDOR);
     }
 
 }

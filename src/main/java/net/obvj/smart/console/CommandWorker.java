@@ -113,8 +113,15 @@ public class CommandWorker implements Runnable
 
     protected void handleUserInput(String[] arguments)
     {
-        Command command = getByNameOrAlias(arguments[0]);
-        command.execute(arguments, out);
+        try
+        {
+            Command command = getByNameOrAlias(arguments[0]);
+            command.execute(arguments, out);
+        }
+        catch (IllegalArgumentException e)
+        {
+            out.println("Invalid command: " + arguments[0]);
+        }
     }
 
     public void sendLine()

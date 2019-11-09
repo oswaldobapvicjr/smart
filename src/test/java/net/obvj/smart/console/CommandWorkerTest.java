@@ -39,14 +39,14 @@ public class CommandWorkerTest
     private InputStream in;
     @Mock
     private OutputStream out;
-    
+
     @Before
     public void setup() throws IOException
     {
         Mockito.when(socket.getInputStream()).thenReturn(in);
         Mockito.when(socket.getOutputStream()).thenReturn(out);
     }
-    
+
     /**
      * Creates a new command worker that will read from and print onto the given StringReader
      * and StringWriter objects
@@ -55,7 +55,7 @@ public class CommandWorkerTest
     {
         return new CommandWorker(in != null ? new BufferedReader(in) : null, out != null ? new PrintWriter(out) : null);
     }
-    
+
     @Test
     public void testConstructor() throws IOException
     {
@@ -147,7 +147,7 @@ public class CommandWorkerTest
         mockedHeaderLines.forEach(line -> assertTrue(header.contains(line)));
         CommandWorker.HINTS.forEach(line -> assertTrue(header.contains(line)));
     }
-    
+
     @Test
     public void testHandleExit()
     {
@@ -158,6 +158,15 @@ public class CommandWorkerTest
                 String.format("Expected ending \"%s\" not found in string:%n%s",
                         CommandWorker.MSG_CLOSING_CONSOLE_SESSION, out.toString()),
                 out.toString().trim().endsWith(CommandWorker.MSG_CLOSING_CONSOLE_SESSION));
+    }
+
+    @Test
+    public void testHandleUserInputWithInvalidCommand()
+    {
+        StringWriter out = new StringWriter();
+        CommandWorker worker = newCommandWorker(null, out);
+        worker.handleUserInput(new String[] {"invalidcom"});
+        assertTrue(out.toString().trim().contains("Invalid command: invalidcom"));
     }
 
 }

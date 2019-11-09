@@ -32,4 +32,6 @@ public interface AgentManagerJMXMBean
     long getServerUptime();
     
     Collection<ThreadDTO> getAllThreadsInfo();
+    
+    String getJavaVersion();
 }
