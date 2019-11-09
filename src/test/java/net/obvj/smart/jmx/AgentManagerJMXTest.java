@@ -144,5 +144,12 @@ public class AgentManagerJMXTest
         when(SystemUtil.getAllSystemTheadsDTOs()).thenReturn(dtos);
         assertTrue(jmx.getAllThreadsInfo().containsAll(dtos));
     }
+    
+    @Test
+    public void testGetJavaVersion()
+    {
+        when(SystemUtil.getJavaVersion()).thenReturn("javaVersion");
+        assertEquals("javaVersion", jmx.getJavaVersion());
+    }
   
 }

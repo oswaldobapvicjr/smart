@@ -246,6 +246,14 @@ public class CommandTest
         assertTrue(out.contains("1name1RUNNABLE"));
         assertTrue(out.contains("2name2WAITING"));
     }
+    
+    @Test
+    public void testJavaVersion()
+    {
+        when(SystemUtil.getJavaVersion()).thenReturn("javaVersion");
+        Command.JAVA_VERSION.execute(null, new PrintWriter(out));
+        assertOutputEquals("javaVersion");
+    }
 
     @Test
     public void testShowAgents()
