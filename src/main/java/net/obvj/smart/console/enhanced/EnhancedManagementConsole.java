@@ -12,6 +12,7 @@ import jline.console.completer.ArgumentCompleter.ArgumentList;
 import jline.console.completer.ArgumentCompleter.WhitespaceArgumentDelimiter;
 import net.obvj.smart.conf.SmartProperties;
 import net.obvj.smart.console.enhanced.commands.Commands;
+import net.obvj.smart.util.ApplicationContextFacade;
 import net.obvj.smart.util.ConsoleUtil;
 import picocli.CommandLine;
 import picocli.shell.jline2.PicocliJLineCompleter;
@@ -39,7 +40,8 @@ public class EnhancedManagementConsole implements Runnable
     }
 
     private static final Logger LOG = Logger.getLogger("smart");
-    private static final String PROMPT = SmartProperties.getInstance().getProperty(SmartProperties.CONSOLE_PROMPT) + " ";
+    private static final String PROMPT = ApplicationContextFacade.getBean(SmartProperties.class)
+            .getProperty(SmartProperties.CONSOLE_PROMPT) + " ";
 
     private final String[] args;
     private final ConsoleReader reader;

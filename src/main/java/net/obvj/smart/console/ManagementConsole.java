@@ -8,6 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.obvj.smart.conf.SmartProperties;
+import net.obvj.smart.util.ApplicationContextFacade;
 
 /**
  * A command-line user interface application for agents management at runtime. This
@@ -34,7 +35,7 @@ public class ManagementConsole implements Runnable
         return instance;
     }
 
-    private ManagementConsole()
+    public ManagementConsole()
     {
         try
         {
@@ -49,14 +50,14 @@ public class ManagementConsole implements Runnable
         }
     }
 
-    public static int getPort()
+    public int getPort()
     {
-        return SmartProperties.getInstance().getIntProperty(SmartProperties.CLASSIC_CONSOLE_PORT);
+        return ApplicationContextFacade.getBean(SmartProperties.class).getIntProperty(SmartProperties.CLASSIC_CONSOLE_PORT);
     }
 
-    public static int getSessionTimeoutSeconds()
+    public int getSessionTimeoutSeconds()
     {
-        return SmartProperties.getInstance().getIntProperty(SmartProperties.CLASSIC_CONSOLE_SESSION_TIMEOUT_SECONDS);
+        return ApplicationContextFacade.getBean(SmartProperties.class).getIntProperty(SmartProperties.CLASSIC_CONSOLE_SESSION_TIMEOUT_SECONDS);
     }
 
     public void run()
@@ -114,4 +115,5 @@ public class ManagementConsole implements Runnable
             }
         }
     }
+    
 }

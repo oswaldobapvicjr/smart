@@ -14,6 +14,7 @@ import javax.management.remote.JMXServiceURL;
 
 import net.obvj.smart.conf.SmartProperties;
 import net.obvj.smart.jmx.AgentManagerJMXMBean;
+import net.obvj.smart.util.ApplicationContextFacade;
 
 /**
  * An object that contains infrastructure logic to connect to the S.M.A.R.T. server via
@@ -24,7 +25,6 @@ import net.obvj.smart.jmx.AgentManagerJMXMBean;
  */
 public class AgentManagerJMXClient
 {
-
     private static final Logger LOG = Logger.getLogger("smart-console");
 
     private static final String SERVICE_JMX_RMI_URL = "service:jmx:rmi:///jndi/rmi://:" + getJMXRemotePort()
@@ -32,7 +32,7 @@ public class AgentManagerJMXClient
 
     private static final AgentManagerJMXMBean mbeanProxy = createMBeanProxy();
 
-    private AgentManagerJMXClient()
+    public AgentManagerJMXClient()
     {
         // No instances allowed
     }
@@ -55,12 +55,12 @@ public class AgentManagerJMXClient
 
     protected static int getJMXRemotePort()
     {
-        return SmartProperties.getInstance().getIntProperty(SmartProperties.JMX_REMOTE_PORT);
+        return ApplicationContextFacade.getBean(SmartProperties.class).getIntProperty(SmartProperties.JMX_REMOTE_PORT);
     }
 
     protected static ObjectName getAgentManagerJMXBeanObjectName() throws MalformedObjectNameException
     {
-        return new ObjectName(SmartProperties.getInstance().getProperty(SmartProperties.JMX_AGENT_MANAGER_OBJECT_NAME));
+        return new ObjectName(ApplicationContextFacade.getBean(SmartProperties.class).getProperty(SmartProperties.JMX_AGENT_MANAGER_OBJECT_NAME));
     }
 
     public static AgentManagerJMXMBean getMBeanProxy()

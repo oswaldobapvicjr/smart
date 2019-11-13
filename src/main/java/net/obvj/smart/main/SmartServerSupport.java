@@ -5,7 +5,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.management.*;
+import javax.management.JMException;
+import javax.management.ObjectName;
 
 import net.obvj.smart.agents.api.Agent;
 import net.obvj.smart.conf.SmartProperties;
@@ -14,6 +15,7 @@ import net.obvj.smart.console.ManagementConsole;
 import net.obvj.smart.jmx.AgentManagerJMX;
 import net.obvj.smart.jmx.AgentManagerJMXMBean;
 import net.obvj.smart.manager.AgentManager;
+import net.obvj.smart.util.ApplicationContextFacade;
 
 /**
  * S.M.A.R.T. server support methods
@@ -23,14 +25,18 @@ import net.obvj.smart.manager.AgentManager;
  */
 public class SmartServerSupport
 {
-    protected static final String AGENT_MANAGER_JMX_OBJECT_NAME = SmartProperties.getInstance()
+    private SmartProperties smartProperties = ApplicationContextFacade.getBean(SmartProperties.class);
+
+    protected final String jmxAgentManagerObjectName = smartProperties
             .getProperty(SmartProperties.JMX_AGENT_MANAGER_OBJECT_NAME);
 
     protected static final Logger LOG = Logger.getLogger("smart-server");
 
+    protected AgentManager agentManager = ApplicationContextFacade.getBean(AgentManager.class);
+
     public boolean isClassicConsoleEnabled()
     {
-        return SmartProperties.getInstance().getBooleanProperty(SmartProperties.CLASSIC_CONSOLE_ENABLED);
+        return smartProperties.getBooleanProperty(SmartProperties.CLASSIC_CONSOLE_ENABLED);
     }
 
     protected void startClassicManagementConsole()
@@ -60,14 +66,14 @@ public class SmartServerSupport
     {
         LOG.info("Loading agents...");
         agents.forEach(this::parseAndLoadAgentConfig);
-        LOG.log(Level.INFO, "{0} agents loaded", AgentManager.getInstance().getAgents().size());
+        LOG.log(Level.INFO, "{0} agents loaded", agentManager.getAgents().size());
     }
 
     private void parseAndLoadAgentConfig(AgentConfiguration agentConfig)
     {
         try
         {
-            AgentManager.getInstance().addAgent(Agent.parseAgent(agentConfig));
+            agentManager.addAgent(Agent.parseAgent(agentConfig));
         }
         catch (Exception e)
         {
@@ -78,19 +84,19 @@ public class SmartServerSupport
     protected void startAutomaticAgents()
     {
         LOG.log(Level.INFO, "Starting agents...");
-        AgentManager.getInstance().getAgents().stream().filter(Agent::isAutomaticallyStarted).forEach(this::startAgent);
+        agentManager.getAgents().stream().filter(Agent::isAutomaticallyStarted).forEach(this::startAgent);
     }
 
     protected void startAgent(Agent agent)
     {
-        AgentManager.getInstance().startAgent(agent.getName());
+        agentManager.startAgent(agent.getName());
     }
 
     protected void registerManagedBean() throws JMException
     {
         LOG.info("Creating and registering Managed Beans...");
         AgentManagerJMXMBean mBean = new AgentManagerJMX();
-        ObjectName name = new ObjectName(AGENT_MANAGER_JMX_OBJECT_NAME);
+        ObjectName name = new ObjectName(jmxAgentManagerObjectName);
         ManagementFactory.getPlatformMBeanServer().registerMBean(mBean, name);
     }
 

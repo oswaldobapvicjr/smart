@@ -29,7 +29,7 @@ public class SmartServerSupportNoMocksTest
     public void testRegisteredManagedBean() throws Exception
     {
         support.registerManagedBean();
-        ObjectName name = new ObjectName(SmartServerSupport.AGENT_MANAGER_JMX_OBJECT_NAME);
+        ObjectName name = new ObjectName(support.jmxAgentManagerObjectName);
 
         assertTrue("Manageg bean not registered", ManagementFactory.getPlatformMBeanServer().isRegistered(name));
 

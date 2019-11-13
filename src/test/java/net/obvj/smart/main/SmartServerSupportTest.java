@@ -13,6 +13,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -22,6 +23,7 @@ import net.obvj.smart.conf.SmartProperties;
 import net.obvj.smart.conf.xml.AgentConfiguration;
 import net.obvj.smart.console.ManagementConsole;
 import net.obvj.smart.manager.AgentManager;
+import net.obvj.smart.util.ApplicationContextFacade;
 
 /**
  * Unit tests for operations inside {@link SmartServerSupport}, with mocks.
@@ -30,7 +32,7 @@ import net.obvj.smart.manager.AgentManager;
  * @since 2.0
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ SmartProperties.class, ManagementConsole.class, AgentManager.class, Agent.class })
+@PrepareForTest({ ManagementConsole.class, ApplicationContextFacade.class, Agent.class })
 public class SmartServerSupportTest
 {
     private static final AgentConfiguration DUMMY_AGENT_CONFIG = new AgentConfiguration.Builder("DummyAgent")
@@ -44,8 +46,10 @@ public class SmartServerSupportTest
             DUMMY_DAEMON_CONFIG);
 
     // Mock objects
+    @Mock
     private SmartProperties properties;
     private ManagementConsole console;
+    @Mock
     private AgentManager manager;
 
     // Agents
@@ -54,23 +58,19 @@ public class SmartServerSupportTest
     private List<Agent> allAgents;
 
     // Test subject
-    private SmartServerSupport support = new SmartServerSupport();
+    private SmartServerSupport support;
 
     @Before
     public void setup() throws ReflectiveOperationException
     {
         // Setup singletons
-        properties = mock(SmartProperties.class);
-        mockStatic(SmartProperties.class);
-        when(SmartProperties.getInstance()).thenReturn(properties);
-
         console = mock(ManagementConsole.class);
         mockStatic(ManagementConsole.class);
         when(ManagementConsole.getInstance()).thenReturn(console);
 
-        manager = mock(AgentManager.class);
-        mockStatic(AgentManager.class);
-        when(AgentManager.getInstance()).thenReturn(manager);
+        mockStatic(ApplicationContextFacade.class);
+        when(ApplicationContextFacade.getBean(AgentManager.class)).thenReturn(manager);
+        when(ApplicationContextFacade.getBean(SmartProperties.class)).thenReturn(properties);
 
         // Setup agents
         dummyAgent = spy(Agent.parseAgent(DUMMY_AGENT_CONFIG));
@@ -79,6 +79,8 @@ public class SmartServerSupportTest
 
         // Allow usage of static method parseAgent
         mockStatic(Agent.class);
+        
+        support = new SmartServerSupport();
     }
 
     @Test

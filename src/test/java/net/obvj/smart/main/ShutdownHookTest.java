@@ -1,7 +1,7 @@
 package net.obvj.smart.main;
 
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -20,39 +21,41 @@ import net.obvj.smart.agents.api.Agent;
 import net.obvj.smart.conf.SmartProperties;
 import net.obvj.smart.console.ManagementConsole;
 import net.obvj.smart.manager.AgentManager;
+import net.obvj.smart.util.ApplicationContextFacade;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ SmartProperties.class, ManagementConsole.class, AgentManager.class })
+@PrepareForTest({ ManagementConsole.class, ApplicationContextFacade.class })
 public class ShutdownHookTest
 {
-    // Mock objects
+    @Mock
     private SmartProperties properties;
     private ManagementConsole console;
+    
+    @Mock
     private AgentManager manager;
-
     @Mock
     private Agent agent1;
     @Mock
     private Agent agent2;
 
     // Test subject
-    private ShutdownHook hook = new ShutdownHook();
+    private ShutdownHook hook;
 
     @Before
     public void setup()
     {
+        MockitoAnnotations.initMocks(this);
+        
         // Setup singletons
-        properties = mock(SmartProperties.class);
-        mockStatic(SmartProperties.class);
-        when(SmartProperties.getInstance()).thenReturn(properties);
-
         console = mock(ManagementConsole.class);
         mockStatic(ManagementConsole.class);
         when(ManagementConsole.getInstance()).thenReturn(console);
 
-        manager = mock(AgentManager.class);
-        mockStatic(AgentManager.class);
-        when(AgentManager.getInstance()).thenReturn(manager);
+        mockStatic(ApplicationContextFacade.class);
+        when(ApplicationContextFacade.getBean(AgentManager.class)).thenReturn(manager);
+        when(ApplicationContextFacade.getBean(SmartProperties.class)).thenReturn(properties);
+        
+        hook = new ShutdownHook();
     }
 
     @Test

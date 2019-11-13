@@ -3,7 +3,6 @@ package net.obvj.smart.main;
 import java.util.logging.Logger;
 
 import net.obvj.smart.agents.api.Agent;
-import net.obvj.smart.manager.AgentManager;
 
 /**
  * A Runnable object that may be executed before JVM termination for graceful system
@@ -27,7 +26,7 @@ public class ShutdownHook extends SmartServerSupport implements Runnable
     private void stopAllAgents()
     {
         logger.info("Stopping agents...");
-        for (Agent agent : AgentManager.getInstance().getAgents())
+        for (Agent agent : agentManager.getAgents())
         {
             try
             {

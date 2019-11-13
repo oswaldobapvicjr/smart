@@ -6,6 +6,8 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.springframework.stereotype.Component;
+
 /**
  * An object that maintains configuration data retrieved from the {@code smart.properties}
  * file
@@ -13,6 +15,7 @@ import java.util.logging.Logger;
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
+@Component
 public class SmartProperties
 {
     private static final Logger LOG = Logger.getLogger("smart-server");
@@ -54,11 +57,9 @@ public class SmartProperties
         defaults.put(JMX_AGENT_MANAGER_OBJECT_NAME, JMX_OBJECT_NAME_DEFAULT);
     }
 
-    private static final SmartProperties INSTANCE = new SmartProperties();
-
     protected Properties properties = new Properties();
 
-    private SmartProperties()
+    public SmartProperties()
     {
         this("smart.properties");
     }
@@ -98,11 +99,6 @@ public class SmartProperties
             LOG.log(Level.FINE, "{0} loaded successfully", fileName);
             return properties;
         }
-    }
-
-    public static SmartProperties getInstance()
-    {
-        return INSTANCE;
     }
 
     public String getProperty(String key)

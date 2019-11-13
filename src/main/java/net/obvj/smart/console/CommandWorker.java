@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.obvj.smart.conf.SmartProperties;
+import net.obvj.smart.util.ApplicationContextFacade;
 import net.obvj.smart.util.ConsoleUtil;
 
 /**
@@ -25,8 +26,8 @@ public class CommandWorker implements Runnable
     protected static final String MSG_SESSION_CLOSED_DUE_TO_INACTIVITY = "Sesion closed due to inactivity.";
     protected static final String MSG_CLOSING_CONSOLE_SESSION = "Closing console session...";
 
-    protected static final String PROMPT = SmartProperties.getInstance().getProperty(SmartProperties.CONSOLE_PROMPT)
-            + " ";
+    protected static final String PROMPT = ApplicationContextFacade.getBean(SmartProperties.class)
+            .getProperty(SmartProperties.CONSOLE_PROMPT) + " ";
 
     protected static final List<String> HINTS = Arrays.asList(" Type 'help' for a list of available commands.",
             " Type 'exit' to quit the console.");
@@ -105,7 +106,7 @@ public class CommandWorker implements Runnable
                 }
                 catch (IOException e)
                 {
-                    log.severe("Error closing client socket connected to port " + ManagementConsole.getPort());
+                    log.log(Level.SEVERE, "Error closing client socket", e);
                 }
             }
         }

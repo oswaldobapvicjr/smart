@@ -25,11 +25,12 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import net.obvj.smart.agents.api.dto.AgentDTO;
 import net.obvj.smart.jmx.dto.ThreadDTO;
 import net.obvj.smart.manager.AgentManager;
+import net.obvj.smart.util.ApplicationContextFacade;
 import net.obvj.smart.util.DateUtil;
 import net.obvj.smart.util.SystemUtil;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ AgentManager.class, DateUtil.class, SystemUtil.class })
+@PrepareForTest({ ApplicationContextFacade.class, DateUtil.class, SystemUtil.class })
 public class CommandTest
 {
     private static final String AGENT1 = "Agent1";
@@ -42,8 +43,8 @@ public class CommandTest
     @Before
     public void setup()
     {
-        mockStatic(AgentManager.class);
-        when(AgentManager.getInstance()).thenReturn(manager);
+        mockStatic(ApplicationContextFacade.class);
+        when(ApplicationContextFacade.getBean(AgentManager.class)).thenReturn(manager);
         mockStatic(DateUtil.class);
         mockStatic(SystemUtil.class);
     }

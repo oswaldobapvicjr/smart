@@ -6,6 +6,8 @@ import java.util.TreeMap;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
+import org.springframework.stereotype.Component;
+
 import net.obvj.smart.agents.api.Agent;
 import net.obvj.smart.agents.api.DaemonAgent;
 import net.obvj.smart.agents.api.dto.AgentDTO;
@@ -14,28 +16,18 @@ import net.obvj.smart.conf.xml.AgentConfiguration;
 import net.obvj.smart.util.Exceptions;
 
 /**
- * A single object for agents maintenance
+ * A component that provides methods for Agents maintenance
  * 
  * @author oswaldo.bapvic.jr
  * @since 1.0
  */
-public final class AgentManager
+@Component
+public class AgentManager
 {
     private static final String MSG_INVALID_AGENT = "Invalid agent: %s";
     private static final String MSG_AGENT_STARTED_PLEASE_STOP_FIRST = "'%s' is started. Please stop the agent before this operation.";
 
-    private static final AgentManager instance = new AgentManager();
-
     private Map<String, Agent> agents = new TreeMap<>();
-
-    protected AgentManager()
-    {
-    }
-
-    public static AgentManager getInstance()
-    {
-        return instance;
-    }
 
     /**
      * Registers a new agent for maintenance
