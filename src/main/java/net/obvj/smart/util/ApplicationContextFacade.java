@@ -1,23 +1,24 @@
 package net.obvj.smart.util;
 
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
- * A facade for Spring's Application Context to retrieve beans
+ * A facade for Spring's Application Context, which holds the components defined in
+ * S.M.A.R.T. base package.
  * 
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
 public class ApplicationContextFacade
 {
-    private static ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+    private static ApplicationContext context = new AnnotationConfigApplicationContext("net.obvj.smart");
 
     private ApplicationContextFacade()
     {
         throw new IllegalStateException("Utility class");
     }
-    
+
     /**
      * Return the bean instance that uniquely matches the given object type.
      * 
