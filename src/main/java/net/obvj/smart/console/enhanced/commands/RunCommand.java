@@ -1,6 +1,7 @@
 package net.obvj.smart.console.enhanced.commands;
 
 import net.obvj.smart.jmx.client.AgentManagerJMXClient;
+import net.obvj.smart.util.ApplicationContextFacade;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
@@ -38,7 +39,7 @@ public class RunCommand implements Runnable
         {
             parent.out.printf("Running %s...%n", agent);
             parent.out.flush();
-            AgentManagerJMXClient.getMBeanProxy().runNow(agent);
+            ApplicationContextFacade.getBean(AgentManagerJMXClient.class).getMBeanProxy().runNow(agent);
             parent.out.println("Success");
         }
         catch (IllegalStateException | IllegalArgumentException | UnsupportedOperationException e)
@@ -52,8 +53,4 @@ public class RunCommand implements Runnable
         this.agent = agent;
     }
 
-    protected void setParent(Commands parent)
-    {
-        this.parent = parent;
-    }
 }

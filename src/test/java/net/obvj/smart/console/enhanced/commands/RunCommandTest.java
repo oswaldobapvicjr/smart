@@ -1,6 +1,8 @@
 package net.obvj.smart.console.enhanced.commands;
 
 import static org.junit.Assert.assertTrue;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -9,14 +11,16 @@ import java.io.StringWriter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
+import org.mockito.Spy;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import net.obvj.smart.jmx.AgentManagerJMXMBean;
 import net.obvj.smart.jmx.client.AgentManagerJMXClient;
+import net.obvj.smart.util.ApplicationContextFacade;
 
 /**
  * Unit tests for the {@link RunCommand} class
@@ -25,30 +29,27 @@ import net.obvj.smart.jmx.client.AgentManagerJMXClient;
  * @since 2.0
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(AgentManagerJMXClient.class)
+@PrepareForTest(ApplicationContextFacade.class)
 public class RunCommandTest
 {
+    private StringWriter sw = new StringWriter();
+
     @Mock
-    private AgentManagerJMXMBean agentManagerJMXBean;
+    private AgentManagerJMXMBean jmx;
+    @Mock
+    private AgentManagerJMXClient client;
+    @Spy
+    private Commands parent = new Commands(new PrintWriter(sw));
+
+    @InjectMocks
+    private RunCommand command;
 
     @Before
     public void setup() throws IOException
     {
-        PowerMockito.mockStatic(AgentManagerJMXClient.class);
-        PowerMockito.when(AgentManagerJMXClient.getMBeanProxy()).thenReturn(agentManagerJMXBean);
-    }
-
-    /**
-     * Creates a new command that will print its output onto the given StringWriter.
-     * 
-     * @param out the StringWriter to which the command will print
-     * @return a {@link RunCommand} for testing
-     */
-    private RunCommand newCommandWithOutput(StringWriter out)
-    {
-        RunCommand command = new RunCommand();
-        command.setParent(new Commands(new PrintWriter(out)));
-        return command;
+        mockStatic(ApplicationContextFacade.class);
+        when(ApplicationContextFacade.getBean(AgentManagerJMXClient.class)).thenReturn(client);
+        when(client.getMBeanProxy()).thenReturn(jmx);
     }
 
     /**
@@ -57,10 +58,9 @@ public class RunCommandTest
     @Test
     public void testCommandExecutionJMXCall() throws IOException
     {
-        RunCommand command = newCommandWithOutput(new StringWriter());
         command.setAgent("AgentName");
         command.run();
-        Mockito.verify(agentManagerJMXBean, Mockito.times(1)).runNow("AgentName");
+        Mockito.verify(jmx, Mockito.times(1)).runNow("AgentName");
     }
 
     /**
@@ -70,14 +70,12 @@ public class RunCommandTest
     @Test
     public void testCommandExecutionJMXCallException() throws IOException
     {
-        Mockito.doThrow(new IllegalArgumentException("Invalid agent")).when(agentManagerJMXBean).runNow("InvalidName");
-        
-        StringWriter out = new StringWriter();
-        RunCommand command = newCommandWithOutput(out);
+        Mockito.doThrow(new IllegalArgumentException("Invalid agent")).when(jmx).runNow("InvalidName");
+
         command.setAgent("InvalidName");
         command.run();
-        
-        assertTrue(out.toString().contains("Invalid agent"));
+
+        assertTrue(sw.toString().contains("Invalid agent"));
     }
 
 }

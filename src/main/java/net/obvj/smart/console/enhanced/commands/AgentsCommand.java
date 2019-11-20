@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import net.obvj.smart.agents.api.dto.AgentDTO;
 import net.obvj.smart.jmx.client.AgentManagerJMXClient;
+import net.obvj.smart.util.ApplicationContextFacade;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.ParentCommand;
@@ -43,7 +44,7 @@ public class AgentsCommand implements Runnable
         parent.out.println("Listing agents...");
         parent.out.flush();
 
-        Collection<AgentDTO> agents = AgentManagerJMXClient.getMBeanProxy().getAgentDTOs();
+        Collection<AgentDTO> agents = ApplicationContextFacade.getBean(AgentManagerJMXClient.class).getMBeanProxy().getAgentDTOs();
         if (!type.isEmpty())
         {
             agents = agents.stream().filter(a -> a.type.equalsIgnoreCase(this.type)).collect(Collectors.toSet());
@@ -69,8 +70,4 @@ public class AgentsCommand implements Runnable
         this.type = type;
     }
 
-    protected void setParent(Commands parent)
-    {
-        this.parent = parent;
-    }
 }

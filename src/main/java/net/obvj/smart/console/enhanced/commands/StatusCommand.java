@@ -1,6 +1,7 @@
 package net.obvj.smart.console.enhanced.commands;
 
 import net.obvj.smart.jmx.client.AgentManagerJMXClient;
+import net.obvj.smart.util.ApplicationContextFacade;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
@@ -36,7 +37,7 @@ public class StatusCommand implements Runnable
     {
         try
         {
-            parent.out.println(AgentManagerJMXClient.getMBeanProxy().getAgentStatusStr(agent));
+            parent.out.println(ApplicationContextFacade.getBean(AgentManagerJMXClient.class).getMBeanProxy().getAgentStatusStr(agent));
         }
         catch (IllegalStateException | IllegalArgumentException e)
         {
@@ -49,8 +50,4 @@ public class StatusCommand implements Runnable
         this.agent = agent;
     }
 
-    protected void setParent(Commands parent)
-    {
-        this.parent = parent;
-    }
 }

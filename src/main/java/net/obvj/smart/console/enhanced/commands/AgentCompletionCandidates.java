@@ -8,6 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.obvj.smart.jmx.client.AgentManagerJMXClient;
+import net.obvj.smart.util.ApplicationContextFacade;
 
 /**
  * A class that allows Picocli to auto-complete S.M.A.R.T. agents names.
@@ -25,7 +26,7 @@ public class AgentCompletionCandidates extends ArrayList<String>
     {
         try
         {
-            return Arrays.asList(AgentManagerJMXClient.getMBeanProxy().getAgentNames());
+            return Arrays.asList(ApplicationContextFacade.getBean(AgentManagerJMXClient.class).getMBeanProxy().getAgentNames());
         }
         catch (Exception e)
         {

@@ -15,13 +15,17 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
+import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import net.obvj.smart.agents.api.dto.AgentDTO;
 import net.obvj.smart.jmx.AgentManagerJMXMBean;
 import net.obvj.smart.jmx.client.AgentManagerJMXClient;
+import net.obvj.smart.util.ApplicationContextFacade;
 
 /**
  * Unit tests for the {@link AgentsCommand} class
@@ -30,7 +34,7 @@ import net.obvj.smart.jmx.client.AgentManagerJMXClient;
  * @since 2.0
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(AgentManagerJMXClient.class)
+@PrepareForTest(ApplicationContextFacade.class)
 public class AgentsCommandTest
 {
     // Test data
@@ -47,40 +51,35 @@ public class AgentsCommandTest
     private static final String AGENT2_EXPECTED_STR_COMP = "name2" + TIMER + "SET";
     private static final String AGENT3_EXPECTED_STR_COMP = "name3" + TIMER + "STARTED";
 
+    private StringWriter sw = new StringWriter();
+
     @Mock
-    private AgentManagerJMXMBean agentManagerJMXBean;
+    private AgentManagerJMXMBean jmx;
+    @Mock
+    private AgentManagerJMXClient client;
+    @Spy
+    private Commands parent = new Commands(new PrintWriter(sw));
+
+    @InjectMocks
+    private AgentsCommand command;
 
     @Before
     public void setup() throws IOException
     {
-        mockStatic(AgentManagerJMXClient.class);
-        when(AgentManagerJMXClient.getMBeanProxy()).thenReturn(agentManagerJMXBean);
+        mockStatic(ApplicationContextFacade.class);
+        PowerMockito.when(ApplicationContextFacade.getBean(AgentManagerJMXClient.class)).thenReturn(client);
+        PowerMockito.when(client.getMBeanProxy()).thenReturn(jmx);
     }
 
     private void expectAllAgents()
     {
-        when(agentManagerJMXBean.getAgentDTOs()).thenReturn(ALL_AGENTS_LIST);
-    }
-
-    /**
-     * Creates a new command that will print its output onto the given StringWriter.
-     * 
-     * @param out the StringWriter to which the command will print
-     * @return a {@link AgentsCommand} for testing
-     */
-    private AgentsCommand newCommandWithOutput(StringWriter out)
-    {
-        AgentsCommand command = new AgentsCommand();
-        command.setParent(new Commands(new PrintWriter(out)));
-        return command;
+        when(jmx.getAgentDTOs()).thenReturn(ALL_AGENTS_LIST);
     }
 
     @Test
     public void testListAllAgents() throws IOException
     {
         expectAllAgents();
-        StringWriter sw = new StringWriter();
-        AgentsCommand command = newCommandWithOutput(sw);
         command.run();
 
         // Trim variable padding spaces for testing
@@ -94,8 +93,6 @@ public class AgentsCommandTest
     public void testListDaemonAgentOnly() throws IOException
     {
         expectAllAgents();
-        StringWriter sw = new StringWriter();
-        AgentsCommand command = newCommandWithOutput(sw);
         command.setType("daemon");
         command.run();
 
@@ -110,8 +107,6 @@ public class AgentsCommandTest
     public void testListTimerAgentOnly() throws IOException
     {
         expectAllAgents();
-        StringWriter sw = new StringWriter();
-        AgentsCommand command = newCommandWithOutput(sw);
         command.setType("timer");
         command.run();
 
@@ -125,10 +120,7 @@ public class AgentsCommandTest
     @Test
     public void testListNoAgent() throws IOException
     {
-        when(agentManagerJMXBean.getAgentDTOs()).thenReturn(Collections.emptyList());
-
-        StringWriter sw = new StringWriter();
-        AgentsCommand command = newCommandWithOutput(sw);
+        when(jmx.getAgentDTOs()).thenReturn(Collections.emptyList());
         command.run();
 
         assertTrue(sw.toString().contains("No agent found"));

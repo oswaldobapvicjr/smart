@@ -1,6 +1,7 @@
 package net.obvj.smart.console.enhanced.commands;
 
 import net.obvj.smart.jmx.client.AgentManagerJMXClient;
+import net.obvj.smart.util.ApplicationContextFacade;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.ParentCommand;
@@ -30,13 +31,8 @@ public class JavaVersionCommand implements Runnable
     @Override
     public void run()
     {
-        String javaVersion = AgentManagerJMXClient.getMBeanProxy().getJavaVersion();
+        String javaVersion = ApplicationContextFacade.getBean(AgentManagerJMXClient.class).getMBeanProxy().getJavaVersion();
         parent.out.println(javaVersion);
-    }
-
-    protected void setParent(Commands parent)
-    {
-        this.parent = parent;
     }
 
 }

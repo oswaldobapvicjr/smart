@@ -11,31 +11,40 @@ import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import net.obvj.smart.conf.SmartProperties;
 import net.obvj.smart.console.enhanced.EnhancedManagementConsole.Mode;
 import net.obvj.smart.jmx.AgentManagerJMXMBean;
 import net.obvj.smart.jmx.client.AgentManagerJMXClient;
+import net.obvj.smart.util.ApplicationContextFacade;
 import net.obvj.smart.util.ConsoleUtil;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ ConsoleUtil.class, AgentManagerJMXClient.class })
+@PrepareForTest({ ConsoleUtil.class, ApplicationContextFacade.class })
 public class EnhancedManagementConsoleTest
 {
-    private AgentManagerJMXMBean agentManagerJMXBeanMock = PowerMockito.mock(AgentManagerJMXMBean.class);
-
+    @Mock
+    private AgentManagerJMXMBean agentManagerJMXBean;
+    @Mock
+    private AgentManagerJMXClient agentManagerJMXClient;
+    @Mock
+    private SmartProperties smartProperties;
+    
     @Before
     public void setup()
     {
         PowerMockito.mockStatic(ConsoleUtil.class);
+        PowerMockito.mockStatic(ApplicationContextFacade.class);
 
-        // JMX client mock
-        PowerMockito.mockStatic(AgentManagerJMXClient.class);
-        PowerMockito.when(AgentManagerJMXClient.getMBeanProxy()).thenReturn(agentManagerJMXBeanMock);
-        PowerMockito.when(agentManagerJMXBeanMock.getAgentNames()).thenReturn(new String[] { "agent1", "agent2" });
+        PowerMockito.when(ApplicationContextFacade.getBean(SmartProperties.class)).thenReturn(smartProperties);
+        PowerMockito.when(ApplicationContextFacade.getBean(AgentManagerJMXClient.class)).thenReturn(agentManagerJMXClient);
+        PowerMockito.when(agentManagerJMXClient.getMBeanProxy()).thenReturn(agentManagerJMXBean);
+        PowerMockito.when(agentManagerJMXBean.getAgentNames()).thenReturn(new String[] { "agent1", "agent2" });
     }
 
     @Test
@@ -98,7 +107,7 @@ public class EnhancedManagementConsoleTest
         EnhancedManagementConsole console = new EnhancedManagementConsole();
         console.handleCommandLine("start AgentName");
 
-        Mockito.verify(agentManagerJMXBeanMock, Mockito.times(1)).startAgent("AgentName");
+        Mockito.verify(agentManagerJMXBean, Mockito.times(1)).startAgent("AgentName");
     }
 
 }

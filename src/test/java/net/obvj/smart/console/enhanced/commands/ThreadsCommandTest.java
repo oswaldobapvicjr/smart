@@ -13,26 +13,28 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import net.obvj.smart.jmx.AgentManagerJMXMBean;
 import net.obvj.smart.jmx.client.AgentManagerJMXClient;
 import net.obvj.smart.jmx.dto.ThreadDTO;
+import net.obvj.smart.util.ApplicationContextFacade;
 
 /**
- * Unit tests for the {@link ThreadCommand} class
+ * Unit tests for the {@link ThreadsCommand} class
  * 
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(AgentManagerJMXClient.class)
+@PrepareForTest(ApplicationContextFacade.class)
 public class ThreadsCommandTest
 {
     // Test data
-    
     private static final ThreadDTO THREAD1 = new ThreadDTO(1, "name1", "RUNNABLE");
     private static final ThreadDTO THREAD2 = new ThreadDTO(2, "name2", "WAITING");
 
@@ -41,35 +43,30 @@ public class ThreadsCommandTest
     private static final String THREAD1_EXPECTED_STR_COMP = "1name1RUNNABLE";
     private static final String THREAD2_EXPECTED_STR_COMP = "2name2WAITING";
 
+    private StringWriter sw = new StringWriter();
+
     @Mock
-    private AgentManagerJMXMBean agentManagerJMXBean;
+    private AgentManagerJMXMBean jmx;
+    @Mock
+    private AgentManagerJMXClient client;
+    @Spy
+    private Commands parent = new Commands(new PrintWriter(sw));
+
+    @InjectMocks
+    private ThreadsCommand command;
 
     @Before
     public void setup() throws IOException
     {
-        mockStatic(AgentManagerJMXClient.class);
-        when(AgentManagerJMXClient.getMBeanProxy()).thenReturn(agentManagerJMXBean);
-        when(agentManagerJMXBean.getAllThreadsInfo()).thenReturn(ALL_THREADS_LIST);
-    }
-
-    /**
-     * Creates a new command that will print its output onto the given StringWriter.
-     * 
-     * @param out the StringWriter to which the command will print
-     * @return a {@link ThreadsCommand} for testing
-     */
-    private ThreadsCommand newCommandWithOutput(StringWriter out)
-    {
-        ThreadsCommand command = new ThreadsCommand();
-        command.setParent(new Commands(new PrintWriter(out)));
-        return command;
+        mockStatic(ApplicationContextFacade.class);
+        when(ApplicationContextFacade.getBean(AgentManagerJMXClient.class)).thenReturn(client);
+        when(client.getMBeanProxy()).thenReturn(jmx);
     }
 
     @Test
     public void testListAllThreads() throws IOException
     {
-        StringWriter sw = new StringWriter();
-        ThreadsCommand command = newCommandWithOutput(sw);
+        when(jmx.getAllThreadsInfo()).thenReturn(ALL_THREADS_LIST);
         command.run();
 
         // Trim variable padding spaces for testing

@@ -2,6 +2,8 @@ package net.obvj.smart.console.enhanced.commands;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -11,14 +13,16 @@ import java.util.concurrent.TimeoutException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
+import org.mockito.Spy;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import net.obvj.smart.jmx.AgentManagerJMXMBean;
 import net.obvj.smart.jmx.client.AgentManagerJMXClient;
+import net.obvj.smart.util.ApplicationContextFacade;
 
 /**
  * Unit tests for the {@link StatusCommand} class
@@ -27,30 +31,27 @@ import net.obvj.smart.jmx.client.AgentManagerJMXClient;
  * @since 2.0
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(AgentManagerJMXClient.class)
+@PrepareForTest(ApplicationContextFacade.class)
 public class StatusCommandTest
 {
+    private StringWriter sw = new StringWriter();
+
     @Mock
-    private AgentManagerJMXMBean agentManagerJMXBean;
+    private AgentManagerJMXMBean jmx;
+    @Mock
+    private AgentManagerJMXClient client;
+    @Spy
+    private Commands parent = new Commands(new PrintWriter(sw));
+
+    @InjectMocks
+    private StatusCommand command;
 
     @Before
     public void setup() throws IOException
     {
-        PowerMockito.mockStatic(AgentManagerJMXClient.class);
-        PowerMockito.when(AgentManagerJMXClient.getMBeanProxy()).thenReturn(agentManagerJMXBean);
-    }
-
-    /**
-     * Creates a new command that will print its output onto the given StringWriter.
-     * 
-     * @param out the StringWriter to which the command will print
-     * @return a {@link StatusCommand} for testing
-     */
-    private StatusCommand newCommandWithOutput(StringWriter out)
-    {
-        StatusCommand command = new StatusCommand();
-        command.setParent(new Commands(new PrintWriter(out)));
-        return command;
+        mockStatic(ApplicationContextFacade.class);
+        when(ApplicationContextFacade.getBean(AgentManagerJMXClient.class)).thenReturn(client);
+        when(client.getMBeanProxy()).thenReturn(jmx);
     }
 
     /**
@@ -59,14 +60,12 @@ public class StatusCommandTest
     @Test
     public void testCommandExecutionJMXCall() throws IOException, TimeoutException
     {
-        Mockito.doReturn("statusString1").when(agentManagerJMXBean).getAgentStatusStr("AgentName");
+        Mockito.doReturn("statusString1").when(jmx).getAgentStatusStr("AgentName");
 
-        StringWriter out = new StringWriter();
-        StatusCommand command = newCommandWithOutput(out);
         command.setAgent("AgentName");
         command.run();
 
-        assertEquals("statusString1", out.toString().trim());
+        assertEquals("statusString1", sw.toString().trim());
     }
 
     /**
@@ -76,15 +75,12 @@ public class StatusCommandTest
     @Test
     public void testCommandExecutionJMXCallIllegalArgumentException() throws IOException, TimeoutException
     {
-        Mockito.doThrow(new IllegalArgumentException("Invalid name")).when(agentManagerJMXBean)
-                .getAgentStatusStr("AgentName");
+        Mockito.doThrow(new IllegalArgumentException("Invalid name")).when(jmx).getAgentStatusStr("AgentName");
 
-        StringWriter out = new StringWriter();
-        StatusCommand command = newCommandWithOutput(out);
         command.setAgent("AgentName");
         command.run();
 
-        assertTrue(out.toString().contains("Invalid name"));
+        assertTrue(sw.toString().contains("Invalid name"));
     }
 
 }

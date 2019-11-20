@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import net.obvj.smart.jmx.client.AgentManagerJMXClient;
 import net.obvj.smart.jmx.dto.ThreadDTO;
+import net.obvj.smart.util.ApplicationContextFacade;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.ParentCommand;
@@ -38,7 +39,7 @@ public class ThreadsCommand implements Runnable
         parent.out.println("Listing active server threads...");
         parent.out.flush();
 
-        Collection<ThreadDTO> allThreads = AgentManagerJMXClient.getMBeanProxy().getAllThreadsInfo();
+        Collection<ThreadDTO> allThreads = ApplicationContextFacade.getBean(AgentManagerJMXClient.class).getMBeanProxy().getAllThreadsInfo();
 
         parent.out.println();
         parent.out.println("ID   Name                                   State");
@@ -49,11 +50,6 @@ public class ThreadsCommand implements Runnable
     private void printThread(ThreadDTO thread)
     {
         parent.out.printf(ID_NAME_STATE_PATTERN, thread.id, thread.name, thread.state);
-    }
-
-    protected void setParent(Commands parent)
-    {
-        this.parent = parent;
     }
 
 }

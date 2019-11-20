@@ -12,9 +12,11 @@ import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import net.obvj.smart.conf.SmartProperties;
 import net.obvj.smart.jmx.AgentManagerJMXMBean;
-import net.obvj.smart.util.ApplicationContextFacade;
 
 /**
  * An object that contains infrastructure logic to connect to the S.M.A.R.T. server via
@@ -23,26 +25,24 @@ import net.obvj.smart.util.ApplicationContextFacade;
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
+@Component
 public class AgentManagerJMXClient
 {
     private static final Logger LOG = Logger.getLogger("smart-console");
 
-    private static final String SERVICE_JMX_RMI_URL = "service:jmx:rmi:///jndi/rmi://:" + getJMXRemotePort()
-            + "/jmxrmi";
+    private static final String SERVICE_JMX_RMI_URL = "service:jmx:rmi:///jndi/rmi://:%s/jmxrmi";
 
-    private static final AgentManagerJMXMBean mbeanProxy = createMBeanProxy();
+    @Autowired
+    private SmartProperties smartProperties;
 
-    public AgentManagerJMXClient()
-    {
-        // No instances allowed
-    }
+    private AgentManagerJMXMBean mbeanProxy;
 
-    private static AgentManagerJMXMBean createMBeanProxy()
+    private AgentManagerJMXMBean createMBeanProxy()
     {
         try
         {
             LOG.fine("Connecting to remote management console...");
-            JMXConnector jmxc = JMXConnectorFactory.connect(new JMXServiceURL(SERVICE_JMX_RMI_URL));
+            JMXConnector jmxc = JMXConnectorFactory.connect(new JMXServiceURL(String.format(SERVICE_JMX_RMI_URL, getJMXRemotePort())));
             MBeanServerConnection mbsc = jmxc.getMBeanServerConnection();
             return JMX.newMBeanProxy(mbsc, getAgentManagerJMXBeanObjectName(), AgentManagerJMXMBean.class, true);
         }
@@ -53,18 +53,22 @@ public class AgentManagerJMXClient
         }
     }
 
-    protected static int getJMXRemotePort()
+    protected int getJMXRemotePort()
     {
-        return ApplicationContextFacade.getBean(SmartProperties.class).getIntProperty(SmartProperties.JMX_REMOTE_PORT);
+        return smartProperties.getIntProperty(SmartProperties.JMX_REMOTE_PORT);
     }
 
-    protected static ObjectName getAgentManagerJMXBeanObjectName() throws MalformedObjectNameException
+    protected ObjectName getAgentManagerJMXBeanObjectName() throws MalformedObjectNameException
     {
-        return new ObjectName(ApplicationContextFacade.getBean(SmartProperties.class).getProperty(SmartProperties.JMX_AGENT_MANAGER_OBJECT_NAME));
+        return new ObjectName(smartProperties.getProperty(SmartProperties.JMX_AGENT_MANAGER_OBJECT_NAME));
     }
 
-    public static AgentManagerJMXMBean getMBeanProxy()
+    public AgentManagerJMXMBean getMBeanProxy()
     {
+        if (mbeanProxy == null)
+        {
+            mbeanProxy = createMBeanProxy();
+        }
         return mbeanProxy;
     }
 

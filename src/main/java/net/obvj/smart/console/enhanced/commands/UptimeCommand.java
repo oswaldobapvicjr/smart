@@ -3,6 +3,7 @@ package net.obvj.smart.console.enhanced.commands;
 import java.util.concurrent.TimeUnit;
 
 import net.obvj.smart.jmx.client.AgentManagerJMXClient;
+import net.obvj.smart.util.ApplicationContextFacade;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.ParentCommand;
@@ -37,7 +38,7 @@ public class UptimeCommand implements Runnable
     @Override
     public void run()
     {
-        long serverUptimeMillis = AgentManagerJMXClient.getMBeanProxy().getServerUptime();
+        long serverUptimeMillis = ApplicationContextFacade.getBean(AgentManagerJMXClient.class).getMBeanProxy().getServerUptime();
         parent.out.println(formatOutput(serverUptimeMillis, timeUnit));
     }
     
@@ -50,11 +51,6 @@ public class UptimeCommand implements Runnable
                 : tu.toString().toLowerCase().substring(0, tu.toString().length() - 1);
 
         return (serverUptimeConverted > 0 ? serverUptimeConverted : "Less than 1") + " " + timeUnitToBeDisplayed;
-    }
-    
-    protected void setParent(Commands parent)
-    {
-        this.parent = parent;
     }
     
     protected void setTimeUnit(String timeUnit)
