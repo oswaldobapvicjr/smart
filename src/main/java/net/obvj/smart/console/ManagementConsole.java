@@ -7,8 +7,10 @@ import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import net.obvj.smart.conf.SmartProperties;
-import net.obvj.smart.util.ApplicationContextFacade;
 
 /**
  * A command-line user interface application for agents management at runtime. This
@@ -17,9 +19,11 @@ import net.obvj.smart.util.ApplicationContextFacade;
  * @author oswaldo.bapvic.jr
  * @since 1.0
  */
+@Component
 public class ManagementConsole implements Runnable
 {
-    private static ManagementConsole instance = new ManagementConsole();
+    @Autowired
+    private SmartProperties smartProperties;
 
     private boolean started;
     private Thread serverThread;
@@ -27,37 +31,20 @@ public class ManagementConsole implements Runnable
     private ServerSocket server;
     private final Logger log = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * @return A unique ManagementConsole instance
-     */
-    public static ManagementConsole getInstance()
-    {
-        return instance;
-    }
-
     public ManagementConsole()
     {
-        try
-        {
-            serverThread = new Thread(this, "MgmtConsole");
-            sessionExecutor = Executors.newCachedThreadPool(new MgmtConsoleWorkerThreadFactory());
-            server = new ServerSocket(getPort(), 0, InetAddress.getByAddress(new byte[] { 127, 0, 0, 1 }));
-            log.info("Management Console listening on port " + server.getLocalPort());
-        }
-        catch (IOException e)
-        {
-            log.log(Level.SEVERE, String.format("Unable to bind to system port %s.", getPort()), e);
-        }
+        serverThread = new Thread(this, "MgmtConsole");
+        sessionExecutor = Executors.newCachedThreadPool(new MgmtConsoleWorkerThreadFactory());
     }
 
     public int getPort()
     {
-        return ApplicationContextFacade.getBean(SmartProperties.class).getIntProperty(SmartProperties.CLASSIC_CONSOLE_PORT);
+        return smartProperties.getIntProperty(SmartProperties.CLASSIC_CONSOLE_PORT);
     }
 
     public int getSessionTimeoutSeconds()
     {
-        return ApplicationContextFacade.getBean(SmartProperties.class).getIntProperty(SmartProperties.CLASSIC_CONSOLE_SESSION_TIMEOUT_SECONDS);
+        return smartProperties.getIntProperty(SmartProperties.CLASSIC_CONSOLE_SESSION_TIMEOUT_SECONDS);
     }
 
     public void run()
@@ -92,8 +79,17 @@ public class ManagementConsole implements Runnable
      */
     public void start()
     {
-        started = true;
-        serverThread.start();
+        try
+        {
+            started = true;
+            server = new ServerSocket(getPort(), 0, InetAddress.getByAddress(new byte[] { 127, 0, 0, 1 }));
+            serverThread.start();
+            log.info("Management Console listening on port " + server.getLocalPort());
+        }
+        catch (IOException e)
+        {
+            throw new IllegalStateException(String.format("Unable to bind to system port %s", getPort()), e);
+        }
     }
 
     /**
@@ -115,5 +111,5 @@ public class ManagementConsole implements Runnable
             }
         }
     }
-    
+
 }

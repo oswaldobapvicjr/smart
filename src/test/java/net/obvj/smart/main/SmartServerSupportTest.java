@@ -2,7 +2,6 @@ package net.obvj.smart.main;
 
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.spy;
 import static org.powermock.api.mockito.PowerMockito.when;
@@ -32,7 +31,7 @@ import net.obvj.smart.util.ApplicationContextFacade;
  * @since 2.0
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ ManagementConsole.class, ApplicationContextFacade.class, Agent.class })
+@PrepareForTest({ ApplicationContextFacade.class, Agent.class })
 public class SmartServerSupportTest
 {
     private static final AgentConfiguration DUMMY_AGENT_CONFIG = new AgentConfiguration.Builder("DummyAgent")
@@ -45,9 +44,9 @@ public class SmartServerSupportTest
     private static final List<AgentConfiguration> ALL_AGENT_CONFIGS = Arrays.asList(DUMMY_AGENT_CONFIG,
             DUMMY_DAEMON_CONFIG);
 
-    // Mock objects
     @Mock
     private SmartProperties properties;
+    @Mock
     private ManagementConsole console;
     @Mock
     private AgentManager manager;
@@ -63,12 +62,8 @@ public class SmartServerSupportTest
     @Before
     public void setup() throws ReflectiveOperationException
     {
-        // Setup singletons
-        console = mock(ManagementConsole.class);
-        mockStatic(ManagementConsole.class);
-        when(ManagementConsole.getInstance()).thenReturn(console);
-
         mockStatic(ApplicationContextFacade.class);
+        when(ApplicationContextFacade.getBean(ManagementConsole.class)).thenReturn(console);
         when(ApplicationContextFacade.getBean(AgentManager.class)).thenReturn(manager);
         when(ApplicationContextFacade.getBean(SmartProperties.class)).thenReturn(properties);
 

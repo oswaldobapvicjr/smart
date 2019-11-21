@@ -25,14 +25,15 @@ import net.obvj.smart.util.ApplicationContextFacade;
  */
 public class SmartServerSupport
 {
-    private SmartProperties smartProperties = ApplicationContextFacade.getBean(SmartProperties.class);
+    protected SmartProperties smartProperties = ApplicationContextFacade.getBean(SmartProperties.class);
+    protected AgentManager agentManager = ApplicationContextFacade.getBean(AgentManager.class);
+    protected ManagementConsole managementConsole = ApplicationContextFacade.getBean(ManagementConsole.class);
 
-    protected final String jmxAgentManagerObjectName = smartProperties
+    protected String jmxAgentManagerObjectName = smartProperties
             .getProperty(SmartProperties.JMX_AGENT_MANAGER_OBJECT_NAME);
 
     protected static final Logger LOG = Logger.getLogger("smart-server");
 
-    protected AgentManager agentManager = ApplicationContextFacade.getBean(AgentManager.class);
 
     public boolean isClassicConsoleEnabled()
     {
@@ -44,7 +45,7 @@ public class SmartServerSupport
         if (isClassicConsoleEnabled())
         {
             LOG.info("Starting Classic Management Console...");
-            ManagementConsole.getInstance().start();
+            managementConsole.start();
         }
         else
         {
@@ -57,7 +58,7 @@ public class SmartServerSupport
         if (isClassicConsoleEnabled())
         {
             LOG.info("Closing Classic Management Console...");
-            ManagementConsole.getInstance().stop();
+            managementConsole.stop();
             LOG.info("Classic Management Console closed");
         }
     }

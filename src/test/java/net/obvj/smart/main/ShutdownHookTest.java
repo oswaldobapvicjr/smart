@@ -2,7 +2,6 @@ package net.obvj.smart.main;
 
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
@@ -13,7 +12,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -24,13 +22,13 @@ import net.obvj.smart.manager.AgentManager;
 import net.obvj.smart.util.ApplicationContextFacade;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ ManagementConsole.class, ApplicationContextFacade.class })
+@PrepareForTest({ ApplicationContextFacade.class })
 public class ShutdownHookTest
 {
     @Mock
     private SmartProperties properties;
+    @Mock
     private ManagementConsole console;
-    
     @Mock
     private AgentManager manager;
     @Mock
@@ -44,14 +42,8 @@ public class ShutdownHookTest
     @Before
     public void setup()
     {
-        MockitoAnnotations.initMocks(this);
-        
-        // Setup singletons
-        console = mock(ManagementConsole.class);
-        mockStatic(ManagementConsole.class);
-        when(ManagementConsole.getInstance()).thenReturn(console);
-
         mockStatic(ApplicationContextFacade.class);
+        when(ApplicationContextFacade.getBean(ManagementConsole.class)).thenReturn(console);
         when(ApplicationContextFacade.getBean(AgentManager.class)).thenReturn(manager);
         when(ApplicationContextFacade.getBean(SmartProperties.class)).thenReturn(properties);
         
