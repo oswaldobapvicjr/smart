@@ -34,8 +34,4 @@ public class ClearScreenCommand implements Callable<Void>
         return null;
     }
 
-    protected void setParent(Commands parent)
-    {
-        this.parent = parent;
-    }
 }

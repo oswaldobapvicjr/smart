@@ -18,6 +18,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import net.obvj.smart.agents.api.Agent;
 import net.obvj.smart.conf.AgentConfigurationException;
+import net.obvj.smart.conf.AgentsXml;
 import net.obvj.smart.conf.SmartProperties;
 import net.obvj.smart.conf.xml.AgentConfiguration;
 import net.obvj.smart.console.ManagementConsole;
@@ -49,6 +50,8 @@ public class SmartServerSupportTest
     @Mock
     private ManagementConsole console;
     @Mock
+    private AgentsXml agentsXml;;
+    @Mock
     private AgentManager manager;
 
     // Agents
@@ -65,7 +68,9 @@ public class SmartServerSupportTest
         mockStatic(ApplicationContextFacade.class);
         when(ApplicationContextFacade.getBean(ManagementConsole.class)).thenReturn(console);
         when(ApplicationContextFacade.getBean(AgentManager.class)).thenReturn(manager);
+        when(ApplicationContextFacade.getBean(AgentsXml.class)).thenReturn(agentsXml);
         when(ApplicationContextFacade.getBean(SmartProperties.class)).thenReturn(properties);
+        ;
 
         // Setup agents
         dummyAgent = spy(Agent.parseAgent(DUMMY_AGENT_CONFIG));
@@ -74,7 +79,7 @@ public class SmartServerSupportTest
 
         // Allow usage of static method parseAgent
         mockStatic(Agent.class);
-        
+
         support = new SmartServerSupport();
     }
 
@@ -124,17 +129,19 @@ public class SmartServerSupportTest
     {
         when(Agent.parseAgent(DUMMY_AGENT_CONFIG)).thenReturn(dummyAgent);
         when(Agent.parseAgent(DUMMY_DAEMON_CONFIG)).thenReturn(dummyDaemon);
-        support.loadAgents(ALL_AGENT_CONFIGS);
+        when(agentsXml.getAgents()).thenReturn(ALL_AGENT_CONFIGS);
+        support.loadAgents();
         verify(manager).addAgent(dummyAgent);
         verify(manager).addAgent(dummyDaemon);
     }
-    
+
     @Test
     public void testLoadAgentsWithOneException() throws ReflectiveOperationException
     {
         when(Agent.parseAgent(DUMMY_AGENT_CONFIG)).thenReturn(dummyAgent);
         when(Agent.parseAgent(DUMMY_DAEMON_CONFIG)).thenThrow(new AgentConfigurationException("dummyException"));
-        support.loadAgents(ALL_AGENT_CONFIGS);
+        when(agentsXml.getAgents()).thenReturn(ALL_AGENT_CONFIGS);
+        support.loadAgents();
         verify(manager).addAgent(dummyAgent);
         verify(manager, never()).addAgent(dummyDaemon);
     }

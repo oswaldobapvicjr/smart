@@ -1,13 +1,8 @@
 package net.obvj.smart.main;
 
-import java.util.List;
-
 import javax.management.JMException;
 
 import net.obvj.smart.conf.AgentConfigurationException;
-import net.obvj.smart.conf.AgentsXml;
-import net.obvj.smart.conf.xml.AgentConfiguration;
-import net.obvj.smart.util.ApplicationContextFacade;
 
 /**
  * S.M.A.R.T. service main class
@@ -25,7 +20,6 @@ public class Main extends SmartServerSupport
      */
     public void start() throws JMException
     {
-        LOG.info("Starting S.M.A.R.T. Agent Manager...");
         startClassicManagementConsole();
         registerManagedBean();
 
@@ -33,13 +27,10 @@ public class Main extends SmartServerSupport
         Runtime.getRuntime().addShutdownHook(new Thread(new ShutdownHook(), "Shutdown"));
 
         // Loading agents
-        LOG.info("Loading agents configuration...");
-        List<AgentConfiguration> xmlAgents = ApplicationContextFacade.getBean(AgentsXml.class).getAgents();
-
-        loadAgents(xmlAgents);
+        loadAgents();
         startAutomaticAgents();
 
-        LOG.info("Ready.");
+        LOG.info("Ready");
     }
 
     public static void main(String[] args) throws JMException

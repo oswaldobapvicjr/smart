@@ -9,6 +9,7 @@ import javax.management.JMException;
 import javax.management.ObjectName;
 
 import net.obvj.smart.agents.api.Agent;
+import net.obvj.smart.conf.AgentsXml;
 import net.obvj.smart.conf.SmartProperties;
 import net.obvj.smart.conf.xml.AgentConfiguration;
 import net.obvj.smart.console.ManagementConsole;
@@ -27,6 +28,7 @@ public class SmartServerSupport
 {
     protected SmartProperties smartProperties = ApplicationContextFacade.getBean(SmartProperties.class);
     protected AgentManager agentManager = ApplicationContextFacade.getBean(AgentManager.class);
+    protected AgentsXml agentsXml = ApplicationContextFacade.getBean(AgentsXml.class);
     protected ManagementConsole managementConsole = ApplicationContextFacade.getBean(ManagementConsole.class);
 
     protected String jmxAgentManagerObjectName = smartProperties
@@ -63,9 +65,10 @@ public class SmartServerSupport
         }
     }
 
-    protected void loadAgents(List<AgentConfiguration> agents)
+    protected void loadAgents()
     {
         LOG.info("Loading agents...");
+        List<AgentConfiguration> agents = agentsXml.getAgents();
         agents.forEach(this::parseAndLoadAgentConfig);
         LOG.log(Level.INFO, "{0} agents loaded", agentManager.getAgents().size());
     }

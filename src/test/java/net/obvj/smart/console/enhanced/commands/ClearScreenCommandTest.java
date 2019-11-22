@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -24,14 +25,13 @@ public class ClearScreenCommandTest
     @Mock
     ConsoleReader reader;
     
-    // Test subject
-    ClearScreenCommand command = new ClearScreenCommand();
+    @InjectMocks
+    ClearScreenCommand command;
 
     @Test
     public void testCall() throws IOException 
     {
         Mockito.when(commands.getConsoleReader()).thenReturn(reader);
-        command.setParent(commands);
         command.call();
         Mockito.verify(reader).clearScreen();        
     }
