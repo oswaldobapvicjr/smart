@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import javax.xml.bind.UnmarshalException;
 
 import org.junit.Test;
+import org.xml.sax.SAXException;
 
 import net.obvj.smart.conf.xml.AgentConfiguration;
 import net.obvj.smart.conf.xml.SmartConfiguration;
@@ -103,7 +104,7 @@ public class AgentsXmlTest
         assertException(AgentConfigurationException.class, null, FileNotFoundException.class,
                 () -> AgentsXml.loadAgentsXmlFile("testAgents/notfound.xml"));
     }
-    
+
     @Test
     public void testLoadXmlWithTwoAgents()
     {
@@ -120,5 +121,12 @@ public class AgentsXmlTest
         assertEquals(DUMMY_DAEMON, dummyDaemon.getName());
         assertEquals(DAEMON, dummyDaemon.getType());
         assertEquals(DUMMY_DAEMON_CLASS, dummyDaemon.getAgentClass());
+    }
+
+    @Test
+    public void testLoadSchemaFileWithInvalidFile()
+    {
+        assertException(AgentConfigurationException.class, null, SAXException.class,
+                () -> AgentsXml.loadSchemaFile("testAgents/invalidSchema.xsd"));
     }
 }

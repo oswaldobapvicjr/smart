@@ -2,6 +2,8 @@ package net.obvj.smart.util;
 
 import org.junit.Test;
 
+import net.obvj.smart.conf.AgentConfigurationException;
+
 import static net.obvj.smart.TestUtil.*;
 
 /**
@@ -48,6 +50,13 @@ public class ExceptionsTest
     {
         assertException(IllegalStateException.class, EXPECTED_MSG, NullPointerException.class,
                 Exceptions.illegalState(new NullPointerException(), MSG_PATTERN, ARG1, ARG2));
+    }
+    
+    @Test
+    public void testAgentConfigurationWithMessageAndParamsAndCause()
+    {
+        assertException(AgentConfigurationException.class, EXPECTED_MSG, NullPointerException.class,
+                Exceptions.agentConfiguration(new NullPointerException(), MSG_PATTERN, ARG1, ARG2));
     }
 
 }

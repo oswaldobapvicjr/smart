@@ -34,6 +34,7 @@ public class AgentsXml
     private static final Logger LOG = Logger.getLogger("smart-server");
 
     private static final String AGENTS_XML = "agents.xml";
+    private static final String AGENTS_XSD = "agents.xsd";
 
     private static final AgentsXml INSTANCE = new AgentsXml();
 
@@ -79,17 +80,25 @@ public class AgentsXml
         {
             throw new AgentConfigurationException(e);
         }
-        catch (SAXException e)
-        {
-            throw new AgentConfigurationException("Unable to parse agents.xsd schema file", e);
-        }
         return xmlAgents;
     }
 
-    private static Schema loadSchema() throws SAXException
+    private static Schema loadSchema()
     {
-        SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        return sf.newSchema(AgentsXml.class.getClassLoader().getResource("agents.xsd"));
+        return loadSchemaFile(AGENTS_XSD);
+    }
+    
+    protected static Schema loadSchemaFile(String fileName)
+    {
+        try
+        {
+            SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            return sf.newSchema(AgentsXml.class.getClassLoader().getResource(fileName));
+        }
+        catch (SAXException e)
+        {
+            throw Exceptions.agentConfiguration(e, "Unable to parse schema file: %s", fileName);
+        }
     }
     
     private void loadAgentsMap()
