@@ -1,6 +1,9 @@
 package net.obvj.smart.manager;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -11,12 +14,9 @@ import java.util.stream.Collectors;
 import org.awaitility.Awaitility;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import net.obvj.smart.agents.api.Agent;
 import net.obvj.smart.agents.api.Agent.State;
@@ -30,9 +30,6 @@ import net.obvj.smart.conf.xml.AgentConfiguration;
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(AgentsXml.class)
-@PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.dom.*"})
 public class AgentManagerTest
 {
     // Test data
@@ -59,26 +56,31 @@ public class AgentManagerTest
     private Agent dummyAgent;
     private Agent dummyDaemonAgent;
     private Agent[] allAgents;
+    
+    @Mock
+    private AgentsXml agentsXml;
+    @InjectMocks
+    private AgentManager manager;
 
     @Before
     public void setup() throws Exception
     {
+        MockitoAnnotations.initMocks(this);
+
         dummyAgent = Agent.parseAgent(XML_DUMMY_AGENT);
         dummyDaemonAgent = Agent.parseAgent(XML_DUMMY_DAEMON);
         allAgents = new Agent[] { dummyAgent, dummyDaemonAgent };
     }
 
-    protected AgentManager newAgentManager(Agent... agents)
+    protected void prepareAgentManager(Agent... agents)
     {
-        AgentManager manager = new AgentManager();
         Arrays.stream(agents).forEach(manager::addAgent);
-        return manager;
     }
 
     @Test
     public void testGetAgentNamesWithOneAgent()
     {
-        AgentManager manager = newAgentManager(dummyAgent);
+        prepareAgentManager(dummyAgent);
         String[] agentNames = manager.getAgentNames();
         assertEquals(1, agentNames.length);
         assertEquals(dummyAgent.getName(), agentNames[0]);
@@ -87,7 +89,7 @@ public class AgentManagerTest
     @Test
     public void testGetAgents()
     {
-        AgentManager manager = newAgentManager(allAgents);
+        prepareAgentManager(allAgents);
         Collection<Agent> agents = manager.getAgents();
         assertEquals(2, agents.size());
         List<String> managerNames = agents.stream().map(Agent::getName).collect(Collectors.toList());
@@ -97,20 +99,20 @@ public class AgentManagerTest
     @Test
     public void testFindAgentByName()
     {
-        AgentManager manager = newAgentManager(allAgents);
+        prepareAgentManager(allAgents);
         assertEquals(dummyAgent, manager.findAgentByName(DUMMY_AGENT));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testFindAgentByNameUnknown()
     {
-        newAgentManager().findAgentByName(UNKNOWN);
+        manager.findAgentByName(UNKNOWN);
     }
 
     @Test
     public void testStartTimerAgentWithPreviousStateSet()
     {
-        AgentManager manager = newAgentManager(dummyAgent);
+        prepareAgentManager(dummyAgent);
         assertEquals(State.SET, dummyAgent.getState());
         manager.startAgent(DUMMY_AGENT);
         Awaitility.await().until(dummyAgent::isStarted);
@@ -121,7 +123,7 @@ public class AgentManagerTest
     @Test
     public void testRemoveAgent()
     {
-        AgentManager manager = newAgentManager(allAgents);
+        prepareAgentManager(allAgents);
         manager.removeAgent(DUMMY_AGENT);
         assertEquals(1, manager.getAgents().size());
         assertFalse(manager.getAgents().contains(dummyAgent));
@@ -130,13 +132,13 @@ public class AgentManagerTest
     @Test(expected = IllegalArgumentException.class)
     public void testRemoveAgentUnknown()
     {
-        newAgentManager().removeAgent(UNKNOWN);
+        manager.removeAgent(UNKNOWN);
     }
 
     @Test(expected = IllegalStateException.class)
     public void testRemoveAgentStarted()
     {
-        AgentManager manager = newAgentManager(dummyAgent);
+        prepareAgentManager(dummyAgent);
         manager.startAgent(DUMMY_AGENT);
         manager.removeAgent(DUMMY_AGENT);
     }
@@ -144,7 +146,7 @@ public class AgentManagerTest
     @Test
     public void testGetAgentDTOs()
     {
-        AgentManager manager = newAgentManager(allAgents);
+        prepareAgentManager(allAgents);
         Collection<AgentDTO> dtos = manager.getAgentDTOs();
         assertEquals(2, dtos.size());
         assertTrue(dtos.containsAll(ALL_AGENT_DTOS));
@@ -153,17 +155,17 @@ public class AgentManagerTest
     @Test
     public void testGetAgentStatusStr()
     {
-        Agent agent = Mockito.mock(Agent.class);
-        Mockito.when(agent.getName()).thenReturn(AGENT1);
-        Mockito.when(agent.getStatusString()).thenReturn("statusStr1");
-        AgentManager manager = newAgentManager(agent);
+        Agent agent = mock(Agent.class);
+        when(agent.getName()).thenReturn(AGENT1);
+        when(agent.getStatusString()).thenReturn("statusStr1");
+        prepareAgentManager(agent);
         assertEquals("statusStr1", manager.getAgentStatusStr(AGENT1));
     }
 
     @Test
     public void testStopTimerAgentWithPreviousStateStarted() throws TimeoutException
     {
-        AgentManager manager = newAgentManager(dummyAgent);
+        prepareAgentManager(dummyAgent);
         manager.startAgent(DUMMY_AGENT);
         Awaitility.await().until(dummyAgent::isStarted);
         manager.stopAgent(DUMMY_AGENT);
@@ -173,31 +175,27 @@ public class AgentManagerTest
     @Test
     public void testRunTimerAgent()
     {
-        Agent agent = Mockito.mock(Agent.class);
-        Mockito.when(agent.getName()).thenReturn(AGENT1);
-        Mockito.when(agent.getType()).thenReturn(TIMER);
-        AgentManager manager = newAgentManager(agent);
+        Agent agent = mock(Agent.class);
+        when(agent.getName()).thenReturn(AGENT1);
+        when(agent.getType()).thenReturn(TIMER);
+        prepareAgentManager(agent);
         manager.runNow(AGENT1);
-        Mockito.verify(agent).run();
+        verify(agent).run();
     }
     
     @Test(expected = UnsupportedOperationException.class)
     public void testRunDaemonAgent()
     {
-        AgentManager manager = newAgentManager(dummyDaemonAgent);
+        prepareAgentManager(dummyDaemonAgent);
         manager.runNow(DUMMY_DAEMON);
     }
     
     @Test
     public void testResetAgentWithPreviousStateSet() throws ReflectiveOperationException
     {
-        // Setup AgentConfiguration mocks
-        AgentsXml agentConfigMock = Mockito.mock(AgentsXml.class);
-        Mockito.when(agentConfigMock.getAgentConfiguration(DUMMY_AGENT)).thenReturn(XML_DUMMY_AGENT);
-        PowerMockito.mockStatic(AgentsXml.class);
-        PowerMockito.when(AgentsXml.getInstance()).thenReturn(agentConfigMock);
-        
-        AgentManager manager = newAgentManager(dummyAgent);
+        when(agentsXml.getAgentConfiguration(DUMMY_AGENT)).thenReturn(XML_DUMMY_AGENT);
+
+        prepareAgentManager(dummyAgent);
         manager.resetAgent(DUMMY_AGENT);
         Agent newAgent = manager.findAgentByName(DUMMY_AGENT);
         
@@ -215,7 +213,7 @@ public class AgentManagerTest
     @Test(expected = IllegalStateException.class)
     public void testResetAgentWithPreviousStateStarted() throws ReflectiveOperationException
     {
-        AgentManager manager = newAgentManager(dummyAgent);
+        prepareAgentManager(dummyAgent);
         manager.startAgent(DUMMY_AGENT);
         manager.resetAgent(DUMMY_AGENT);
     }
@@ -223,10 +221,11 @@ public class AgentManagerTest
     @Test
     public void testIsAgentRunning()
     {
-        Agent agent = Mockito.mock(Agent.class);
-        Mockito.when(agent.isRunning()).thenReturn(true);
-        Mockito.when(agent.getName()).thenReturn("agent1");
-        assertTrue(newAgentManager(agent).isAgentRunning("agent1"));
+        Agent agent = mock(Agent.class);
+        when(agent.isRunning()).thenReturn(true);
+        when(agent.getName()).thenReturn("agent1");
+        prepareAgentManager(agent);
+        assertTrue(manager.isAgentRunning("agent1"));
     }
     
 }

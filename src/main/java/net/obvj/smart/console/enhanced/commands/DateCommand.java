@@ -22,6 +22,8 @@ import picocli.CommandLine.ParentCommand;
          optionListHeading = "%n@|bold,underline Options|@:%n")
 public class DateCommand implements Runnable
 {
+    private AgentManagerJMXClient client = ApplicationContextFacade.getBean(AgentManagerJMXClient.class);
+
     @Option(names = {"-h", "--help"}, usageHelp = true, description = "Display this help message.")
     boolean usageHelpRequested;
     
@@ -31,7 +33,7 @@ public class DateCommand implements Runnable
     @Override
     public void run()
     {
-        parent.out.println(ApplicationContextFacade.getBean(AgentManagerJMXClient.class).getMBeanProxy().getServerDate());
+        parent.out.println(client.getMBeanProxy().getServerDate());
     }
 
 }

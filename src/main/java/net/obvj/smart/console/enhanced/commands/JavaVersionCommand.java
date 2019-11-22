@@ -22,6 +22,8 @@ import picocli.CommandLine.ParentCommand;
          optionListHeading = "%n@|bold,underline Options|@:%n")
 public class JavaVersionCommand implements Runnable
 {
+    private AgentManagerJMXClient client = ApplicationContextFacade.getBean(AgentManagerJMXClient.class);
+
     @Option(names = { "-h", "--help" }, usageHelp = true, description = "Display this help message.")
     boolean usageHelpRequested;
     
@@ -31,7 +33,7 @@ public class JavaVersionCommand implements Runnable
     @Override
     public void run()
     {
-        String javaVersion = ApplicationContextFacade.getBean(AgentManagerJMXClient.class).getMBeanProxy().getJavaVersion();
+        String javaVersion = client.getMBeanProxy().getJavaVersion();
         parent.out.println(javaVersion);
     }
 

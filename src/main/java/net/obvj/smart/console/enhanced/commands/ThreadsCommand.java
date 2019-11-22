@@ -27,6 +27,8 @@ public class ThreadsCommand implements Runnable
 {
     private static final String ID_NAME_STATE_PATTERN = "%-4d %-38s %-13s%n";
 
+    private AgentManagerJMXClient client = ApplicationContextFacade.getBean(AgentManagerJMXClient.class);
+    
     @Option(names = {"-h", "--help"}, usageHelp = true, description = "Display this help message.")
     boolean usageHelpRequested;
 
@@ -39,7 +41,7 @@ public class ThreadsCommand implements Runnable
         parent.out.println("Listing active server threads...");
         parent.out.flush();
 
-        Collection<ThreadDTO> allThreads = ApplicationContextFacade.getBean(AgentManagerJMXClient.class).getMBeanProxy().getAllThreadsInfo();
+        Collection<ThreadDTO> allThreads = client.getMBeanProxy().getAllThreadsInfo();
 
         parent.out.println();
         parent.out.println("ID   Name                                   State");

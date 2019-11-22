@@ -29,6 +29,8 @@ public class AgentsCommand implements Runnable
 {
     private static final String NAME_TYPE_STATE_PATTERN = "%-42s %-6s %-7s%n";
 
+    private AgentManagerJMXClient client = ApplicationContextFacade.getBean(AgentManagerJMXClient.class);
+
     @Option(names = {"-h", "--help"}, usageHelp = true, description = "Display this help message.")
     boolean usageHelpRequested;
     
@@ -44,7 +46,7 @@ public class AgentsCommand implements Runnable
         parent.out.println("Listing agents...");
         parent.out.flush();
 
-        Collection<AgentDTO> agents = ApplicationContextFacade.getBean(AgentManagerJMXClient.class).getMBeanProxy().getAgentDTOs();
+        Collection<AgentDTO> agents = client.getMBeanProxy().getAgentDTOs();
         if (!type.isEmpty())
         {
             agents = agents.stream().filter(a -> a.type.equalsIgnoreCase(this.type)).collect(Collectors.toSet());

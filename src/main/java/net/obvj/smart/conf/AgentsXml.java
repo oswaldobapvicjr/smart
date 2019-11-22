@@ -17,6 +17,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
+import org.springframework.stereotype.Component;
 import org.xml.sax.SAXException;
 
 import net.obvj.smart.conf.xml.AgentConfiguration;
@@ -29,6 +30,7 @@ import net.obvj.smart.util.Exceptions;
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
+@Component
 public class AgentsXml
 {
     private static final Logger LOG = Logger.getLogger("smart-server");
@@ -36,13 +38,11 @@ public class AgentsXml
     private static final String AGENTS_XML = "agents.xml";
     private static final String AGENTS_XSD = "agents.xsd";
 
-    private static final AgentsXml INSTANCE = new AgentsXml();
-
     private SmartConfiguration agents;
 
     private Map<String, AgentConfiguration> agentsByName = new HashMap<>();
     
-    private AgentsXml()
+    public AgentsXml()
     {
         this(AGENTS_XML);
     }
@@ -119,11 +119,6 @@ public class AgentsXml
     public AgentConfiguration getAgentConfiguration(String name)
     {
         return agentsByName.get(name);
-    }
-
-    public static AgentsXml getInstance()
-    {
-        return INSTANCE;
     }
 
 }

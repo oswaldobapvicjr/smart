@@ -23,6 +23,8 @@ import picocli.CommandLine.ParentCommand;
          optionListHeading = "%n@|bold,underline Options|@:%n")
 public class StatusCommand implements Runnable
 {
+    private AgentManagerJMXClient client = ApplicationContextFacade.getBean(AgentManagerJMXClient.class);
+
     @Option(names = {"-h", "--help"}, usageHelp = true, description = "Display this help message.")
     boolean usageHelpRequested;
     
@@ -37,7 +39,7 @@ public class StatusCommand implements Runnable
     {
         try
         {
-            parent.out.println(ApplicationContextFacade.getBean(AgentManagerJMXClient.class).getMBeanProxy().getAgentStatusStr(agent));
+            parent.out.println(client.getMBeanProxy().getAgentStatusStr(agent));
         }
         catch (IllegalStateException | IllegalArgumentException e)
         {

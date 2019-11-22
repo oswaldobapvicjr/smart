@@ -25,6 +25,8 @@ import picocli.CommandLine.ParentCommand;
          optionListHeading = "%n@|bold,underline Options|@:%n")
 public class StopCommand implements Runnable
 {
+    private AgentManagerJMXClient client = ApplicationContextFacade.getBean(AgentManagerJMXClient.class);
+
     @Option(names = {"-h", "--help"}, usageHelp = true, description = "Display this help message.")
     boolean usageHelpRequested;
     
@@ -41,7 +43,7 @@ public class StopCommand implements Runnable
         {
             parent.out.printf("Stopping %s...%n", agent);
             parent.out.flush();
-            ApplicationContextFacade.getBean(AgentManagerJMXClient.class).getMBeanProxy().stopAgent(agent);
+            client.getMBeanProxy().stopAgent(agent);
             parent.out.println("Success");
         }
         catch (IllegalStateException | IllegalArgumentException | TimeoutException e)

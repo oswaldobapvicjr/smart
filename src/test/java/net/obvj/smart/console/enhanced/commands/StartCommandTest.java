@@ -1,7 +1,6 @@
 package net.obvj.smart.console.enhanced.commands;
 
 import static org.junit.Assert.assertTrue;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 import java.io.IOException;
@@ -15,12 +14,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Spy;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import net.obvj.smart.jmx.AgentManagerJMXMBean;
 import net.obvj.smart.jmx.client.AgentManagerJMXClient;
-import net.obvj.smart.util.ApplicationContextFacade;
 
 /**
  * Unit tests for the {@link StartCommand} class
@@ -28,8 +25,7 @@ import net.obvj.smart.util.ApplicationContextFacade;
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(ApplicationContextFacade.class)
+@RunWith(SpringRunner.class)
 public class StartCommandTest
 {
     private StringWriter sw = new StringWriter();
@@ -47,8 +43,6 @@ public class StartCommandTest
     @Before
     public void setup() throws IOException
     {
-        mockStatic(ApplicationContextFacade.class);
-        when(ApplicationContextFacade.getBean(AgentManagerJMXClient.class)).thenReturn(client);
         when(client.getMBeanProxy()).thenReturn(jmx);
     }
 

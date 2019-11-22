@@ -7,6 +7,7 @@ import javax.management.JMException;
 import net.obvj.smart.conf.AgentConfigurationException;
 import net.obvj.smart.conf.AgentsXml;
 import net.obvj.smart.conf.xml.AgentConfiguration;
+import net.obvj.smart.util.ApplicationContextFacade;
 
 /**
  * S.M.A.R.T. service main class
@@ -33,7 +34,7 @@ public class Main extends SmartServerSupport
 
         // Loading agents
         LOG.info("Loading agents configuration...");
-        List<AgentConfiguration> xmlAgents = AgentsXml.getInstance().getAgents();
+        List<AgentConfiguration> xmlAgents = ApplicationContextFacade.getBean(AgentsXml.class).getAgents();
 
         loadAgents(xmlAgents);
         startAutomaticAgents();

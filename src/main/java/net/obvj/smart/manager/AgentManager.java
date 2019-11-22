@@ -6,6 +6,7 @@ import java.util.TreeMap;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import net.obvj.smart.agents.api.Agent;
@@ -27,6 +28,9 @@ public class AgentManager
     private static final String MSG_INVALID_AGENT = "Invalid agent: %s";
     private static final String MSG_AGENT_STARTED_PLEASE_STOP_FIRST = "'%s' is started. Please stop the agent before this operation.";
 
+    @Autowired
+    private AgentsXml agentsXml;
+    
     private Map<String, Agent> agents = new TreeMap<>();
 
     /**
@@ -88,7 +92,7 @@ public class AgentManager
         {
             throw Exceptions.illegalState(MSG_AGENT_STARTED_PLEASE_STOP_FIRST, name);
         }
-        AgentConfiguration agentConfig = AgentsXml.getInstance().getAgentConfiguration(name);
+        AgentConfiguration agentConfig = agentsXml.getAgentConfiguration(name);
         Agent newAgent = Agent.parseAgent(agentConfig);
         addAgent(newAgent);
     }

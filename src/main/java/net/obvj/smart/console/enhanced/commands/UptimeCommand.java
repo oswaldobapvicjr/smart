@@ -24,6 +24,8 @@ import picocli.CommandLine.ParentCommand;
          optionListHeading = "%n@|bold,underline Options|@:%n")
 public class UptimeCommand implements Runnable
 {
+    private AgentManagerJMXClient client = ApplicationContextFacade.getBean(AgentManagerJMXClient.class);
+
     @Option(names = { "-h", "--help" }, usageHelp = true, description = "Display this help message.")
     boolean usageHelpRequested;
     
@@ -38,7 +40,7 @@ public class UptimeCommand implements Runnable
     @Override
     public void run()
     {
-        long serverUptimeMillis = ApplicationContextFacade.getBean(AgentManagerJMXClient.class).getMBeanProxy().getServerUptime();
+        long serverUptimeMillis = client.getMBeanProxy().getServerUptime();
         parent.out.println(formatOutput(serverUptimeMillis, timeUnit));
     }
     
@@ -57,4 +59,5 @@ public class UptimeCommand implements Runnable
     {
         this.timeUnit = timeUnit;
     }
+
 }
