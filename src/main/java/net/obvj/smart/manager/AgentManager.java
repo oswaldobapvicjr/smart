@@ -164,7 +164,8 @@ public class AgentManager
      */
     protected AgentDTO toAgentDTO(Agent agent)
     {
-        return new AgentDTO(agent.getName(), agent.getType(), agent.getState().toString());
+        return new AgentDTO(agent.getName(), agent.getType(), agent.getState().toString(),
+                agent.getConfiguration().isHidden());
     }
 
     /**

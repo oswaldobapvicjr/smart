@@ -48,8 +48,8 @@ public class AgentManagerTest
     private static final AgentConfiguration XML_DUMMY_DAEMON = new AgentConfiguration.Builder(DUMMY_DAEMON).type(DAEMON)
             .agentClass("net.obvj.smart.agents.dummy.DummyDaemonAgent").build();
 
-    private static final AgentDTO DUMMY_AGENT_DTO = new AgentDTO(DUMMY_AGENT, TIMER, "SET");
-    private static final AgentDTO DUMMY_DAEMON_DTO = new AgentDTO(DUMMY_DAEMON, DAEMON, "SET");
+    private static final AgentDTO DUMMY_AGENT_DTO = new AgentDTO(DUMMY_AGENT, TIMER, "SET", false);
+    private static final AgentDTO DUMMY_DAEMON_DTO = new AgentDTO(DUMMY_DAEMON, DAEMON, "SET", false);
     
     private static final List<AgentDTO> ALL_AGENT_DTOS = Arrays.asList(DUMMY_AGENT_DTO, DUMMY_DAEMON_DTO);
     

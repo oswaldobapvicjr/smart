@@ -117,8 +117,8 @@ public class AgentManagerJMXTest
     @Test
     public void testGetAgentDTOs()
     {
-        AgentDTO agent1 = new AgentDTO("name1", "TIMER", "STARTED");
-        AgentDTO agent2 = new AgentDTO("name2", "DAEMON", "STOPPED");
+        AgentDTO agent1 = new AgentDTO("name1", "TIMER", "STARTED", false);
+        AgentDTO agent2 = new AgentDTO("name2", "DAEMON", "STOPPED", false);
         List<AgentDTO> dtos = Arrays.asList(agent1, agent2);
         when(manager.getAgentDTOs()).thenReturn(dtos);
         assertTrue(jmx.getAgentDTOs().containsAll(dtos));

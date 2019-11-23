@@ -16,6 +16,7 @@ public class AgentConfiguration
     private static final String DEFAULT_INTERVAL = "1";
     private static final int DEFAULT_STOP_TIMEOUT_IN_SECONDS = -1;
     private static final boolean DEFAULT_AUTOMATICALLY_STARTED = true;
+    private static final boolean DEFAULT_HIDDEN = false;
 
     @XmlElement(name = "name")
     private String name;
@@ -35,6 +36,9 @@ public class AgentConfiguration
     @XmlElement(name = "stopTimeoutInSeconds")
     private int stopTimeoutInSeconds = DEFAULT_STOP_TIMEOUT_IN_SECONDS;
 
+    @XmlElement(name = "hidden")
+    private boolean hidden = DEFAULT_HIDDEN;
+
     public AgentConfiguration()
     {
     }
@@ -47,6 +51,7 @@ public class AgentConfiguration
         this.interval = builder.interval;
         this.automaticallyStarted = builder.automaticallyStarted.booleanValue();
         this.stopTimeoutInSeconds = builder.stopTimeoutInSeconds.intValue();
+        this.hidden = builder.hidden;
     }
 
     public String getName()
@@ -79,6 +84,11 @@ public class AgentConfiguration
         return stopTimeoutInSeconds;
     }
 
+    public boolean isHidden()
+    {
+        return hidden;
+    }
+
     /**
      * A builder object for testing purposes.
      * 
@@ -93,6 +103,7 @@ public class AgentConfiguration
         private String interval;
         private Boolean automaticallyStarted = Boolean.valueOf(DEFAULT_AUTOMATICALLY_STARTED);
         private Integer stopTimeoutInSeconds = Integer.valueOf(DEFAULT_STOP_TIMEOUT_IN_SECONDS);
+        private Boolean hidden = Boolean.valueOf(DEFAULT_HIDDEN);
 
         public Builder(String name)
         {
@@ -122,22 +133,28 @@ public class AgentConfiguration
             this.automaticallyStarted = Boolean.valueOf(automaticallyStarted);
             return this;
         }
-        
+
         public Builder stopTimeoutInSeconds(int stopTimeoutInSeconds)
         {
             this.stopTimeoutInSeconds = Integer.valueOf(stopTimeoutInSeconds);
             return this;
-        }        
+        }
 
+        public Builder hidden(boolean hidden)
+        {
+            this.hidden = Boolean.valueOf(hidden);
+            return this;
+        }
+        
         public AgentConfiguration build()
         {
             if (name == null) throw new IllegalStateException("name cannot be null");
             if (type == null) throw new IllegalStateException("type cannot be null");
             if (agentClass == null) throw new IllegalStateException("agentClass cannot be null");
-            
-            // The default interval can only be set for timer agents 
+
+            // The default interval can only be set for timer agents
             if (interval == null && type.equals("timer")) interval = DEFAULT_INTERVAL;
-            
+
             return new AgentConfiguration(this);
         }
     }

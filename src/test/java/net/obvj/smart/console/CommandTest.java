@@ -1,6 +1,7 @@
 package net.obvj.smart.console;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
@@ -53,8 +54,8 @@ public class CommandTest
     {
         assertEquals(expectedString, out.toString().trim());
     }
-    
-    private void assertOutputContains(String...expectedStrings)
+
+    private void assertOutputContains(String... expectedStrings)
     {
         String strOut = out.toString().trim();
         Arrays.stream(expectedStrings)
@@ -119,7 +120,7 @@ public class CommandTest
         Command.START.execute(new String[] { "start" }, new PrintWriter(out));
         assertOutputEquals(Command.MISSING_PARAMETER_AGENT_NAME);
     }
-    
+
     @Test
     public void testStartAgentInvalidParameter()
     {
@@ -127,21 +128,21 @@ public class CommandTest
         Command.START.execute(new String[] { "status", "invalidName" }, new PrintWriter(out));
         assertOutputContains("message1");
     }
-    
+
     @Test
     public void testRunAgent()
     {
         Command.RUN.execute(new String[] { "run", AGENT1 }, new PrintWriter(out));
         verify(manager).runNow(AGENT1);
     }
-    
+
     @Test
     public void testRunAgentMissingParameter()
     {
         Command.RUN.execute(new String[] { "run" }, new PrintWriter(out));
         assertOutputEquals(Command.MISSING_PARAMETER_AGENT_NAME);
     }
-    
+
     @Test
     public void testRunAgentInvalidParameter()
     {
@@ -156,14 +157,14 @@ public class CommandTest
         Command.STOP.execute(new String[] { "stop", AGENT1 }, new PrintWriter(out));
         verify(manager).stopAgent(AGENT1);
     }
-    
+
     @Test
     public void testStopAgentMissingParameter()
     {
         Command.STOP.execute(new String[] { "stop" }, new PrintWriter(out));
         assertOutputEquals(Command.MISSING_PARAMETER_AGENT_NAME);
     }
-    
+
     @Test
     public void testStopAgentIllegalArgumentException() throws TimeoutException
     {
@@ -178,14 +179,14 @@ public class CommandTest
         Command.RESET.execute(new String[] { "reset", AGENT1 }, new PrintWriter(out));
         verify(manager).resetAgent(AGENT1);
     }
-    
+
     @Test
     public void testResetAgentMissingParameter()
     {
         Command.RESET.execute(new String[] { "reset" }, new PrintWriter(out));
         assertOutputEquals(Command.MISSING_PARAMETER_AGENT_NAME);
     }
-    
+
     @Test
     public void testResetAgentIllegalArgumentException() throws ReflectiveOperationException
     {
@@ -201,14 +202,14 @@ public class CommandTest
         Command.STATUS.execute(new String[] { "status", AGENT1 }, new PrintWriter(out));
         assertOutputEquals("statusAgent1");
     }
-    
+
     @Test
     public void testStatusAgentMissingParameter()
     {
         Command.STATUS.execute(new String[] { "status" }, new PrintWriter(out));
         assertOutputEquals(Command.MISSING_PARAMETER_AGENT_NAME);
     }
-    
+
     @Test
     public void testStatusAgentInvalidParameter()
     {
@@ -247,7 +248,7 @@ public class CommandTest
         assertTrue(out.contains("1name1RUNNABLE"));
         assertTrue(out.contains("2name2WAITING"));
     }
-    
+
     @Test
     public void testJavaVersion()
     {
@@ -259,11 +260,56 @@ public class CommandTest
     @Test
     public void testShowAgents()
     {
-        AgentDTO agent1 = new AgentDTO("name1", "DAEMON", "RUNNING");
-        AgentDTO agent2 = new AgentDTO("name2", "TIMER", "SET");
+        AgentDTO agent1 = new AgentDTO("name1", "DAEMON", "RUNNING", false);
+        AgentDTO agent2 = new AgentDTO("name2", "TIMER", "SET", false);
         List<AgentDTO> dtos = Arrays.asList(agent1, agent2);
         when(manager.getAgentDTOs()).thenReturn(dtos);
-        Command.SHOW_AGENTS.execute(null, new PrintWriter(out));
+        Command.SHOW_AGENTS.execute(new String[] { "agents" }, new PrintWriter(out));
+
+        // Trim variable padding spaces for testing
+        String out = this.out.toString().replace(" ", "");
+        assertTrue(out.contains("name1DAEMONRUNNING"));
+        assertTrue(out.contains("name2TIMERSET"));
+    }
+    
+    @Test
+    public void testShowAgentsDoesNotShowHiddenAgents()
+    {
+        AgentDTO agent1 = new AgentDTO("name1", "DAEMON", "RUNNING", false);
+        AgentDTO agent2 = new AgentDTO("name2", "TIMER", "SET", true);
+        List<AgentDTO> dtos = Arrays.asList(agent1, agent2);
+        when(manager.getAgentDTOs()).thenReturn(dtos);
+        Command.SHOW_AGENTS.execute(new String[] { "agents" }, new PrintWriter(out));
+
+        // Trim variable padding spaces for testing
+        String out = this.out.toString().replace(" ", "");
+        assertTrue(out.contains("name1DAEMONRUNNING"));
+        assertFalse("A hidden agent should not be displayed", out.contains("name2TIMERSET"));
+    }
+
+    @Test
+    public void testShowAgentsWithOptionAIncludesHiddenAgents()
+    {
+        AgentDTO agent1 = new AgentDTO("name1", "DAEMON", "RUNNING", false);
+        AgentDTO agent2 = new AgentDTO("name2", "TIMER", "SET", true);
+        List<AgentDTO> dtos = Arrays.asList(agent1, agent2);
+        when(manager.getAgentDTOs()).thenReturn(dtos);
+        Command.SHOW_AGENTS.execute(new String[] { "agents", "-a" }, new PrintWriter(out));
+
+        // Trim variable padding spaces for testing
+        String out = this.out.toString().replace(" ", "");
+        assertTrue(out.contains("name1DAEMONRUNNING"));
+        assertTrue(out.contains("name2TIMERSET"));
+    }
+    
+    @Test
+    public void testShowAgentsWithOptionAllIncludesHiddenAgents()
+    {
+        AgentDTO agent1 = new AgentDTO("name1", "DAEMON", "RUNNING", false);
+        AgentDTO agent2 = new AgentDTO("name2", "TIMER", "SET", true);
+        List<AgentDTO> dtos = Arrays.asList(agent1, agent2);
+        when(manager.getAgentDTOs()).thenReturn(dtos);
+        Command.SHOW_AGENTS.execute(new String[] { "agents", "--all" }, new PrintWriter(out));
 
         // Trim variable padding spaces for testing
         String out = this.out.toString().replace(" ", "");
@@ -275,10 +321,10 @@ public class CommandTest
     public void testShowAgentsEmpty()
     {
         when(SystemUtil.getAllSystemTheadsDTOs()).thenReturn(Collections.emptyList());
-        Command.SHOW_AGENTS.execute(null, new PrintWriter(out));
+        Command.SHOW_AGENTS.execute(new String[] { "agents" }, new PrintWriter(out));
         assertOutputEquals("No agent found");
     }
-    
+
     @Test
     public void testHelp()
     {

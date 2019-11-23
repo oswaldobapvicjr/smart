@@ -16,12 +16,14 @@ public class AgentDTO implements Serializable
     public final String name;
     public final String type;
     public final String state;
+    public final boolean hidden;
 
-    public AgentDTO(String name, String type, String state)
+    public AgentDTO(String name, String type, String state, boolean hidden)
     {
         this.name = name;
         this.type = type;
         this.state = state;
+        this.hidden = hidden;
     }
 
     @Override
@@ -38,7 +40,7 @@ public class AgentDTO implements Serializable
         if (!(obj instanceof AgentDTO)) return false;
         AgentDTO other = (AgentDTO) obj;
         return Objects.equals(name, other.name) && Objects.equals(state, other.state)
-                && Objects.equals(type, other.type);
+                && Objects.equals(type, other.type) && Objects.equals(hidden, other.hidden);
     }
 
 }

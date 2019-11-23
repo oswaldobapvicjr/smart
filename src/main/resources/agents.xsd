@@ -31,6 +31,8 @@
                     default="true" />
                 <xs:element name="stopTimeoutInSeconds" minOccurs="0" maxOccurs="1"
                     type="xs:integer" />
+                <xs:element name="hidden" minOccurs="0" maxOccurs="1" type="xs:boolean"
+                    default="false" />
             </xs:all>
         </xs:complexType>
     </xs:element>

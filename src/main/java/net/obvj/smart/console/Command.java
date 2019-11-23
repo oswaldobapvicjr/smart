@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import net.obvj.smart.agents.api.dto.AgentDTO;
 import net.obvj.smart.jmx.dto.ThreadDTO;
@@ -29,6 +30,12 @@ public enum Command
         public void execute(String[] parameters, PrintWriter out)
         {
             Collection<AgentDTO> agents = ApplicationContextFacade.getBean(AgentManager.class).getAgentDTOs();
+            
+            if(!(parameters.length > 1 && ("-a".equals(parameters[1]) || "--all".equals(parameters[1]))))
+            {
+                agents = agents.stream().filter(agent -> !agent.hidden).collect(Collectors.toList());
+            }
+            
             if (agents.isEmpty())
             {
                 out.println("No agent found");

@@ -23,6 +23,7 @@ public class AgentsXmlTest
 {
     // Test files
     private static final String XML_TIMER_AGENT_30_SECONDS = "testAgents/timerAgent30seconds.xml";
+    private static final String XML_TIMER_AGENT_30_SECONDS_HIDDEN = "testAgents/timerAgent30secondsHidden.xml";
     private static final String XML_TIMER_AGENT_WITH_DEFAULT_VALUES = "testAgents/timerAgentWithDefaultValues.xml";
     private static final String XML_TWO_AGENTS = "testAgents/twoAgents.xml";
 
@@ -47,6 +48,22 @@ public class AgentsXmlTest
         assertEquals("30 seconds", agent.getInterval());
         assertEquals(false, agent.isAutomaticallyStarted());
         assertEquals(5, agent.getStopTimeoutInSeconds());
+        assertEquals(false, agent.isHidden());
+    }
+    
+    @Test
+    public void testLoadTimerAgent30SecondsHidden()
+    {
+        SmartConfiguration xml = AgentsXml.loadAgentsXmlFile(XML_TIMER_AGENT_30_SECONDS_HIDDEN);
+        assertEquals(1, xml.getAgents().size());
+        AgentConfiguration agent = xml.getAgents().get(0);
+        assertEquals(DUMMY_AGENT, agent.getName());
+        assertEquals(DUMMY_AGENT_CLASS, agent.getAgentClass());
+        assertEquals(TIMER, agent.getType());
+        assertEquals("30 seconds", agent.getInterval());
+        assertEquals(false, agent.isAutomaticallyStarted());
+        assertEquals(5, agent.getStopTimeoutInSeconds());
+        assertEquals(true, agent.isHidden());
     }
 
     @Test
@@ -61,6 +78,7 @@ public class AgentsXmlTest
         assertEquals("1", agent.getInterval());
         assertEquals(true, agent.isAutomaticallyStarted());
         assertEquals(-1, agent.getStopTimeoutInSeconds());
+        assertEquals(false, agent.isHidden());
     }
 
     @Test
@@ -116,11 +134,13 @@ public class AgentsXmlTest
         assertEquals(TIMER, dummyAgent.getType());
         assertEquals(DUMMY_AGENT_CLASS, dummyAgent.getAgentClass());
         assertEquals("30 seconds", dummyAgent.getInterval());
+        assertEquals(false, dummyAgent.isHidden());
 
         AgentConfiguration dummyDaemon = config.getAgentConfiguration(DUMMY_DAEMON);
         assertEquals(DUMMY_DAEMON, dummyDaemon.getName());
         assertEquals(DAEMON, dummyDaemon.getType());
         assertEquals(DUMMY_DAEMON_CLASS, dummyDaemon.getAgentClass());
+        assertEquals(false, dummyDaemon.isHidden());
     }
 
     @Test

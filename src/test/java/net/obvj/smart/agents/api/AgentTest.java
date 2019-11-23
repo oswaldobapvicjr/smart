@@ -55,6 +55,35 @@ public class AgentTest
         assertThat(timerAgent.getClass(), is(equalTo(DummyAgent.class)));
         assertThat(timerAgent.getStopTimeoutSeconds(), is(5));
         assertThat(timerAgent.getConfiguration(), is(xmlAgent));
+        assertThat(timerAgent.getConfiguration().isHidden(), is(false));
+
+        assertThat(timerAgent.getInterval(), is(30));
+        assertThat(timerAgent.getTimeUnit(), is(TimeUnit.SECONDS));
+
+        assertThat(timerAgent.getState(), is(State.SET));
+        assertThat(timerAgent.isStarted(), is(false));
+    }
+    
+    @Test
+    public void testParseTimerAgent30SecondsHidden() throws Exception
+    {
+        AgentConfiguration xmlAgent = new AgentConfiguration.Builder(DUMMY_AGENT)
+                .type(TIMER)
+                .agentClass(DUMMY_AGENT_CLASS)
+                .interval("30 seconds")
+                .automaticallyStarted(false)
+                .stopTimeoutInSeconds(5)
+                .hidden(true)
+                .build();
+
+        TimerAgent timerAgent = (TimerAgent) Agent.parseAgent(xmlAgent);
+
+        assertThat(timerAgent.getName(), is(DUMMY_AGENT));
+        assertThat(timerAgent.getType(), is(TIMER));
+        assertThat(timerAgent.getClass(), is(equalTo(DummyAgent.class)));
+        assertThat(timerAgent.getStopTimeoutSeconds(), is(5));
+        assertThat(timerAgent.getConfiguration(), is(xmlAgent));
+        assertThat(timerAgent.getConfiguration().isHidden(), is(true));
 
         assertThat(timerAgent.getInterval(), is(30));
         assertThat(timerAgent.getTimeUnit(), is(TimeUnit.SECONDS));
@@ -78,6 +107,7 @@ public class AgentTest
         assertThat(timerAgent.getClass(), is(equalTo(DummyAgent.class)));
         assertThat(timerAgent.getStopTimeoutSeconds(), is(-1));
         assertThat(timerAgent.getConfiguration(), is(xmlAgent));
+        assertThat(timerAgent.getConfiguration().isHidden(), is(false));
 
         assertThat(timerAgent.getInterval(), is(1));
         assertThat(timerAgent.getTimeUnit(), is(TimeUnit.MINUTES));
@@ -103,6 +133,7 @@ public class AgentTest
         assertThat(daemonAgent.getClass(), is(equalTo(DummyDaemonAgent.class)));
         assertThat(daemonAgent.getStopTimeoutSeconds(), is(1));
         assertThat(daemonAgent.getConfiguration(), is(xmlAgent));
+        assertThat(daemonAgent.getConfiguration().isHidden(), is(false));
 
         assertThat(daemonAgent.getState(), is(State.SET));
         assertThat(daemonAgent.isStarted(), is(false));
@@ -123,6 +154,7 @@ public class AgentTest
         assertThat(daemonAgent.getClass(), is(equalTo(DummyDaemonAgent.class)));
         assertThat(daemonAgent.getStopTimeoutSeconds(), is(-1));
         assertThat(daemonAgent.getConfiguration(), is(xmlAgent));
+        assertThat(daemonAgent.getConfiguration().isHidden(), is(false));
 
         assertThat(daemonAgent.getState(), is(State.SET));
         assertThat(daemonAgent.isStarted(), is(false));

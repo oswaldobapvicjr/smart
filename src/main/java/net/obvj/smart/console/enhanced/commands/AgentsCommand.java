@@ -34,9 +34,12 @@ public class AgentsCommand implements Runnable
     @Option(names = {"-h", "--help"}, usageHelp = true, description = "Display this help message.")
     boolean usageHelpRequested;
     
+    @Option(names = { "-a", "--all" }, description = "List all agents (including hidden ones).")
+    private boolean all = false;
+
     @Option(names = { "-t", "--type" }, description = "List agents of a specific type.")
     private String type = "";
-    
+
     @ParentCommand
     private Commands parent;
 
@@ -47,6 +50,10 @@ public class AgentsCommand implements Runnable
         parent.out.flush();
 
         Collection<AgentDTO> agents = client.getMBeanProxy().getAgentDTOs();
+        if (!all)
+        {
+            agents = agents.stream().filter(a -> !a.hidden).collect(Collectors.toSet());
+        }
         if (!type.isEmpty())
         {
             agents = agents.stream().filter(a -> a.type.equalsIgnoreCase(this.type)).collect(Collectors.toSet());
@@ -70,6 +77,11 @@ public class AgentsCommand implements Runnable
     protected void setType(String type)
     {
         this.type = type;
+    }
+
+    protected void setAll(boolean all)
+    {
+        this.all = all;
     }
 
 }
