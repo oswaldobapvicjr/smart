@@ -15,7 +15,7 @@ import java.util.function.Supplier;
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
-public class TestUtil
+public class TestUtils
 {
     private static final String EXPECTED_BUT_NOT_THROWN = "Expected but not thrown: \"%s\"";
     private static final String EXPECTED_STRING_NOT_FOUND = "Expected string \"%s\" not found in: \"%s\"";

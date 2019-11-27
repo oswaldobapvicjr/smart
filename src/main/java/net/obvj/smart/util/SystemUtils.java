@@ -7,8 +7,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.SystemUtils;
-
 import net.obvj.smart.jmx.dto.ThreadDTO;
 
 /**
@@ -17,11 +15,11 @@ import net.obvj.smart.jmx.dto.ThreadDTO;
  * @author oswaldo.bapvic.jr
  * @since 1.0
  */
-public class SystemUtil
+public class SystemUtils
 {
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
-    private SystemUtil()
+    private SystemUtils()
     {
         throw new IllegalStateException("Utility class");
     }
@@ -57,9 +55,11 @@ public class SystemUtil
     public static String getJavaVersion()
     {
         StringBuilder sb = new StringBuilder();
-        sb.append(SystemUtils.JAVA_RUNTIME_NAME).append(" ").append(SystemUtils.JAVA_RUNTIME_VERSION)
-                .append(LINE_SEPARATOR).append(SystemUtils.JAVA_VM_NAME).append(" ").append(SystemUtils.JAVA_VM_VERSION)
-                .append(LINE_SEPARATOR).append(SystemUtils.JAVA_VM_VENDOR);
+        sb.append(org.apache.commons.lang3.SystemUtils.JAVA_RUNTIME_NAME).append(" ")
+                .append(org.apache.commons.lang3.SystemUtils.JAVA_RUNTIME_VERSION).append(LINE_SEPARATOR)
+                .append(org.apache.commons.lang3.SystemUtils.JAVA_VM_NAME).append(" ")
+                .append(org.apache.commons.lang3.SystemUtils.JAVA_VM_VERSION).append(LINE_SEPARATOR)
+                .append(org.apache.commons.lang3.SystemUtils.JAVA_VM_VENDOR);
         return sb.toString();
     }
 

@@ -2,14 +2,14 @@ package net.obvj.smart.util;
 
 import org.junit.Test;
 
-import net.obvj.smart.TestUtil;
+import net.obvj.smart.TestUtils;
 
 /**
- * Unit tests for the {@link ConsoleUtil} class.
+ * Unit tests for the {@link ConsoleUtils} class.
  * 
  * @author oswaldo.bapvic.jr
  */
-public class ConsoleUtilTest
+public class ConsoleUtilsTest
 {
     /**
      * Tests that no instances of this utility class are created
@@ -20,13 +20,13 @@ public class ConsoleUtilTest
     @Test
     public void testNoInstancesAllowed() throws Exception
     {
-        TestUtil.checkNoInstancesAllowed(ConsoleUtil.class, IllegalStateException.class, "Utility class");
+        TestUtils.checkNoInstancesAllowed(ConsoleUtils.class, IllegalStateException.class, "Utility class");
     }
     
     @Test
     public void testReadFileFromClasspathReturnsContent()
     {
-        TestUtil.assertStringContains(ConsoleUtil.readCustomHeaderLines().toString(), "S.M.A.R.T. Console");
+        TestUtils.assertStringContains(ConsoleUtils.readCustomHeaderLines().toString(), "S.M.A.R.T. Console");
     }
 
 }

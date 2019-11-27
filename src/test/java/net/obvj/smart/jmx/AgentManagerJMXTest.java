@@ -22,8 +22,8 @@ import net.obvj.smart.agents.api.dto.AgentDTO;
 import net.obvj.smart.jmx.dto.ThreadDTO;
 import net.obvj.smart.manager.AgentManager;
 import net.obvj.smart.util.ApplicationContextFacade;
-import net.obvj.smart.util.DateUtil;
-import net.obvj.smart.util.SystemUtil;
+import net.obvj.smart.util.DateUtils;
+import net.obvj.smart.util.SystemUtils;
 
 /**
  * Unit tests for the {@link AgentManagerJMX} class.
@@ -32,7 +32,7 @@ import net.obvj.smart.util.SystemUtil;
  * @since 2.0
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ApplicationContextFacade.class, DateUtil.class, SystemUtil.class})
+@PrepareForTest({ApplicationContextFacade.class, DateUtils.class, SystemUtils.class})
 public class AgentManagerJMXTest
 {
     private static final String AGENT1 = "Agent1";
@@ -49,8 +49,8 @@ public class AgentManagerJMXTest
         mockStatic(ApplicationContextFacade.class);
         when(ApplicationContextFacade.getBean(AgentManager.class)).thenReturn(manager);
         
-        mockStatic(DateUtil.class);
-        mockStatic(SystemUtil.class);
+        mockStatic(DateUtils.class);
+        mockStatic(SystemUtils.class);
         
         jmx = new AgentManagerJMX();
     }
@@ -127,14 +127,14 @@ public class AgentManagerJMXTest
     @Test
     public void testGetServerDate()
     {
-        when(DateUtil.now()).thenReturn("date1");
+        when(DateUtils.now()).thenReturn("date1");
         assertEquals("date1", jmx.getServerDate());
     }
     
     @Test
     public void testGetServerUptime()
     {
-        when(SystemUtil.getSystemUptime()).thenReturn(987l);
+        when(SystemUtils.getSystemUptime()).thenReturn(987l);
         assertEquals(987l, jmx.getServerUptime());
     }
     
@@ -144,14 +144,14 @@ public class AgentManagerJMXTest
         ThreadDTO thread1 = new ThreadDTO(1, "name1", "RUNNABLE");
         ThreadDTO thread2 = new ThreadDTO(2, "name2", "WAITING");
         List<ThreadDTO> dtos = Arrays.asList(thread1, thread2);
-        when(SystemUtil.getAllSystemTheadsDTOs()).thenReturn(dtos);
+        when(SystemUtils.getAllSystemTheadsDTOs()).thenReturn(dtos);
         assertTrue(jmx.getAllThreadsInfo().containsAll(dtos));
     }
     
     @Test
     public void testGetJavaVersion()
     {
-        when(SystemUtil.getJavaVersion()).thenReturn("javaVersion");
+        when(SystemUtils.getJavaVersion()).thenReturn("javaVersion");
         assertEquals("javaVersion", jmx.getJavaVersion());
     }
   

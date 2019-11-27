@@ -12,9 +12,9 @@ import net.obvj.smart.agents.api.dto.AgentDTO;
 import net.obvj.smart.jmx.dto.ThreadDTO;
 import net.obvj.smart.manager.AgentManager;
 import net.obvj.smart.util.ApplicationContextFacade;
-import net.obvj.smart.util.DateUtil;
+import net.obvj.smart.util.DateUtils;
 import net.obvj.smart.util.Exceptions;
-import net.obvj.smart.util.SystemUtil;
+import net.obvj.smart.util.SystemUtils;
 
 /**
  * A set of commands and business logic available to the classic management console
@@ -61,7 +61,7 @@ public enum Command
             out.println("ID   Name                                   State");
             out.println("---- -------------------------------------- -------------");
 
-            for (ThreadDTO thread : SystemUtil.getAllSystemTheadsDTOs())
+            for (ThreadDTO thread : SystemUtils.getAllSystemTheadsDTOs())
             {
                 out.println(String.format("%-4d %-38s %-13s", thread.id, thread.name, thread.state));
             }
@@ -73,7 +73,7 @@ public enum Command
         @Override
         public void execute(String[] parameters, PrintWriter out)
         {
-            out.println(SystemUtil.getSystemUptime() + " milliseconds");
+            out.println(SystemUtils.getSystemUptime() + " milliseconds");
         }
     },
 
@@ -223,7 +223,7 @@ public enum Command
         @Override
         public void execute(String[] parameters, PrintWriter out)
         {
-            out.println(DateUtil.now());
+            out.println(DateUtils.now());
         }
     },
     
@@ -232,7 +232,7 @@ public enum Command
         @Override
         public void execute(String[] parameters, PrintWriter out)
         {
-            out.println(SystemUtil.getJavaVersion());
+            out.println(SystemUtils.getJavaVersion());
         }
     },
 

@@ -9,10 +9,10 @@ import java.util.TimeZone;
 
 import org.junit.Test;
 
-import net.obvj.smart.TestUtil;
+import net.obvj.smart.TestUtils;
 
 /**
- * Unit tests for the {@link DateUtil} class.
+ * Unit tests for the {@link DateUtils} class.
  * 
  * @author oswaldo.bapvic.jr
  * @since 1.0
@@ -46,7 +46,7 @@ public class DateUtilTest
     @Test
     public void testNoInstancesAllowed() throws Exception
     {
-        TestUtil.checkNoInstancesAllowed(DateUtil.class, IllegalStateException.class, "Utility class");
+        TestUtils.checkNoInstancesAllowed(DateUtils.class, IllegalStateException.class, "Utility class");
     }
 
     /**
@@ -56,7 +56,7 @@ public class DateUtilTest
     public void testFormatDateWithValidDate()
     {
         Date date = toDate(2019, 6, 12, 18, 15, 1, 123);
-        assertThat(DateUtil.formatDate(date), is("2019-06-12 18:15:01"));
+        assertThat(DateUtils.formatDate(date), is("2019-06-12 18:15:01"));
     }
 
     /**
@@ -66,7 +66,7 @@ public class DateUtilTest
     public void testFormatDateWithNullDate()
     {
         Date date = null;
-        assertThat(DateUtil.formatDate(date), is("null"));
+        assertThat(DateUtils.formatDate(date), is("null"));
     }
 
     /**
@@ -76,7 +76,7 @@ public class DateUtilTest
     public void testFormatCalendarWithValidDate()
     {
         Calendar calendar = toCalendar(2019, 6, 12, 18, 15, 1, 123);
-        assertThat(DateUtil.formatDate(calendar), is("2019-06-12 18:15:01"));
+        assertThat(DateUtils.formatDate(calendar), is("2019-06-12 18:15:01"));
     }
 
     /**
@@ -86,7 +86,7 @@ public class DateUtilTest
     public void testFormatCalendarWithNullCalendar()
     {
         Calendar calendar = null;
-        assertThat(DateUtil.formatDate(calendar), is("null"));
+        assertThat(DateUtils.formatDate(calendar), is("null"));
     }
 
     /**
@@ -102,7 +102,7 @@ public class DateUtilTest
     public void testGetExactStartDateEveryMinute1Minute()
     {
         Calendar baseDate = toCalendar(2019, 6, 12, 18, 15, 1, 123);
-        Date exactStartDate = DateUtil.getExactStartDateEveryMinute(1, baseDate);
+        Date exactStartDate = DateUtils.getExactStartDateEveryMinute(1, baseDate);
         assertThat(exactStartDate, is(toDate(2019, 6, 12, 18, 16, 0, 0)));
     }
 
@@ -119,7 +119,7 @@ public class DateUtilTest
     public void testGetExactStartDateEveryMinute5Minutes()
     {
         Calendar baseDate = toCalendar(2019, 6, 12, 18, 16, 1, 123);
-        Date exactStartDate = DateUtil.getExactStartDateEveryMinute(5, baseDate);
+        Date exactStartDate = DateUtils.getExactStartDateEveryMinute(5, baseDate);
         assertThat(exactStartDate, is(toDate(2019, 6, 12, 18, 20, 0, 0)));
     }
 
@@ -136,7 +136,7 @@ public class DateUtilTest
     public void testGetExactStartDateEveryTimeUnit1Minute()
     {
         Calendar baseDate = toCalendar(2019, 6, 12, 18, 15, 1, 123);
-        Date exactStartDate = DateUtil.getExactStartDateEvery(1, TimeUnit.MINUTES, baseDate);
+        Date exactStartDate = DateUtils.getExactStartDateEvery(1, TimeUnit.MINUTES, baseDate);
         assertThat(exactStartDate, is(toDate(2019, 6, 12, 18, 16, 0, 0)));
     }
 
@@ -153,7 +153,7 @@ public class DateUtilTest
     public void testGetExactStartDateEveryTimeUnit5Minutes()
     {
         Calendar baseDate = toCalendar(2019, 6, 12, 18, 16, 1, 123);
-        Date exactStartDate = DateUtil.getExactStartDateEvery(5, TimeUnit.MINUTES, baseDate);
+        Date exactStartDate = DateUtils.getExactStartDateEvery(5, TimeUnit.MINUTES, baseDate);
         assertThat(exactStartDate, is(toDate(2019, 6, 12, 18, 20, 0, 0)));
     }
 
@@ -170,7 +170,7 @@ public class DateUtilTest
     public void testGetExactStartDateEveryTimeUnit30Minutes()
     {
         Calendar baseDate = toCalendar(2019, 6, 12, 18, 45, 1, 123);
-        Date exactStartDate = DateUtil.getExactStartDateEvery(30, TimeUnit.MINUTES, baseDate);
+        Date exactStartDate = DateUtils.getExactStartDateEvery(30, TimeUnit.MINUTES, baseDate);
         assertThat(exactStartDate, (is(toDate(2019, 6, 12, 19, 0, 0, 0))));
     }
 
@@ -188,7 +188,7 @@ public class DateUtilTest
     public void testGetExactStartDateEveryTimeUnit1Hour()
     {
         Calendar baseDate = toCalendar(2019, 6, 12, 23, 38, 1, 123);
-        Date exactStartDate = DateUtil.getExactStartDateEvery(1, TimeUnit.HOURS, baseDate);
+        Date exactStartDate = DateUtils.getExactStartDateEvery(1, TimeUnit.HOURS, baseDate);
         assertThat(exactStartDate, is(toDate(2019, 6, 13, 0, 0, 0, 0)));
     }
 
@@ -206,7 +206,7 @@ public class DateUtilTest
     public void testGetExactStartDateEveryTimeUnit2Hours()
     {
         Calendar baseDate = toCalendar(2019, 6, 12, 17, 16, 1, 123);
-        Date exactStartDate = DateUtil.getExactStartDateEvery(2, TimeUnit.HOURS, baseDate);
+        Date exactStartDate = DateUtils.getExactStartDateEvery(2, TimeUnit.HOURS, baseDate);
         assertThat(exactStartDate, is(toDate(2019, 6, 12, 18, 0, 0, 0)));
     }
 

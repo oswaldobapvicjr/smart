@@ -22,10 +22,10 @@ import net.obvj.smart.console.enhanced.EnhancedManagementConsole.Mode;
 import net.obvj.smart.jmx.AgentManagerJMXMBean;
 import net.obvj.smart.jmx.client.AgentManagerJMXClient;
 import net.obvj.smart.util.ApplicationContextFacade;
-import net.obvj.smart.util.ConsoleUtil;
+import net.obvj.smart.util.ConsoleUtils;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ ConsoleUtil.class, ApplicationContextFacade.class })
+@PrepareForTest({ ConsoleUtils.class, ApplicationContextFacade.class })
 public class EnhancedManagementConsoleTest
 {
     @Mock
@@ -38,7 +38,7 @@ public class EnhancedManagementConsoleTest
     @Before
     public void setup()
     {
-        PowerMockito.mockStatic(ConsoleUtil.class);
+        PowerMockito.mockStatic(ConsoleUtils.class);
         PowerMockito.mockStatic(ApplicationContextFacade.class);
 
         PowerMockito.when(ApplicationContextFacade.getBean(SmartProperties.class)).thenReturn(smartProperties);
@@ -69,7 +69,7 @@ public class EnhancedManagementConsoleTest
         // Building a console with interactive mode
         EnhancedManagementConsole console = new EnhancedManagementConsole();
 
-        PowerMockito.when(ConsoleUtil.readCustomHeaderLines())
+        PowerMockito.when(ConsoleUtils.readCustomHeaderLines())
                 .thenReturn(Arrays.asList("Header line 1", "Header line 2"));
         StringWriter sw = new StringWriter();
         console.printHeader(sw);
@@ -87,7 +87,7 @@ public class EnhancedManagementConsoleTest
         // Building a console with single-command mode
         EnhancedManagementConsole console = new EnhancedManagementConsole("threads");
 
-        PowerMockito.when(ConsoleUtil.readCustomHeaderLines())
+        PowerMockito.when(ConsoleUtils.readCustomHeaderLines())
                 .thenReturn(Arrays.asList("Header line 1", "Header line 2"));
         StringWriter sw = new StringWriter();
         console.printHeader(sw);

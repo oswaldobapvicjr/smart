@@ -6,7 +6,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeoutException;
 
 import net.obvj.smart.conf.AgentConfiguration;
-import net.obvj.smart.util.DateUtil;
+import net.obvj.smart.util.DateUtils;
 import net.obvj.smart.util.Exceptions;
 
 /**
@@ -147,7 +147,7 @@ public abstract class Agent implements Runnable
      */
     public Calendar getStartDate()
     {
-        return DateUtil.getClonedDate(startDate);
+        return DateUtils.getClonedDate(startDate);
     }
 
     /**
@@ -156,7 +156,7 @@ public abstract class Agent implements Runnable
      */
     public Calendar getLastRunDate()
     {
-        return DateUtil.getClonedDate(lastRunDate);
+        return DateUtils.getClonedDate(lastRunDate);
     }
     
     public abstract void start();

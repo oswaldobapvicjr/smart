@@ -16,11 +16,11 @@ import java.util.logging.Logger;
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
-public class ConsoleUtil
+public class ConsoleUtils
 {
     private static final Logger LOG = Logger.getLogger("smart-server");
 
-    private ConsoleUtil()
+    private ConsoleUtils()
     {
         throw new IllegalStateException("Utility class");
     }
@@ -30,7 +30,7 @@ public class ConsoleUtil
         LOG.fine("Searching for custom header file...");
         try
         {
-            URL headerFileURL = ConsoleUtil.class.getClassLoader().getResource("header.txt");
+            URL headerFileURL = ConsoleUtils.class.getClassLoader().getResource("header.txt");
             if (headerFileURL == null)
             {
                 LOG.warning("Unable to find header.txt file");

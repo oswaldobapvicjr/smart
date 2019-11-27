@@ -1,7 +1,7 @@
 package net.obvj.smart.util;
 
-import static net.obvj.smart.TestUtil.assertStringContains;
-import static net.obvj.smart.TestUtil.checkNoInstancesAllowed;
+import static net.obvj.smart.TestUtils.assertStringContains;
+import static net.obvj.smart.TestUtils.checkNoInstancesAllowed;
 import static org.junit.Assert.assertTrue;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.when;
@@ -11,18 +11,17 @@ import java.lang.management.ThreadInfo;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.apache.commons.lang3.SystemUtils;
 import org.junit.Test;
 
 import net.obvj.smart.jmx.dto.ThreadDTO;
 
 /**
- * Unit tests for the {@link SystemUtil} class.
+ * Unit tests for the {@link SystemUtils} class.
  * 
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
-public class SystemUtilTest
+public class SystemUtilsTest
 {
     private static final ThreadInfo THREAD1 = mockThreadInfo(1, "name1", State.RUNNABLE);
     private static final ThreadInfo THREAD2 = mockThreadInfo(2, "name2", State.TIMED_WAITING);
@@ -47,7 +46,7 @@ public class SystemUtilTest
     @Test
     public void testThreadDTOs()
     {
-        assertTrue(SystemUtil.getSystemTheadsDTOs(ALL_THREADS).containsAll(ALL_DTOS));
+        assertTrue(SystemUtils.getSystemTheadsDTOs(ALL_THREADS).containsAll(ALL_DTOS));
     }
 
     /**
@@ -59,15 +58,16 @@ public class SystemUtilTest
     @Test
     public void testNoInstancesAllowed() throws Exception
     {
-        checkNoInstancesAllowed(SystemUtil.class, IllegalStateException.class, "Utility class");
+        checkNoInstancesAllowed(SystemUtils.class, IllegalStateException.class, "Utility class");
     }
 
     @Test
     public void testGetJavaVersion()
     {
-        assertStringContains(SystemUtil.getJavaVersion(), SystemUtils.JAVA_RUNTIME_NAME,
-                SystemUtils.JAVA_RUNTIME_VERSION, SystemUtils.JAVA_VM_NAME, SystemUtils.JAVA_VM_VERSION,
-                SystemUtils.JAVA_VM_VENDOR);
+        assertStringContains(SystemUtils.getJavaVersion(), org.apache.commons.lang3.SystemUtils.JAVA_RUNTIME_NAME,
+                org.apache.commons.lang3.SystemUtils.JAVA_RUNTIME_VERSION,
+                org.apache.commons.lang3.SystemUtils.JAVA_VM_NAME, org.apache.commons.lang3.SystemUtils.JAVA_VM_VERSION,
+                org.apache.commons.lang3.SystemUtils.JAVA_VM_VENDOR);
     }
 
 }

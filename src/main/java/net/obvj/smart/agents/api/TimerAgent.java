@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 import net.obvj.smart.agents.impl.AnnotatedTimerAgent;
 import net.obvj.smart.conf.AgentConfiguration;
 import net.obvj.smart.conf.AgentConfigurationException;
-import net.obvj.smart.util.DateUtil;
+import net.obvj.smart.util.DateUtils;
 import net.obvj.smart.util.TimeInterval;
 import net.obvj.smart.util.TimeUnit;
 
@@ -166,13 +166,13 @@ public abstract class TimerAgent extends Agent
                 throw new IllegalStateException(MSG_AGENT_ALREADY_STARTED);
             }
             LOG.log(Level.INFO, "Starting agent: {0}", getName());
-            Date start = DateUtil.getExactStartDateEvery(interval, timeUnit);
+            Date start = DateUtils.getExactStartDateEvery(interval, timeUnit);
 
             schedule.scheduleAtFixedRate(this, (start.getTime() - System.currentTimeMillis()),
                     timeUnit.toMillis(interval), java.util.concurrent.TimeUnit.MILLISECONDS);
 
             LOG.log(Level.INFO, "Agent {0} scheduled to run every {1} {2}. Start programmed to {3}",
-                    new Object[] { getName(), interval, timeUnit, DateUtil.formatDate(start) });
+                    new Object[] { getName(), interval, timeUnit, DateUtils.formatDate(start) });
             setState(State.STARTED);
             startDate = Calendar.getInstance();
         }
@@ -228,10 +228,11 @@ public abstract class TimerAgent extends Agent
      */
     public String getStatusString()
     {
-        StringBuilder sb = new StringBuilder(getName()).append(" {").append(LINE_SEPARATOR).append("   type:       ")
-                .append(getType()).append(LINE_SEPARATOR).append("   status:     ").append(getState())
-                .append(LINE_SEPARATOR).append("   startDate:  ").append(DateUtil.formatDate(startDate))
-                .append(LINE_SEPARATOR).append("   lastRun:    ").append(DateUtil.formatDate(lastRunDate))
+        StringBuilder sb = new StringBuilder(getName()).append(" {")
+                .append(LINE_SEPARATOR).append("   type:       ").append(getType())
+                .append(LINE_SEPARATOR).append("   status:     ").append(getState())
+                .append(LINE_SEPARATOR).append("   startDate:  ").append(DateUtils.formatDate(startDate))
+                .append(LINE_SEPARATOR).append("   lastRun:    ").append(DateUtils.formatDate(lastRunDate))
                 .append(LINE_SEPARATOR).append("   frequency:  ").append(interval).append(" ").append(timeUnit)
                 .append(LINE_SEPARATOR).append("}");
         return sb.toString();

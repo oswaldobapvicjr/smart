@@ -11,12 +11,12 @@ import java.util.Date;
  * @author oswaldo.bapvic.jr
  * @since 1.0
  */
-public class DateUtil
+public class DateUtils
 {
     private static final ThreadLocal<DateFormat> SIMPLE_FORMAT = ThreadLocal
             .withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
 
-    private DateUtil()
+    private DateUtils()
     {
         throw new IllegalStateException("Utility class");
     }

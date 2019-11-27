@@ -13,7 +13,7 @@ import jline.console.completer.ArgumentCompleter.WhitespaceArgumentDelimiter;
 import net.obvj.smart.conf.SmartProperties;
 import net.obvj.smart.console.enhanced.commands.Commands;
 import net.obvj.smart.util.ApplicationContextFacade;
-import net.obvj.smart.util.ConsoleUtil;
+import net.obvj.smart.util.ConsoleUtils;
 import picocli.CommandLine;
 import picocli.shell.jline2.PicocliJLineCompleter;
 
@@ -127,7 +127,7 @@ public class EnhancedManagementConsole implements Runnable
     protected void printHeader(Writer writer)
     {
         // Print custom header
-        List<String> customHeaderLines = ConsoleUtil.readCustomHeaderLines();
+        List<String> customHeaderLines = ConsoleUtils.readCustomHeaderLines();
         PrintWriter out = new PrintWriter(writer);
         customHeaderLines.forEach(out::println);
         out.println();

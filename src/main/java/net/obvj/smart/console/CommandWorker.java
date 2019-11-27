@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 
 import net.obvj.smart.conf.SmartProperties;
 import net.obvj.smart.util.ApplicationContextFacade;
-import net.obvj.smart.util.ConsoleUtil;
+import net.obvj.smart.util.ConsoleUtils;
 
 /**
  * A Runnable object for handling of user commands via classic Management Console
@@ -54,7 +54,7 @@ public class CommandWorker implements Runnable
 
     protected void printCustomHeader()
     {
-        sendLines(ConsoleUtil.readCustomHeaderLines());
+        sendLines(ConsoleUtils.readCustomHeaderLines());
         sendLine();
         sendLines(HINTS);
     }

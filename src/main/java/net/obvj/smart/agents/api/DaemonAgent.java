@@ -7,7 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.obvj.smart.conf.AgentConfiguration;
-import net.obvj.smart.util.DateUtil;
+import net.obvj.smart.util.DateUtils;
 
 /**
  * A DaemonAgent is a process that runs constantly in background, as long as the system is
@@ -81,7 +81,7 @@ public abstract class DaemonAgent extends Agent
             {
                 setState(State.RUNNING);
                 lastRunDate = Calendar.getInstance();
-                LOG.log(Level.INFO, "{0} - Agent task started.", DateUtil.formatDate(lastRunDate.getTime()));
+                LOG.log(Level.INFO, "{0} - Agent task started.", DateUtils.formatDate(lastRunDate.getTime()));
                 try
                 {
                     runTask();
@@ -188,7 +188,7 @@ public abstract class DaemonAgent extends Agent
         StringBuilder sb = new StringBuilder(getName()).append(" {")
                 .append(LINE_SEPARATOR).append("   type:       ").append(getType())
                 .append(LINE_SEPARATOR).append("   status:     ").append(getState())
-                .append(LINE_SEPARATOR).append("   startDate:  ").append(DateUtil.formatDate(startDate))
+                .append(LINE_SEPARATOR).append("   startDate:  ").append(DateUtils.formatDate(startDate))
                 .append(LINE_SEPARATOR).append("}");
         return sb.toString();
     }

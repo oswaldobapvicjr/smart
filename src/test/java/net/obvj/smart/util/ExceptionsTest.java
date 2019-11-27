@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import net.obvj.smart.conf.AgentConfigurationException;
 
-import static net.obvj.smart.TestUtil.*;
+import static net.obvj.smart.TestUtils.*;
 
 /**
  * Unit tests for the {@link Exceptions} class.

@@ -4,7 +4,7 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
-import net.obvj.smart.TestUtil;
+import net.obvj.smart.TestUtils;
 import net.obvj.smart.manager.AgentManager;
 
 /**
@@ -24,7 +24,7 @@ public class ApplicationContextFacadeTest
     @Test
     public void testNoInstancesAllowed() throws Exception
     {
-        TestUtil.checkNoInstancesAllowed(ApplicationContextFacade.class, IllegalStateException.class, "Utility class");
+        TestUtils.checkNoInstancesAllowed(ApplicationContextFacade.class, IllegalStateException.class, "Utility class");
     }
     
     @Test

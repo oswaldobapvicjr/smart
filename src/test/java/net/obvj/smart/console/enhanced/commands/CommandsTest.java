@@ -16,7 +16,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import jline.console.ConsoleReader;
-import net.obvj.smart.TestUtil;
+import net.obvj.smart.TestUtils;
 import net.obvj.smart.jmx.client.AgentManagerJMXClient;
 
 /**
@@ -52,7 +52,7 @@ public class CommandsTest
     {
         StringWriter sw = new StringWriter();
         new Commands(new PrintWriter(sw)).run();
-        TestUtil.assertStringContains(sw.toString(), "Available commands:", "agents", "clear", "date", "status",
+        TestUtils.assertStringContains(sw.toString(), "Available commands:", "agents", "clear", "date", "status",
                 "start", "stop", "reset", "run", "threads", "uptime", "Press <Ctrl> + D to exit");
     }
 

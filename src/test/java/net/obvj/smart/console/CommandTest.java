@@ -27,11 +27,11 @@ import net.obvj.smart.agents.api.dto.AgentDTO;
 import net.obvj.smart.jmx.dto.ThreadDTO;
 import net.obvj.smart.manager.AgentManager;
 import net.obvj.smart.util.ApplicationContextFacade;
-import net.obvj.smart.util.DateUtil;
-import net.obvj.smart.util.SystemUtil;
+import net.obvj.smart.util.DateUtils;
+import net.obvj.smart.util.SystemUtils;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ ApplicationContextFacade.class, DateUtil.class, SystemUtil.class })
+@PrepareForTest({ ApplicationContextFacade.class, DateUtils.class, SystemUtils.class })
 public class CommandTest
 {
     private static final String AGENT1 = "Agent1";
@@ -46,8 +46,8 @@ public class CommandTest
     {
         mockStatic(ApplicationContextFacade.class);
         when(ApplicationContextFacade.getBean(AgentManager.class)).thenReturn(manager);
-        mockStatic(DateUtil.class);
-        mockStatic(SystemUtil.class);
+        mockStatic(DateUtils.class);
+        mockStatic(SystemUtils.class);
     }
 
     private void assertOutputEquals(String expectedString)
@@ -221,7 +221,7 @@ public class CommandTest
     @Test
     public void testDate()
     {
-        when(DateUtil.now()).thenReturn("date1");
+        when(DateUtils.now()).thenReturn("date1");
         Command.DATE.execute(null, new PrintWriter(out));
         assertOutputEquals("date1");
     }
@@ -229,7 +229,7 @@ public class CommandTest
     @Test
     public void testUptime()
     {
-        when(SystemUtil.getSystemUptime()).thenReturn(987l);
+        when(SystemUtils.getSystemUptime()).thenReturn(987l);
         Command.UPTIME.execute(null, new PrintWriter(out));
         assertOutputEquals("987 milliseconds");
     }
@@ -240,7 +240,7 @@ public class CommandTest
         ThreadDTO thread1 = new ThreadDTO(1, "name1", "RUNNABLE");
         ThreadDTO thread2 = new ThreadDTO(2, "name2", "WAITING");
         List<ThreadDTO> dtos = Arrays.asList(thread1, thread2);
-        when(SystemUtil.getAllSystemTheadsDTOs()).thenReturn(dtos);
+        when(SystemUtils.getAllSystemTheadsDTOs()).thenReturn(dtos);
         Command.SHOW_THREADS.execute(null, new PrintWriter(out));
 
         // Trim variable padding spaces for testing
@@ -252,7 +252,7 @@ public class CommandTest
     @Test
     public void testJavaVersion()
     {
-        when(SystemUtil.getJavaVersion()).thenReturn("javaVersion");
+        when(SystemUtils.getJavaVersion()).thenReturn("javaVersion");
         Command.JAVA_VERSION.execute(null, new PrintWriter(out));
         assertOutputEquals("javaVersion");
     }
@@ -320,7 +320,7 @@ public class CommandTest
     @Test
     public void testShowAgentsEmpty()
     {
-        when(SystemUtil.getAllSystemTheadsDTOs()).thenReturn(Collections.emptyList());
+        when(SystemUtils.getAllSystemTheadsDTOs()).thenReturn(Collections.emptyList());
         Command.SHOW_AGENTS.execute(new String[] { "agents" }, new PrintWriter(out));
         assertOutputEquals("No agent found");
     }

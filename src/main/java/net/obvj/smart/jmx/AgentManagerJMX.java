@@ -7,8 +7,8 @@ import net.obvj.smart.agents.api.dto.AgentDTO;
 import net.obvj.smart.jmx.dto.ThreadDTO;
 import net.obvj.smart.manager.AgentManager;
 import net.obvj.smart.util.ApplicationContextFacade;
-import net.obvj.smart.util.DateUtil;
-import net.obvj.smart.util.SystemUtil;
+import net.obvj.smart.util.DateUtils;
+import net.obvj.smart.util.SystemUtils;
 
 public class AgentManagerJMX implements AgentManagerJMXMBean
 {
@@ -61,22 +61,22 @@ public class AgentManagerJMX implements AgentManagerJMXMBean
 
     public String getServerDate()
     {
-        return DateUtil.now();
+        return DateUtils.now();
     }
 
     public long getServerUptime()
     {
-        return SystemUtil.getSystemUptime();
+        return SystemUtils.getSystemUptime();
     }
 
     public Collection<ThreadDTO> getAllThreadsInfo()
     {
-        return SystemUtil.getAllSystemTheadsDTOs();
+        return SystemUtils.getAllSystemTheadsDTOs();
     }
     
     public String getJavaVersion()
     {
-        return SystemUtil.getJavaVersion();
+        return SystemUtils.getJavaVersion();
     }
 
 }

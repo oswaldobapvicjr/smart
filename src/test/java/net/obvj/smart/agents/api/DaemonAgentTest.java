@@ -10,7 +10,7 @@ import org.awaitility.Awaitility;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import net.obvj.smart.TestUtil;
+import net.obvj.smart.TestUtils;
 import net.obvj.smart.agents.api.Agent.State;
 import net.obvj.smart.conf.AgentConfiguration;
 
@@ -44,7 +44,7 @@ public class DaemonAgentTest
     public void testStartAgentWithPreviousStateStarted()
     {
         Mockito.when(agentMock.getState()).thenReturn(State.STARTED);
-        TestUtil.assertException(IllegalStateException.class, DaemonAgent.MSG_AGENT_ALREADY_STARTED,
+        TestUtils.assertException(IllegalStateException.class, DaemonAgent.MSG_AGENT_ALREADY_STARTED,
                 () -> agentMock.start());
     }
 
@@ -55,7 +55,7 @@ public class DaemonAgentTest
     public void testStartAgentWithPreviousStateStopped()
     {
         Mockito.when(agentMock.getState()).thenReturn(State.STOPPED);
-        TestUtil.assertException(IllegalStateException.class, () -> agentMock.start());
+        TestUtils.assertException(IllegalStateException.class, () -> agentMock.start());
     }
 
     /**
@@ -80,7 +80,7 @@ public class DaemonAgentTest
     public void testStopAgentWithPreviousStateStopped()
     {
         Mockito.when(agentMock.isStopped()).thenReturn(true);
-        TestUtil.assertException(IllegalStateException.class, DaemonAgent.MSG_AGENT_ALREADY_STOPPED, () ->
+        TestUtils.assertException(IllegalStateException.class, DaemonAgent.MSG_AGENT_ALREADY_STOPPED, () ->
         {
             try
             {
@@ -98,9 +98,9 @@ public class DaemonAgentTest
     {
         DaemonAgent agent = (DaemonAgent) Agent.parseAgent(DUMMY_AGENT_CONFIG);
         String statusWithoutSpaces = agent.getStatusString().replace(" ", "");
-        TestUtil.assertStringContains(statusWithoutSpaces, "DummyDaemonAgent", "type:daemon", "status:SET",
+        TestUtils.assertStringContains(statusWithoutSpaces, "DummyDaemonAgent", "type:daemon", "status:SET",
                 "startDate:null");
-        TestUtil.assertStringDoesNotContain(statusWithoutSpaces, "frequency", "lastRun");
+        TestUtils.assertStringDoesNotContain(statusWithoutSpaces, "frequency", "lastRun");
     }
 
 }

@@ -18,8 +18,8 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import net.obvj.smart.util.ConsoleUtil;
-import net.obvj.smart.util.DateUtil;
+import net.obvj.smart.util.ConsoleUtils;
+import net.obvj.smart.util.DateUtils;
 
 /**
  * Unit tests for the {@link CommandWorker} class.
@@ -28,7 +28,7 @@ import net.obvj.smart.util.DateUtil;
  * @since 2.0
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ DateUtil.class, ConsoleUtil.class })
+@PrepareForTest({ DateUtils.class, ConsoleUtils.class })
 public class CommandWorkerTest
 {
     private static final String STR_TEST_DATE = "2019-09-03 17:03:06";
@@ -87,8 +87,8 @@ public class CommandWorkerTest
     @Test
     public void testHandleLine()
     {
-        PowerMockito.mockStatic(DateUtil.class);
-        PowerMockito.when(DateUtil.now()).thenReturn(STR_TEST_DATE);
+        PowerMockito.mockStatic(DateUtils.class);
+        PowerMockito.when(DateUtils.now()).thenReturn(STR_TEST_DATE);
 
         StringWriter out = new StringWriter();
         CommandWorker worker = newCommandWorker(null, out);
@@ -135,9 +135,9 @@ public class CommandWorkerTest
     @Test
     public void testCustomHeader()
     {
-        PowerMockito.mockStatic(ConsoleUtil.class);
+        PowerMockito.mockStatic(ConsoleUtils.class);
         List<String> mockedHeaderLines = Arrays.asList("Header line 1", "Header line 2");
-        PowerMockito.when(ConsoleUtil.readCustomHeaderLines()).thenReturn(mockedHeaderLines);
+        PowerMockito.when(ConsoleUtils.readCustomHeaderLines()).thenReturn(mockedHeaderLines);
 
         StringWriter out = new StringWriter();
         CommandWorker worker = newCommandWorker(null, out);

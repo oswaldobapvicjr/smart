@@ -2,7 +2,7 @@ package net.obvj.smart.util;
 
 import org.junit.Test;
 
-import net.obvj.smart.TestUtil;
+import net.obvj.smart.TestUtils;
 
 /**
  * Unit tests for the {@link AnnotationUtils}
@@ -21,7 +21,7 @@ public class AnnotationUtilsFacadeTest
     @Test
     public void testNoInstancesAllowed() throws Exception
     {
-        TestUtil.checkNoInstancesAllowed(AnnotationUtils.class, IllegalStateException.class, "Utility class");
+        TestUtils.checkNoInstancesAllowed(AnnotationUtils.class, IllegalStateException.class, "Utility class");
     }
 
 }
