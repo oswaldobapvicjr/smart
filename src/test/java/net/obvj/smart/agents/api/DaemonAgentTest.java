@@ -12,7 +12,7 @@ import org.mockito.Mockito;
 
 import net.obvj.smart.TestUtil;
 import net.obvj.smart.agents.api.Agent.State;
-import net.obvj.smart.conf.xml.AgentConfiguration;
+import net.obvj.smart.conf.AgentConfiguration;
 
 /**
  * Unit tests for the {@link DaemonAgent} class.

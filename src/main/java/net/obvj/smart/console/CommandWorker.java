@@ -119,9 +119,9 @@ public class CommandWorker implements Runnable
             Command command = getByNameOrAlias(arguments[0]);
             command.execute(arguments, out);
         }
-        catch (IllegalArgumentException e)
+        catch (Exception e)
         {
-            out.println("Invalid command: " + arguments[0]);
+            out.println(e.getMessage());
         }
     }
 

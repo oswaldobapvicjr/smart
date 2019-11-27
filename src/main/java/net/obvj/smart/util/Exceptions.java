@@ -81,6 +81,18 @@ public final class Exceptions
     }
 
     /**
+     * Creates an {@link AgentConfigurationException} with a formatted message.
+     * 
+     * @param format See {@link String#format(String, Object...)}
+     * @param args   See {@link String#format(String, Object...)}
+     * @return an {@link AgentConfigurationException} with a formatted message
+     */
+    public static AgentConfigurationException agentConfiguration(final String format, final Object... args)
+    {
+        return new AgentConfigurationException(String.format(format, args));
+    }
+
+    /**
      * Creates an {@link AgentConfigurationException} with a cause and a formatted message.
      * 
      * @param cause  the cause to be set

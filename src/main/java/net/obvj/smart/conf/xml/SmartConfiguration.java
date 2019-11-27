@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.xml.bind.annotation.*;
 
+import net.obvj.smart.conf.AgentConfiguration;
+
 /**
  * The root element of the {@code agents.xml} file
  * 

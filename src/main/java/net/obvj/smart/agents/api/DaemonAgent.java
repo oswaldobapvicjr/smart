@@ -6,7 +6,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.obvj.smart.conf.xml.AgentConfiguration;
+import net.obvj.smart.conf.AgentConfiguration;
 import net.obvj.smart.util.DateUtil;
 
 /**
@@ -21,8 +21,9 @@ import net.obvj.smart.util.DateUtil;
  */
 public abstract class DaemonAgent extends Agent
 {
+    public static final String TYPE = "daemon";
+
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
-    private static final String DAEMON = "DAEMON";
     private static final Logger LOG = Logger.getLogger("smart-server");
 
     protected static final String MSG_AGENT_ALREADY_STARTED = "Agent already started";
@@ -39,7 +40,7 @@ public abstract class DaemonAgent extends Agent
     public DaemonAgent(String name)
     {
         setName(name == null ? this.getClass().getSimpleName() : name);
-        setType(DAEMON);
+        setType(TYPE);
         setState(State.SET);
     }
 
@@ -54,7 +55,7 @@ public abstract class DaemonAgent extends Agent
      */
     public static Agent parseAgent(AgentConfiguration configuration) throws ReflectiveOperationException
     {
-        if (!DAEMON.equalsIgnoreCase(configuration.getType()))
+        if (!TYPE.equalsIgnoreCase(configuration.getType()))
         {
             throw new IllegalArgumentException("Not a daemon agent");
         }

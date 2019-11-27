@@ -10,7 +10,6 @@ import javax.xml.bind.UnmarshalException;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
-import net.obvj.smart.conf.xml.AgentConfiguration;
 import net.obvj.smart.conf.xml.SmartConfiguration;
 
 /**

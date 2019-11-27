@@ -14,7 +14,9 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import net.obvj.smart.agents.api.Agent.State;
 import net.obvj.smart.agents.dummy.DummyAgent;
 import net.obvj.smart.agents.dummy.DummyDaemonAgent;
-import net.obvj.smart.conf.xml.AgentConfiguration;
+import net.obvj.smart.agents.impl.AnnotatedTimerAgent;
+import net.obvj.smart.agents.test.TestAgentWithNoNameAndTypeTimerAndAgentTask;
+import net.obvj.smart.conf.AgentConfiguration;
 import net.obvj.smart.util.TimeUnit;
 
 /**
@@ -40,7 +42,7 @@ public class AgentTest
     @Test
     public void testParseTimerAgent30Seconds() throws Exception
     {
-        AgentConfiguration xmlAgent = new AgentConfiguration.Builder(DUMMY_AGENT)
+        AgentConfiguration configuration = new AgentConfiguration.Builder(DUMMY_AGENT)
                 .type(TIMER)
                 .agentClass(DUMMY_AGENT_CLASS)
                 .interval("30 seconds")
@@ -48,13 +50,13 @@ public class AgentTest
                 .stopTimeoutInSeconds(5)
                 .build();
 
-        TimerAgent timerAgent = (TimerAgent) Agent.parseAgent(xmlAgent);
+        TimerAgent timerAgent = (TimerAgent) Agent.parseAgent(configuration);
 
         assertThat(timerAgent.getName(), is(DUMMY_AGENT));
         assertThat(timerAgent.getType(), is(TIMER));
         assertThat(timerAgent.getClass(), is(equalTo(DummyAgent.class)));
         assertThat(timerAgent.getStopTimeoutSeconds(), is(5));
-        assertThat(timerAgent.getConfiguration(), is(xmlAgent));
+        assertThat(timerAgent.getConfiguration(), is(configuration));
         assertThat(timerAgent.getConfiguration().isHidden(), is(false));
 
         assertThat(timerAgent.getInterval(), is(30));
@@ -67,7 +69,7 @@ public class AgentTest
     @Test
     public void testParseTimerAgent30SecondsHidden() throws Exception
     {
-        AgentConfiguration xmlAgent = new AgentConfiguration.Builder(DUMMY_AGENT)
+        AgentConfiguration configuration = new AgentConfiguration.Builder(DUMMY_AGENT)
                 .type(TIMER)
                 .agentClass(DUMMY_AGENT_CLASS)
                 .interval("30 seconds")
@@ -76,13 +78,13 @@ public class AgentTest
                 .hidden(true)
                 .build();
 
-        TimerAgent timerAgent = (TimerAgent) Agent.parseAgent(xmlAgent);
+        TimerAgent timerAgent = (TimerAgent) Agent.parseAgent(configuration);
 
         assertThat(timerAgent.getName(), is(DUMMY_AGENT));
         assertThat(timerAgent.getType(), is(TIMER));
         assertThat(timerAgent.getClass(), is(equalTo(DummyAgent.class)));
         assertThat(timerAgent.getStopTimeoutSeconds(), is(5));
-        assertThat(timerAgent.getConfiguration(), is(xmlAgent));
+        assertThat(timerAgent.getConfiguration(), is(configuration));
         assertThat(timerAgent.getConfiguration().isHidden(), is(true));
 
         assertThat(timerAgent.getInterval(), is(30));
@@ -95,18 +97,18 @@ public class AgentTest
     @Test
     public void testParseTimerAgentDefaultValues() throws Exception
     {
-        AgentConfiguration xmlAgent = new AgentConfiguration.Builder(DUMMY_AGENT)
+        AgentConfiguration configuration = new AgentConfiguration.Builder(DUMMY_AGENT)
                 .type(TIMER)
                 .agentClass(DUMMY_AGENT_CLASS)
                 .build();
 
-        TimerAgent timerAgent = (TimerAgent) Agent.parseAgent(xmlAgent);
+        TimerAgent timerAgent = (TimerAgent) Agent.parseAgent(configuration);
 
         assertThat(timerAgent.getName(), is(DUMMY_AGENT));
         assertThat(timerAgent.getType(), is(TIMER));
         assertThat(timerAgent.getClass(), is(equalTo(DummyAgent.class)));
         assertThat(timerAgent.getStopTimeoutSeconds(), is(-1));
-        assertThat(timerAgent.getConfiguration(), is(xmlAgent));
+        assertThat(timerAgent.getConfiguration(), is(configuration));
         assertThat(timerAgent.getConfiguration().isHidden(), is(false));
 
         assertThat(timerAgent.getInterval(), is(1));
@@ -119,20 +121,20 @@ public class AgentTest
     @Test
     public void testParseDaemonAgent() throws Exception
     {
-        AgentConfiguration xmlAgent = new AgentConfiguration.Builder(DUMMY_DAEMON)
+        AgentConfiguration configuration = new AgentConfiguration.Builder(DUMMY_DAEMON)
                 .type(DAEMON)
                 .agentClass(DUMMY_DAEMON_CLASS)
                 .automaticallyStarted(true)
                 .stopTimeoutInSeconds(1)
                 .build();
 
-        DaemonAgent daemonAgent = (DaemonAgent) Agent.parseAgent(xmlAgent);
+        DaemonAgent daemonAgent = (DaemonAgent) Agent.parseAgent(configuration);
 
         assertThat(daemonAgent.getName(), is(DUMMY_DAEMON));
         assertThat(daemonAgent.getType(), is(DAEMON));
         assertThat(daemonAgent.getClass(), is(equalTo(DummyDaemonAgent.class)));
         assertThat(daemonAgent.getStopTimeoutSeconds(), is(1));
-        assertThat(daemonAgent.getConfiguration(), is(xmlAgent));
+        assertThat(daemonAgent.getConfiguration(), is(configuration));
         assertThat(daemonAgent.getConfiguration().isHidden(), is(false));
 
         assertThat(daemonAgent.getState(), is(State.SET));
@@ -142,18 +144,18 @@ public class AgentTest
     @Test
     public void testParseDaemonAgentDefaultValues() throws Exception
     {
-        AgentConfiguration xmlAgent = new AgentConfiguration.Builder(DUMMY_DAEMON)
+        AgentConfiguration configuration = new AgentConfiguration.Builder(DUMMY_DAEMON)
                 .type(DAEMON)
                 .agentClass(DUMMY_DAEMON_CLASS)
                 .build();
 
-        DaemonAgent daemonAgent = (DaemonAgent) Agent.parseAgent(xmlAgent);
+        DaemonAgent daemonAgent = (DaemonAgent) Agent.parseAgent(configuration);
         
         assertThat(daemonAgent.getName(), is(DUMMY_DAEMON));
         assertThat(daemonAgent.getType(), is(DAEMON));
         assertThat(daemonAgent.getClass(), is(equalTo(DummyDaemonAgent.class)));
         assertThat(daemonAgent.getStopTimeoutSeconds(), is(-1));
-        assertThat(daemonAgent.getConfiguration(), is(xmlAgent));
+        assertThat(daemonAgent.getConfiguration(), is(configuration));
         assertThat(daemonAgent.getConfiguration().isHidden(), is(false));
 
         assertThat(daemonAgent.getState(), is(State.SET));
@@ -163,12 +165,42 @@ public class AgentTest
     @Test(expected = IllegalArgumentException.class)
     public void testParseUnknownAgentType() throws Exception
     {
-        AgentConfiguration xmlAgent = new AgentConfiguration.Builder(DUMMY_DAEMON)
+        AgentConfiguration configuration = new AgentConfiguration.Builder(DUMMY_DAEMON)
                 .type("unknown")
                 .agentClass(DUMMY_DAEMON_CLASS)
                 .build();
 
-        Agent.parseAgent(xmlAgent);
+        Agent.parseAgent(configuration);
+    }
+    
+    @Test
+    public void testParseAnnotatedTimerAgent() throws Exception
+    {
+        Class<TestAgentWithNoNameAndTypeTimerAndAgentTask> testClass = TestAgentWithNoNameAndTypeTimerAndAgentTask.class;
+
+        AgentConfiguration configuration = new AgentConfiguration.Builder(DUMMY_AGENT)
+                .type(TIMER)
+                .agentClass(testClass.getName())
+                .interval("30 seconds")
+                .automaticallyStarted(false)
+                .stopTimeoutInSeconds(5)
+                .hidden(true)
+                .build();
+
+        TimerAgent timerAgent = (TimerAgent) Agent.parseAgent(configuration);
+        assertThat(timerAgent, instanceOf(AnnotatedTimerAgent.class));
+
+        assertThat(timerAgent.getName(), is(DUMMY_AGENT));
+        assertThat(timerAgent.getType(), is(TIMER));
+        assertThat(timerAgent.getStopTimeoutSeconds(), is(5));
+        assertThat(timerAgent.getConfiguration(), is(configuration));
+        assertThat(timerAgent.getConfiguration().isHidden(), is(true));
+
+        assertThat(timerAgent.getInterval(), is(30));
+        assertThat(timerAgent.getTimeUnit(), is(TimeUnit.SECONDS));
+
+        assertThat(timerAgent.getState(), is(State.SET));
+        assertThat(timerAgent.isStarted(), is(false));
     }
     
     @Test
@@ -228,13 +260,13 @@ public class AgentTest
     @Test
     public void testIsAutomaticallyStarted() throws Exception
     {
-        AgentConfiguration xmlAgent = new AgentConfiguration.Builder(DUMMY_DAEMON)
+        AgentConfiguration configuration = new AgentConfiguration.Builder(DUMMY_DAEMON)
                 .type(DAEMON)
                 .agentClass(DUMMY_DAEMON_CLASS)
                 .automaticallyStarted(true)
                 .build();
 
-        DaemonAgent daemonAgent = (DaemonAgent) Agent.parseAgent(xmlAgent);
+        DaemonAgent daemonAgent = (DaemonAgent) Agent.parseAgent(configuration);
         assertTrue(daemonAgent.isAutomaticallyStarted());
     }
     

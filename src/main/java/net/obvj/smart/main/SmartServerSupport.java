@@ -9,9 +9,10 @@ import javax.management.JMException;
 import javax.management.ObjectName;
 
 import net.obvj.smart.agents.api.Agent;
+import net.obvj.smart.agents.internal.BackgroundAgent;
+import net.obvj.smart.conf.AgentConfiguration;
 import net.obvj.smart.conf.AgentsXml;
 import net.obvj.smart.conf.SmartProperties;
-import net.obvj.smart.conf.xml.AgentConfiguration;
 import net.obvj.smart.console.ManagementConsole;
 import net.obvj.smart.jmx.AgentManagerJMX;
 import net.obvj.smart.jmx.AgentManagerJMXMBean;

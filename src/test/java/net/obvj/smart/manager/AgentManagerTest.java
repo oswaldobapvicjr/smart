@@ -21,8 +21,8 @@ import org.mockito.MockitoAnnotations;
 import net.obvj.smart.agents.api.Agent;
 import net.obvj.smart.agents.api.Agent.State;
 import net.obvj.smart.agents.api.dto.AgentDTO;
+import net.obvj.smart.conf.AgentConfiguration;
 import net.obvj.smart.conf.AgentsXml;
-import net.obvj.smart.conf.xml.AgentConfiguration;
 
 /**
  * Unit tests for the {@link AgentManager} class.

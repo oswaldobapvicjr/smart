@@ -1,8 +1,16 @@
-package net.obvj.smart.conf.xml;
+package net.obvj.smart.conf;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+
+import org.apache.commons.lang3.StringUtils;
+
+import net.obvj.smart.agents.api.DaemonAgent;
+import net.obvj.smart.agents.api.TimerAgent;
+import net.obvj.smart.conf.annotation.Agent;
+import net.obvj.smart.conf.annotation.Type;
+import net.obvj.smart.util.Exceptions;
 
 /**
  * An object that contains the set-up of an agent from the {@code agents.xml} file
@@ -13,10 +21,10 @@ import javax.xml.bind.annotation.XmlElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AgentConfiguration
 {
-    private static final String DEFAULT_INTERVAL = "1";
-    private static final int DEFAULT_STOP_TIMEOUT_IN_SECONDS = -1;
-    private static final boolean DEFAULT_AUTOMATICALLY_STARTED = true;
-    private static final boolean DEFAULT_HIDDEN = false;
+    protected static final String DEFAULT_INTERVAL = "1";
+    protected static final int DEFAULT_STOP_TIMEOUT_IN_SECONDS = -1;
+    protected static final boolean DEFAULT_AUTOMATICALLY_STARTED = true;
+    protected static final boolean DEFAULT_HIDDEN = false;
 
     @XmlElement(name = "name")
     private String name;
@@ -90,7 +98,7 @@ public class AgentConfiguration
     }
 
     /**
-     * A builder object for testing purposes.
+     * An {@link AgentConfiguration} builder.
      * 
      * @author oswaldo.bapvic.jr
      * @since 2.0
@@ -145,17 +153,57 @@ public class AgentConfiguration
             this.hidden = Boolean.valueOf(hidden);
             return this;
         }
-        
+
         public AgentConfiguration build()
         {
-            if (name == null) throw new IllegalStateException("name cannot be null");
-            if (type == null) throw new IllegalStateException("type cannot be null");
-            if (agentClass == null) throw new IllegalStateException("agentClass cannot be null");
+            if (StringUtils.isEmpty(name)) throw new IllegalStateException("name cannot be null");
+            if (StringUtils.isEmpty(type)) throw new AgentConfigurationException("type cannot be null");
+            if (agentClass == null) throw new AgentConfigurationException("agentClass cannot be null");
 
             // The default interval can only be set for timer agents
-            if (interval == null && type.equals("timer")) interval = DEFAULT_INTERVAL;
+            if (StringUtils.isEmpty(interval) && type.equals("timer")) interval = DEFAULT_INTERVAL;
 
             return new AgentConfiguration(this);
         }
     }
+
+    public static AgentConfiguration fromAnnotatedClass(Class<?> clazz)
+    {
+        Agent annotation = clazz.getAnnotation(Agent.class);
+        if (annotation == null)
+        {
+            throw Exceptions.agentConfiguration("@Agent annotation is not present in class %s", clazz);
+        }
+
+        // Name: If not specified in annotation, then use the class simple name
+        String name = StringUtils.defaultIfEmpty(annotation.name(), clazz.getSimpleName());
+
+        // Type: If not specified in annotation, try to infer by the class it implements
+        String type = Type.DEFAULT == annotation.type() ? inferTypeFromSuperclass(clazz) : annotation.type().toString();
+
+        String agentClass = clazz.getCanonicalName();
+        String interval = annotation.interval();
+        int stopTimeoutInSeconds = annotation.stopTimeoutInSeconds();
+        boolean automaticallyStarted = annotation.automaticallyStarted();
+        boolean hidden = annotation.hidden();
+
+        Builder builder = new Builder(name).type(type).agentClass(agentClass).interval(interval)
+                .stopTimeoutInSeconds(stopTimeoutInSeconds).automaticallyStarted(automaticallyStarted).hidden(hidden);
+        return builder.build();
+    }
+
+    private static String inferTypeFromSuperclass(Class<?> clazz)
+    {
+        Class<?> superClass = clazz.getSuperclass();
+        if (superClass.equals(TimerAgent.class))
+        {
+            return TimerAgent.TYPE;
+        }
+        else if (superClass.equals(DaemonAgent.class))
+        {
+            return DaemonAgent.TYPE;
+        }
+        return StringUtils.EMPTY;
+    }
+
 }

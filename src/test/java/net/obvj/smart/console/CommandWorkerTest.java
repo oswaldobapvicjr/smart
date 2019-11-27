@@ -166,7 +166,7 @@ public class CommandWorkerTest
         StringWriter out = new StringWriter();
         CommandWorker worker = newCommandWorker(null, out);
         worker.handleUserInput(new String[] {"invalidcom"});
-        assertTrue(out.toString().trim().contains("Invalid command: invalidcom"));
+        assertTrue(out.toString().trim().contains("Unknown command: invalidcom"));
     }
 
 }

@@ -20,7 +20,6 @@ import javax.xml.validation.SchemaFactory;
 import org.springframework.stereotype.Component;
 import org.xml.sax.SAXException;
 
-import net.obvj.smart.conf.xml.AgentConfiguration;
 import net.obvj.smart.conf.xml.SmartConfiguration;
 import net.obvj.smart.util.Exceptions;
 

@@ -5,7 +5,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeoutException;
 
-import net.obvj.smart.conf.xml.AgentConfiguration;
+import net.obvj.smart.conf.AgentConfiguration;
 import net.obvj.smart.util.DateUtil;
 import net.obvj.smart.util.Exceptions;
 

@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 import net.obvj.smart.agents.api.Agent;
 import net.obvj.smart.agents.api.DaemonAgent;
 import net.obvj.smart.agents.api.dto.AgentDTO;
+import net.obvj.smart.conf.AgentConfiguration;
 import net.obvj.smart.conf.AgentsXml;
-import net.obvj.smart.conf.xml.AgentConfiguration;
 import net.obvj.smart.util.Exceptions;
 
 /**

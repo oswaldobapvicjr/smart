@@ -6,7 +6,9 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.obvj.smart.conf.xml.AgentConfiguration;
+import net.obvj.smart.agents.impl.AnnotatedTimerAgent;
+import net.obvj.smart.conf.AgentConfiguration;
+import net.obvj.smart.conf.AgentConfigurationException;
 import net.obvj.smart.util.DateUtil;
 import net.obvj.smart.util.TimeInterval;
 import net.obvj.smart.util.TimeUnit;
@@ -21,9 +23,9 @@ import net.obvj.smart.util.TimeUnit;
  */
 public abstract class TimerAgent extends Agent
 {
+    public static final String TYPE = "timer";
 
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
-    private static final String TIMER = "TIMER";
     private static final Logger LOG = Logger.getLogger("smart-server");
 
     protected static final String MSG_AGENT_ALREADY_STARTED = "Agent already started";
@@ -48,7 +50,7 @@ public abstract class TimerAgent extends Agent
     public TimerAgent(String name, int interval, TimeUnit timeUnit)
     {
         setName(name == null ? this.getClass().getSimpleName() : name);
-        setType(TIMER);
+        setType(TYPE);
         this.interval = interval;
         this.timeUnit = timeUnit;
         setState(State.SET);
@@ -65,12 +67,12 @@ public abstract class TimerAgent extends Agent
      */
     public static Agent parseAgent(AgentConfiguration configuration) throws ReflectiveOperationException
     {
-        if (!TIMER.equalsIgnoreCase(configuration.getType()))
+        if (!TYPE.equalsIgnoreCase(configuration.getType()))
         {
             throw new IllegalArgumentException("Not a timer agent");
         }
 
-        TimerAgent agent = (TimerAgent) Class.forName(configuration.getAgentClass()).getConstructor().newInstance();
+        TimerAgent agent = instantiateAgent(configuration);
         agent.setConfiguration(configuration);
         agent.setName(configuration.getName());
         agent.setStopTimeoutSeconds(configuration.getStopTimeoutInSeconds());
@@ -80,6 +82,33 @@ public abstract class TimerAgent extends Agent
         agent.timeUnit = timeInterval.getTimeUnit();
 
         return agent;
+    }
+
+    /**
+     * Instantiates a {@link TimerAgent}.
+     * <p>
+     * The produced object can be either a declared child of {@link TimerAgent} or an
+     * {@link AnnotatedTimerAgent} which is generated from a class with the {@code @Agent}
+     * annotation.
+     * 
+     * @param configuration the {@link AgentConfiguration} to be parsed
+     * @return a {@link TimerAgent} instance
+     * @throws ReflectiveOperationException if the agent class or constructor cannot be found,
+     *                                      or the constructor is not accessible, or the agent
+     *                                      cannot be instantiated
+     * @throws AgentConfigurationException  if invalid configuration data is received, or the
+     *                                      system is unable to instantiate an agent based on
+     *                                      the given configuration
+     */
+    private static TimerAgent instantiateAgent(AgentConfiguration configuration) throws ReflectiveOperationException
+    {
+        String agentClassName = configuration.getAgentClass();
+        Class<?> agentClass = Class.forName(agentClassName);
+        if (TimerAgent.class.equals(agentClass.getSuperclass()))
+        {
+            return (TimerAgent) agentClass.getConstructor().newInstance();
+        }
+        return new AnnotatedTimerAgent(configuration);
     }
 
     /**
@@ -98,7 +127,7 @@ public abstract class TimerAgent extends Agent
                 State previousState = getState();
                 setState(State.RUNNING);
                 lastRunDate = Calendar.getInstance();
-                LOG.log(Level.INFO, "Agent task started");
+                LOG.log(Level.FINEST, "Agent task started");
                 try
                 {
                     runTask();
@@ -110,7 +139,7 @@ public abstract class TimerAgent extends Agent
                 finally
                 {
                     setState(previousState);
-                    LOG.log(Level.INFO, "Agent task complete.");
+                    LOG.log(Level.FINEST, "Agent task complete.");
                 }
             }
         }
@@ -199,9 +228,8 @@ public abstract class TimerAgent extends Agent
      */
     public String getStatusString()
     {
-        StringBuilder sb = new StringBuilder(getName()).append(" {")
-                .append(LINE_SEPARATOR).append("   type:       ").append(getType())
-                .append(LINE_SEPARATOR).append("   status:     ").append(getState())
+        StringBuilder sb = new StringBuilder(getName()).append(" {").append(LINE_SEPARATOR).append("   type:       ")
+                .append(getType()).append(LINE_SEPARATOR).append("   status:     ").append(getState())
                 .append(LINE_SEPARATOR).append("   startDate:  ").append(DateUtil.formatDate(startDate))
                 .append(LINE_SEPARATOR).append("   lastRun:    ").append(DateUtil.formatDate(lastRunDate))
                 .append(LINE_SEPARATOR).append("   frequency:  ").append(interval).append(" ").append(timeUnit)
