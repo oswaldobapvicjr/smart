@@ -46,7 +46,7 @@ public class AgentManagerTest
     private static final AgentConfiguration XML_DUMMY_AGENT = new AgentConfiguration.Builder(DUMMY_AGENT).type(TIMER)
             .agentClass("net.obvj.smart.agents.dummy.DummyAgent").interval("1 hour").build();
     private static final AgentConfiguration XML_DUMMY_DAEMON = new AgentConfiguration.Builder(DUMMY_DAEMON).type(DAEMON)
-            .agentClass("net.obvj.smart.agents.dummy.DummyDaemonAgent").build();
+            .agentClass("net.obvj.smart.agents.test.DummyDaemonAgent").build();
 
     private static final AgentDTO DUMMY_AGENT_DTO = new AgentDTO(DUMMY_AGENT, TIMER, "SET", false);
     private static final AgentDTO DUMMY_DAEMON_DTO = new AgentDTO(DUMMY_DAEMON, DAEMON, "SET", false);

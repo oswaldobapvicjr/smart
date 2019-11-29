@@ -1,16 +1,12 @@
 package net.obvj.smart.util;
 
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
 import net.obvj.smart.TestUtils;
@@ -28,11 +24,17 @@ public class AnnotationUtilsTest
     private static final String TEST_AGENTS_PACKAGE = "net.obvj.smart.agents.test";
 
     private static final List<String> EXCPECTED_AGENT_CLASS_NAMES = Arrays.asList(
+            TestAgentWithAllCustomParams.class.getName(),
             TestAgentWithAllCustomParamsAndPrivateConstructor.class.getName(),
-            TestAgentWithAllCustomParams.class.getName(), TestAgentWithNoNameAndTypeTimerAndAgentTask.class.getName(),
+            TestAgentWithCustomNameAndType.class.getName(),
+            TestAgentWithAllCustomParamsAndPrivateAgentTask.class.getName(),
+            TestAgentWithNoNameAndTypeTimerAndAgentTask.class.getName(),
             TestAgentWithNoNameAndTypeTimerAndNoAgentTask.class.getName(),
-            TestAgentWithNoNameAndTypeTimerAndTwoAgentTasks.class.getName(),
-            TestAgentWithCustomNameAndType.class.getName(), TestAgentWithNoType.class.getName());
+            TestAgentWithNoNameAndTypeTimerAndTwoAgentTasks.class.getName(), TestAgentWithNoType.class.getName(),
+            TestAgentWithTypeDeterminedBySupertypeDaemon.class.getName(),
+            TestAgentWithTypeDeterminedBySupertypeTimer.class.getName());
+
+    private static final List<String> UNEXPECTED_AGENT_CLASS_NAMES = Arrays.asList(DummyDaemonAgent.class.getName());
 
     /**
      * Tests that no instances of this utility class are created
@@ -51,6 +53,8 @@ public class AnnotationUtilsTest
     {
         Set<String> classNames = AnnotationUtils.findClassesWithAnnotation(Agent.class, TEST_AGENTS_PACKAGE);
         assertTrue(classNames.containsAll(EXCPECTED_AGENT_CLASS_NAMES));
+        assertFalse("A class without the @Agent annotation should not be retrieved",
+                classNames.containsAll(UNEXPECTED_AGENT_CLASS_NAMES));
     }
 
 }

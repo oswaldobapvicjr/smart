@@ -39,7 +39,7 @@ public class SmartServerSupportTest
             .type("timer").agentClass("net.obvj.smart.agents.dummy.DummyAgent").interval("3 hours")
             .automaticallyStarted(false).build();
     private static final AgentConfiguration DUMMY_DAEMON_CONFIG = new AgentConfiguration.Builder("DummyDaemon")
-            .type("daemon").agentClass("net.obvj.smart.agents.dummy.DummyDaemonAgent").automaticallyStarted(true)
+            .type("daemon").agentClass("net.obvj.smart.agents.test.DummyDaemonAgent").automaticallyStarted(true)
             .build();
 
     private static final List<AgentConfiguration> ALL_AGENT_CONFIGS = Arrays.asList(DUMMY_AGENT_CONFIG,

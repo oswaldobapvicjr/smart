@@ -47,7 +47,7 @@ public abstract class TimerAgent extends Agent
         this(null, 1, TimeUnit.DEFAULT);
     }
 
-    public TimerAgent(String name, int interval, TimeUnit timeUnit)
+    private TimerAgent(String name, int interval, TimeUnit timeUnit)
     {
         setName(name == null ? this.getClass().getSimpleName() : name);
         setType(TYPE);

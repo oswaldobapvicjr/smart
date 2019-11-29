@@ -25,7 +25,7 @@ public class DaemonAgentTest
     private DaemonAgent agentMock = Mockito.mock(DaemonAgent.class, Mockito.CALLS_REAL_METHODS);
 
     private static final AgentConfiguration DUMMY_AGENT_CONFIG = new AgentConfiguration.Builder("DummyDaemonAgent")
-            .type("daemon").agentClass("net.obvj.smart.agents.dummy.DummyDaemonAgent").stopTimeoutInSeconds(10).build();
+            .type("daemon").agentClass("net.obvj.smart.agents.test.DummyDaemonAgent").stopTimeoutInSeconds(10).build();
 
     /**
      * Tests that a non-daemon agent will not be parsed by this class
@@ -34,7 +34,7 @@ public class DaemonAgentTest
     public void testParseNonDaemonAgent() throws ReflectiveOperationException
     {
         DaemonAgent.parseAgent(new AgentConfiguration.Builder("DummyAgent").type("timer")
-                .agentClass("net.obvj.smart.agents.dummy.DummyDaemonAgent").build());
+                .agentClass("net.obvj.smart.agents.test.DummyDaemonAgent").build());
     }
 
     /**

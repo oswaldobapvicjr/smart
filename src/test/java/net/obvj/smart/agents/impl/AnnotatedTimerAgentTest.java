@@ -7,10 +7,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import net.obvj.smart.TestUtils;
-import net.obvj.smart.agents.test.TestAgentWithAllCustomParamsAndPrivateConstructor;
-import net.obvj.smart.agents.test.TestAgentWithNoNameAndTypeTimerAndAgentTask;
-import net.obvj.smart.agents.test.TestAgentWithNoNameAndTypeTimerAndNoAgentTask;
-import net.obvj.smart.agents.test.TestAgentWithNoNameAndTypeTimerAndTwoAgentTasks;
+import net.obvj.smart.agents.test.*;
 import net.obvj.smart.conf.AgentConfiguration;
 import net.obvj.smart.conf.AgentConfigurationException;
 
@@ -59,6 +56,14 @@ public class AnnotatedTimerAgentTest
                 .thenReturn(TestAgentWithAllCustomParamsAndPrivateConstructor.class.getName());
         TestUtils.assertException(AgentConfigurationException.class, null, NoSuchMethodException.class,
                 () -> new AnnotatedTimerAgent(configuration));
+    }
+
+    @Test(expected = AgentConfigurationException.class)
+    public void runForClassWithAgentTaskAnnotationAndPrivateAgentTask()
+    {
+        Mockito.when(configuration.getAgentClass())
+                .thenReturn(TestAgentWithAllCustomParamsAndPrivateAgentTask.class.getName());
+        new AnnotatedTimerAgent(configuration);
     }
 
 }

@@ -13,8 +13,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import net.obvj.smart.agents.api.Agent.State;
 import net.obvj.smart.agents.dummy.DummyAgent;
-import net.obvj.smart.agents.dummy.DummyDaemonAgent;
 import net.obvj.smart.agents.impl.AnnotatedTimerAgent;
+import net.obvj.smart.agents.test.DummyDaemonAgent;
 import net.obvj.smart.agents.test.TestAgentWithNoNameAndTypeTimerAndAgentTask;
 import net.obvj.smart.conf.AgentConfiguration;
 import net.obvj.smart.util.TimeUnit;
@@ -32,7 +32,7 @@ public class AgentTest
     private static final String DUMMY_AGENT = "DummyAgent";
     private static final String DUMMY_AGENT_CLASS = "net.obvj.smart.agents.dummy.DummyAgent";
     private static final String DUMMY_DAEMON = "DummyDaemon";
-    private static final String DUMMY_DAEMON_CLASS = "net.obvj.smart.agents.dummy.DummyDaemonAgent";
+    private static final String DUMMY_DAEMON_CLASS = "net.obvj.smart.agents.test.DummyDaemonAgent";
     private static final String TIMER = "timer";
     private static final String DAEMON = "daemon";
 

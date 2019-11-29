@@ -95,11 +95,11 @@ public abstract class Agent implements Runnable
     }
 
     /**
-     * @return This agent is configured to start automatically
+     * @return Whether this agent is configured to start automatically, default is {@code true}. 
      */
     public boolean isAutomaticallyStarted()
     {
-        return getConfiguration().isAutomaticallyStarted();
+        return getConfiguration() == null || getConfiguration().isAutomaticallyStarted();
     }
 
     protected void setState(State currentState)
@@ -158,7 +158,7 @@ public abstract class Agent implements Runnable
     {
         return DateUtils.getClonedDate(lastRunDate);
     }
-    
+
     public abstract void start();
 
     public abstract void stop() throws TimeoutException;
