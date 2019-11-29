@@ -13,7 +13,7 @@ import net.obvj.smart.agents.api.Agent;
 import net.obvj.smart.agents.api.DaemonAgent;
 import net.obvj.smart.agents.api.dto.AgentDTO;
 import net.obvj.smart.conf.AgentConfiguration;
-import net.obvj.smart.conf.AgentsXml;
+import net.obvj.smart.conf.AgentLoader;
 import net.obvj.smart.util.Exceptions;
 
 /**
@@ -29,7 +29,7 @@ public class AgentManager
     private static final String MSG_AGENT_STARTED_PLEASE_STOP_FIRST = "'%s' is started. Please stop the agent before this operation.";
 
     @Autowired
-    private AgentsXml agentsXml;
+    private AgentLoader agentLoader;
     
     private Map<String, Agent> agents = new TreeMap<>();
 
@@ -92,7 +92,8 @@ public class AgentManager
         {
             throw Exceptions.illegalState(MSG_AGENT_STARTED_PLEASE_STOP_FIRST, name);
         }
-        AgentConfiguration agentConfig = agentsXml.getAgentConfiguration(name);
+        AgentConfiguration agentConfig = agentLoader
+                .getAgentConfigurationByClass(agent.getConfiguration().getAgentClass());
         Agent newAgent = Agent.parseAgent(agentConfig);
         addAgent(newAgent);
     }

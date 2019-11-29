@@ -22,7 +22,7 @@ import net.obvj.smart.agents.api.Agent;
 import net.obvj.smart.agents.api.Agent.State;
 import net.obvj.smart.agents.api.dto.AgentDTO;
 import net.obvj.smart.conf.AgentConfiguration;
-import net.obvj.smart.conf.AgentsXml;
+import net.obvj.smart.conf.AgentLoader;
 
 /**
  * Unit tests for the {@link AgentManager} class.
@@ -34,7 +34,9 @@ public class AgentManagerTest
 {
     // Test data
     private static final String DUMMY_AGENT = "DummyAgent";
+    private static final String DUMMY_AGENT_CLASS = "net.obvj.smart.agents.dummy.DummyAgent";
     private static final String DUMMY_DAEMON = "DummyDaemon";
+    private static final String DUMMY_DAEMON_AGENT_CLASS = "net.obvj.smart.agents.test.valid.DummyDaemonAgent";
     private static final String AGENT1 = "agent1";
     private static final String UNKNOWN = "Unknown";
 
@@ -44,9 +46,9 @@ public class AgentManagerTest
     private static final List<String> names = Arrays.asList(DUMMY_AGENT, DUMMY_DAEMON);
 
     private static final AgentConfiguration XML_DUMMY_AGENT = new AgentConfiguration.Builder(DUMMY_AGENT).type(TIMER)
-            .agentClass("net.obvj.smart.agents.dummy.DummyAgent").interval("1 hour").build();
+            .agentClass(DUMMY_AGENT_CLASS).interval("1 hour").build();
     private static final AgentConfiguration XML_DUMMY_DAEMON = new AgentConfiguration.Builder(DUMMY_DAEMON).type(DAEMON)
-            .agentClass("net.obvj.smart.agents.test.valid.DummyDaemonAgent").build();
+            .agentClass(DUMMY_DAEMON_AGENT_CLASS).build();
 
     private static final AgentDTO DUMMY_AGENT_DTO = new AgentDTO(DUMMY_AGENT, TIMER, "SET", false);
     private static final AgentDTO DUMMY_DAEMON_DTO = new AgentDTO(DUMMY_DAEMON, DAEMON, "SET", false);
@@ -58,7 +60,7 @@ public class AgentManagerTest
     private Agent[] allAgents;
     
     @Mock
-    private AgentsXml agentsXml;
+    private AgentLoader agentLoader;
     @InjectMocks
     private AgentManager manager;
 
@@ -193,7 +195,7 @@ public class AgentManagerTest
     @Test
     public void testResetAgentWithPreviousStateSet() throws ReflectiveOperationException
     {
-        when(agentsXml.getAgentConfiguration(DUMMY_AGENT)).thenReturn(XML_DUMMY_AGENT);
+        when(agentLoader.getAgentConfigurationByClass(DUMMY_AGENT_CLASS)).thenReturn(XML_DUMMY_AGENT);
 
         prepareAgentManager(dummyAgent);
         manager.resetAgent(DUMMY_AGENT);
