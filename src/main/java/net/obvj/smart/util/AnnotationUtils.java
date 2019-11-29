@@ -3,7 +3,6 @@ package net.obvj.smart.util;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -46,32 +45,6 @@ public class AnnotationUtils
                     clazz.getName());
         }
         return agentTaskMethods.get(0);
-    }
-
-    /**
-     * Returns an optional method of the given class annotated with the given annotation,
-     * provided that no more than one occurrence of this method annotation exists.
-     * 
-     * @param class           the {@link Class} to query
-     * @param annotationClass the annotation that must be present on a method to be matched
-     * @return an {@link Optional}, which may contain a {@link Method}.
-     * @throws AgentConfigurationException if more than one method found
-     */
-    public static Optional<Method> getOptionalMethodWithAnnotation(Class<?> clazz, Class<? extends Annotation> annotationClass)
-    {
-        List<Method> agentTaskMethods = MethodUtils.getMethodsListWithAnnotation(clazz, annotationClass);
-
-        if (agentTaskMethods.isEmpty())
-        {
-            return Optional.empty();
-        }
-        if (agentTaskMethods.size() > 1)
-        {
-            throw Exceptions.agentConfiguration(
-                    "%s methods annotated with @AgentTask found in %s. Only one is allowed.", agentTaskMethods.size(),
-                    clazz.getName());
-        }
-        return Optional.of(agentTaskMethods.get(0));
     }
 
     /**

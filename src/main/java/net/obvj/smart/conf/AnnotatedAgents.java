@@ -53,7 +53,7 @@ public class AnnotatedAgents
         return properties.getPropertiesListSplitBy(SmartProperties.AGENT_SEARCH_PACKAGES, ",");
     }
 
-    private Class<?> toClass(String className)
+    protected Class<?> toClass(String className)
     {
         try
         {

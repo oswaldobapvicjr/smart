@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -70,12 +71,12 @@ public class AnnotatedAgentsTest
                 .thenReturn(Arrays.asList(TEST_PACKAGE, INTERNAL_PACKAGE));
         annotatedAgents = new AnnotatedAgents(properties);
 
-        assertTrue(annotatedAgents.getAgentsByClassName().keySet().containsAll(EXCPECTED_TEST_PACKAGE_AGENT_CLASSES));
-        assertTrue(
-                annotatedAgents.getAgentsByClassName().keySet().containsAll(EXCPECTED_INTERNAL_PACKAGE_AGENT_CLASSES));
-        annotatedAgents.getAgentsByClassName().values().forEach(config -> assertNotNull(config));
+        Map<String, AgentConfiguration> agentsByClassName = annotatedAgents.getAgentsByClassName();
+        assertTrue(agentsByClassName.keySet().containsAll(EXCPECTED_TEST_PACKAGE_AGENT_CLASSES));
+        assertTrue(agentsByClassName.keySet().containsAll(EXCPECTED_INTERNAL_PACKAGE_AGENT_CLASSES));
+        agentsByClassName.values().forEach(config -> assertNotNull(config));
 
-        assertFalse(annotatedAgents.getAgentsByClassName().keySet().containsAll(UNEXPECTED_TEST_PACKAGE_AGENT_CLASSES));
+        assertFalse(agentsByClassName.keySet().containsAll(UNEXPECTED_TEST_PACKAGE_AGENT_CLASSES));
     }
 
     @Test
@@ -85,6 +86,13 @@ public class AnnotatedAgentsTest
                 .thenReturn(Arrays.asList("invalid"));
         annotatedAgents = new AnnotatedAgents(properties);
         assertEquals(0, annotatedAgents.getAgentsByClassName().size());
+    }
+
+    @Test(expected = AgentConfigurationException.class)
+    public void toClassWithInvalidClass()
+    {
+        annotatedAgents = new AnnotatedAgents(properties);
+        annotatedAgents.toClass("invalid");
     }
 
 }
