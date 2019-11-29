@@ -3,8 +3,13 @@ package net.obvj.smart.util;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.reflect.MethodUtils;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
+import org.springframework.core.type.filter.AnnotationTypeFilter;
 
 import net.obvj.smart.conf.AgentConfigurationException;
 
@@ -30,7 +35,8 @@ public class AnnotationUtils
 
         if (agentTaskMethods.isEmpty())
         {
-            throw Exceptions.agentConfiguration("No public method annotated with @AgentTask found in %s", clazz.getName());
+            throw Exceptions.agentConfiguration("No public method annotated with @AgentTask found in %s",
+                    clazz.getName());
         }
         if (agentTaskMethods.size() > 1)
         {
@@ -39,5 +45,22 @@ public class AnnotationUtils
                     clazz.getName());
         }
         return agentTaskMethods.get(0);
+    }
+
+    /**
+     * Scans the class path from a base package to find classes annotated with a given
+     * annotation.
+     * 
+     * @param annotationClass the annotation to be filter
+     * @param basePackage     the package to check for annotated classes
+     * @return a set of auto-detected class names
+     */
+    public static Set<String> findClassesWithAnnotation(Class<? extends Annotation> annotationClass, String basePackage)
+    {
+        ClassPathScanningCandidateComponentProvider scanner = new ClassPathScanningCandidateComponentProvider(false);
+        scanner.addIncludeFilter(new AnnotationTypeFilter(annotationClass));
+
+        Set<BeanDefinition> findCandidateComponents = scanner.findCandidateComponents(basePackage);
+        return findCandidateComponents.stream().map(BeanDefinition::getBeanClassName).collect(Collectors.toSet());
     }
 }
