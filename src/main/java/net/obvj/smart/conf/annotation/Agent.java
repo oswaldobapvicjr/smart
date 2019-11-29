@@ -52,7 +52,7 @@ public @interface Agent
      * <p>
      * If not specified, no timeout on stop.
      */
-    int stopTimeoutInSeconds() default -1;
+    int stopTimeoutInSeconds() default Integer.MAX_VALUE;
 
     /**
      * Declares whether this Agent is hidden in the console (default = false).

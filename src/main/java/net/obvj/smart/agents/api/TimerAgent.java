@@ -41,6 +41,8 @@ public abstract class TimerAgent extends Agent
      */
     private final Object runLock = new Object();
     private final Object changeLock = new Object();
+    
+    private boolean stopRequested = false;
 
     public TimerAgent()
     {
@@ -112,13 +114,23 @@ public abstract class TimerAgent extends Agent
     }
 
     /**
-     * Executes this agent task.
+     * The method called by the Executor Service to execute the agent task.
      */
     public void run()
     {
+        run(false);
+    }
+
+    public void run(boolean manualFlag)
+    {
+        if (stopRequested && !manualFlag) return;
         if (isRunning())
         {
-            LOG.info(MSG_AGENT_ALREADY_RUNNING);
+            if (manualFlag)
+            {
+                throw new IllegalStateException(MSG_AGENT_ALREADY_RUNNING);
+            }
+            LOG.fine(MSG_AGENT_ALREADY_RUNNING);
         }
         else
         {
@@ -184,6 +196,7 @@ public abstract class TimerAgent extends Agent
      */
     public final void stop() throws TimeoutException
     {
+        stopRequested = true;
         if (isStopped())
         {
             throw new IllegalStateException(MSG_AGENT_ALREADY_STOPPED);
@@ -202,7 +215,7 @@ public abstract class TimerAgent extends Agent
                 try
                 {
                     LOG.info("Agent task in execution. Waiting for its completion.");
-                    wait(sleepSeconds * 1000l);
+                    Thread.sleep(sleepSeconds * 1000l);
                 }
                 catch (InterruptedException e)
                 {

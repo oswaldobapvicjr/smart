@@ -27,7 +27,7 @@ public abstract class Agent implements Runnable
 
     private String name;
     private String type;
-    private int stopTimeoutSeconds = -1;
+    private int stopTimeoutSeconds = Integer.MAX_VALUE;
 
     private State currentState;
 
@@ -76,6 +76,9 @@ public abstract class Agent implements Runnable
         return type.toLowerCase();
     }
 
+    /**
+     * @param stopTimeoutSeconds the stop timeout in seconds to set.
+     */
     protected void setStopTimeoutSeconds(int stopTimeoutSeconds)
     {
         this.stopTimeoutSeconds = stopTimeoutSeconds;
@@ -100,6 +103,14 @@ public abstract class Agent implements Runnable
     public boolean isAutomaticallyStarted()
     {
         return getConfiguration() == null || getConfiguration().isAutomaticallyStarted();
+    }
+    
+    /**
+     * @return Whether this agent is hidden, default is {@code false}. 
+     */
+    public boolean isHidden()
+    {
+        return getConfiguration() == null || getConfiguration().isHidden();
     }
 
     protected void setState(State currentState)
@@ -163,12 +174,15 @@ public abstract class Agent implements Runnable
 
     public abstract void stop() throws TimeoutException;
 
+    public abstract void run(boolean manualFlag);
+
     public int getStopTimeoutSeconds()
     {
-        return stopTimeoutSeconds;
+        return stopTimeoutSeconds >= 0 ? stopTimeoutSeconds : Integer.MAX_VALUE;
     }
 
     public abstract String getStatusString();
+
 
     /**
      * Creates a new Agent from the given {@link AgentConfiguration}.

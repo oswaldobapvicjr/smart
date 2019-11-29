@@ -6,7 +6,12 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
-import net.obvj.smart.agents.test.*;
+import net.obvj.smart.agents.test.invalid.TestAgentWithAllCustomParams;
+import net.obvj.smart.agents.test.invalid.TestAgentWithCustomNameAndType;
+import net.obvj.smart.agents.test.invalid.TestAgentWithNoType;
+import net.obvj.smart.agents.test.invalid.TestAgentWithTypeDeterminedBySupertypeDaemon;
+import net.obvj.smart.agents.test.valid.TestAgentWithNoNameAndTypeTimerAndAgentTask;
+import net.obvj.smart.agents.test.valid.TestAgentWithTypeDeterminedBySupertypeTimer;
 
 /**
  * Unit tests for the {@link AgentConfiguration}.

@@ -123,7 +123,7 @@ public class AgentManager
         {
             throw new UnsupportedOperationException("Cannot run a daemon agent task manually");
         }
-        agent.run();
+        agent.run(true);
     }
 
     /**

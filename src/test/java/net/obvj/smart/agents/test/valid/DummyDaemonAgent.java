@@ -1,4 +1,4 @@
-package net.obvj.smart.agents.test;
+package net.obvj.smart.agents.test.valid;
 
 import java.util.logging.Logger;
 

@@ -1,4 +1,4 @@
-package net.obvj.smart.agents.test;
+package net.obvj.smart.agents.test.invalid;
 
 import net.obvj.smart.conf.annotation.Agent;
 import net.obvj.smart.conf.annotation.AgentTask;

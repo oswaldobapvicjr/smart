@@ -22,7 +22,7 @@ import net.obvj.smart.util.Exceptions;
 public class AgentConfiguration
 {
     protected static final String DEFAULT_INTERVAL = "1";
-    protected static final int DEFAULT_STOP_TIMEOUT_IN_SECONDS = -1;
+    protected static final int DEFAULT_STOP_TIMEOUT_IN_SECONDS = Integer.MAX_VALUE;
     protected static final boolean DEFAULT_AUTOMATICALLY_STARTED = true;
     protected static final boolean DEFAULT_HIDDEN = false;
 

@@ -14,8 +14,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import net.obvj.smart.agents.api.Agent.State;
 import net.obvj.smart.agents.dummy.DummyAgent;
 import net.obvj.smart.agents.impl.AnnotatedTimerAgent;
-import net.obvj.smart.agents.test.DummyDaemonAgent;
-import net.obvj.smart.agents.test.TestAgentWithNoNameAndTypeTimerAndAgentTask;
+import net.obvj.smart.agents.test.valid.DummyDaemonAgent;
+import net.obvj.smart.agents.test.valid.TestAgentWithNoNameAndTypeTimerAndAgentTask;
 import net.obvj.smart.conf.AgentConfiguration;
 import net.obvj.smart.util.TimeUnit;
 
@@ -29,10 +29,11 @@ import net.obvj.smart.util.TimeUnit;
 public class AgentTest
 {
     // Test data
+    private static final int DEFAULT_STOP_TIMEOUT_SECONDS = Integer.MAX_VALUE;
     private static final String DUMMY_AGENT = "DummyAgent";
     private static final String DUMMY_AGENT_CLASS = "net.obvj.smart.agents.dummy.DummyAgent";
     private static final String DUMMY_DAEMON = "DummyDaemon";
-    private static final String DUMMY_DAEMON_CLASS = "net.obvj.smart.agents.test.DummyDaemonAgent";
+    private static final String DUMMY_DAEMON_CLASS = "net.obvj.smart.agents.test.valid.DummyDaemonAgent";
     private static final String TIMER = "timer";
     private static final String DAEMON = "daemon";
 
@@ -57,7 +58,7 @@ public class AgentTest
         assertThat(timerAgent.getClass(), is(equalTo(DummyAgent.class)));
         assertThat(timerAgent.getStopTimeoutSeconds(), is(5));
         assertThat(timerAgent.getConfiguration(), is(configuration));
-        assertThat(timerAgent.getConfiguration().isHidden(), is(false));
+        assertThat(timerAgent.isHidden(), is(false));
 
         assertThat(timerAgent.getInterval(), is(30));
         assertThat(timerAgent.getTimeUnit(), is(TimeUnit.SECONDS));
@@ -85,7 +86,7 @@ public class AgentTest
         assertThat(timerAgent.getClass(), is(equalTo(DummyAgent.class)));
         assertThat(timerAgent.getStopTimeoutSeconds(), is(5));
         assertThat(timerAgent.getConfiguration(), is(configuration));
-        assertThat(timerAgent.getConfiguration().isHidden(), is(true));
+        assertThat(timerAgent.isHidden(), is(true));
 
         assertThat(timerAgent.getInterval(), is(30));
         assertThat(timerAgent.getTimeUnit(), is(TimeUnit.SECONDS));
@@ -107,9 +108,9 @@ public class AgentTest
         assertThat(timerAgent.getName(), is(DUMMY_AGENT));
         assertThat(timerAgent.getType(), is(TIMER));
         assertThat(timerAgent.getClass(), is(equalTo(DummyAgent.class)));
-        assertThat(timerAgent.getStopTimeoutSeconds(), is(-1));
+        assertThat(timerAgent.getStopTimeoutSeconds(), is(DEFAULT_STOP_TIMEOUT_SECONDS));
         assertThat(timerAgent.getConfiguration(), is(configuration));
-        assertThat(timerAgent.getConfiguration().isHidden(), is(false));
+        assertThat(timerAgent.isHidden(), is(false));
 
         assertThat(timerAgent.getInterval(), is(1));
         assertThat(timerAgent.getTimeUnit(), is(TimeUnit.MINUTES));
@@ -135,7 +136,7 @@ public class AgentTest
         assertThat(daemonAgent.getClass(), is(equalTo(DummyDaemonAgent.class)));
         assertThat(daemonAgent.getStopTimeoutSeconds(), is(1));
         assertThat(daemonAgent.getConfiguration(), is(configuration));
-        assertThat(daemonAgent.getConfiguration().isHidden(), is(false));
+        assertThat(daemonAgent.isHidden(), is(false));
 
         assertThat(daemonAgent.getState(), is(State.SET));
         assertThat(daemonAgent.isStarted(), is(false));
@@ -154,9 +155,9 @@ public class AgentTest
         assertThat(daemonAgent.getName(), is(DUMMY_DAEMON));
         assertThat(daemonAgent.getType(), is(DAEMON));
         assertThat(daemonAgent.getClass(), is(equalTo(DummyDaemonAgent.class)));
-        assertThat(daemonAgent.getStopTimeoutSeconds(), is(-1));
+        assertThat(daemonAgent.getStopTimeoutSeconds(), is(DEFAULT_STOP_TIMEOUT_SECONDS));
         assertThat(daemonAgent.getConfiguration(), is(configuration));
-        assertThat(daemonAgent.getConfiguration().isHidden(), is(false));
+        assertThat(daemonAgent.isHidden(), is(false));
 
         assertThat(daemonAgent.getState(), is(State.SET));
         assertThat(daemonAgent.isStarted(), is(false));
@@ -194,7 +195,7 @@ public class AgentTest
         assertThat(timerAgent.getType(), is(TIMER));
         assertThat(timerAgent.getStopTimeoutSeconds(), is(5));
         assertThat(timerAgent.getConfiguration(), is(configuration));
-        assertThat(timerAgent.getConfiguration().isHidden(), is(true));
+        assertThat(timerAgent.isHidden(), is(true));
 
         assertThat(timerAgent.getInterval(), is(30));
         assertThat(timerAgent.getTimeUnit(), is(TimeUnit.SECONDS));

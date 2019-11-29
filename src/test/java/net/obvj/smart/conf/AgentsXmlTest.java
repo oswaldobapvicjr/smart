@@ -20,6 +20,7 @@ import net.obvj.smart.conf.xml.SmartConfiguration;
  */
 public class AgentsXmlTest
 {
+    private static final int DEFAULT_STOP_TIMEOUT_SECONDS = Integer.MAX_VALUE;
     // Test files
     private static final String XML_TIMER_AGENT_30_SECONDS = "testAgents/timerAgent30seconds.xml";
     private static final String XML_TIMER_AGENT_30_SECONDS_HIDDEN = "testAgents/timerAgent30secondsHidden.xml";
@@ -76,7 +77,7 @@ public class AgentsXmlTest
         assertEquals(TIMER, agent.getType());
         assertEquals("1", agent.getInterval());
         assertEquals(true, agent.isAutomaticallyStarted());
-        assertEquals(-1, agent.getStopTimeoutInSeconds());
+        assertEquals(DEFAULT_STOP_TIMEOUT_SECONDS, agent.getStopTimeoutInSeconds());
         assertEquals(false, agent.isHidden());
     }
 

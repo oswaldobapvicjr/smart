@@ -1,11 +1,13 @@
-package net.obvj.smart.agents.test;
+package net.obvj.smart.agents.test.valid;
 
 import net.obvj.smart.agents.api.TimerAgent;
 import net.obvj.smart.conf.annotation.Agent;
+import net.obvj.smart.conf.annotation.AgentTask;
 
 @Agent()
 public class TestAgentWithTypeDeterminedBySupertypeTimer extends TimerAgent
 {
+    @AgentTask
     @Override
     protected void runTask()
     {

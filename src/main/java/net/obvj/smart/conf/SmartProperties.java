@@ -2,10 +2,15 @@ package net.obvj.smart.conf;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 /**
@@ -19,6 +24,9 @@ import org.springframework.stereotype.Component;
 public class SmartProperties
 {
     private static final Logger LOG = Logger.getLogger("smart-server");
+
+    public static final String AGENT_SEARCH_PACKAGES = "agent.search.packages";
+    protected static final String AGENT_SEARCH_PACKAGES_DEFAULT = "net.obvj.smart.agents.internal";
 
     public static final String CONSOLE_PROMPT = "console.prompt";
     protected static final String CONSOLE_PROMPT_DEFAULT = "smart>";
@@ -47,6 +55,7 @@ public class SmartProperties
     private static final Properties defaults = new Properties();
     static
     {
+        defaults.put(AGENT_SEARCH_PACKAGES, AGENT_SEARCH_PACKAGES_DEFAULT);
         defaults.put(CONSOLE_PROMPT, CONSOLE_PROMPT_DEFAULT);
         defaults.put(CLASSIC_CONSOLE_ENABLED, CLASSIC_CONSOLE_ENABLED_DEFAULT);
         defaults.put(CLASSIC_CONSOLE_PORT, CLASSIC_CONSOLE_PORT_DEFAULT);
@@ -115,4 +124,30 @@ public class SmartProperties
     {
         return Boolean.parseBoolean(getProperty(key));
     }
+
+    /**
+     * Returns a list of strings resulting from splitting the property associated with the
+     * given key using the given regular expression. For example, considering the following
+     * property:
+     * <p>
+     * {@code my.strings=foo,boo}
+     * <p>
+     * Calling {@code getPropertiesListSplitBy("my.strings", ",")} will return a list
+     * containing the two strings: {@code foo} and {@code boo}.
+     * 
+     * @param key   the key to be fetched
+     * @param regex the delimiting regular expression
+     * @return the list of strings computed by splitting this property around matches of the
+     *         given regular expression
+     */
+    public List<String> getPropertiesListSplitBy(String key, String regex)
+    {
+        String string = getProperty(key);
+        if (StringUtils.isEmpty(string))
+        {
+            return Collections.emptyList();
+        }
+        return Arrays.stream(string.split(regex)).map(String::trim).collect(Collectors.toList());
+    }
+
 }

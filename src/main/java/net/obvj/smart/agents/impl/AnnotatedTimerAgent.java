@@ -62,4 +62,20 @@ public class AnnotatedTimerAgent extends TimerAgent
         }
     }
 
+    /**
+     * @return the annotatedAgentTaskMethod
+     */
+    protected Method getAnnotatedAgentTaskMethod()
+    {
+        return annotatedAgentTaskMethod;
+    }
+
+    /**
+     * @return the annotatedAgentInstance
+     */
+    protected Object getAnnotatedAgentInstance()
+    {
+        return annotatedAgentInstance;
+    }
+
 }

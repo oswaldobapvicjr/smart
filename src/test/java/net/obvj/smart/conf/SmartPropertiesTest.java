@@ -3,6 +3,9 @@ package net.obvj.smart.conf;
 import static net.obvj.smart.conf.SmartProperties.*;
 import static org.junit.Assert.assertEquals;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 import org.junit.Test;
 
 /**
@@ -82,6 +85,15 @@ public class SmartPropertiesTest
         SmartProperties smart = new SmartProperties(UNKNOWN_FILE);
         assertEquals(0, smart.properties.size());
         assertEquals(CLASSIC_CONSOLE_ENABLED_DEFAULT, smart.getBooleanProperty(CLASSIC_CONSOLE_ENABLED) + "");
+    }
+    
+    @Test
+    public void testGetPropertiesListSplitBy()
+    {
+        SmartProperties smart = new SmartProperties("testProperties/smart-multiValueKeys.properties");
+        assertEquals(Collections.emptyList(), smart.getPropertiesListSplitBy("key0", ","));
+        assertEquals(Arrays.asList("value1"), smart.getPropertiesListSplitBy("key1", ","));
+        assertEquals(Arrays.asList("value1", "value2"), smart.getPropertiesListSplitBy("key12", ","));
     }
 
 }

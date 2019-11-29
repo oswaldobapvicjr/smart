@@ -65,12 +65,24 @@ public abstract class DaemonAgent extends Agent
         agent.setStopTimeoutSeconds(configuration.getStopTimeoutInSeconds());
         return agent;
     }
+
+    /**
+     * The method called by the Executor Service to execute the agent task.
+     */
+    public void run()
+    {
+        run(false);
+    }
     
     /**
      * Executes this agent task.
      */
-    public void run()
+    public void run(boolean manualFlag)
     {
+        if (manualFlag)
+        {
+            throw new UnsupportedOperationException("Cannot run a daemon agent task manually");
+        }
         if (isRunning())
         {
             LOG.info("Agent task already in execution.");
@@ -152,7 +164,7 @@ public abstract class DaemonAgent extends Agent
                 try
                 {
                     LOG.info("Agent task in execution. Waiting for its completion.");
-                    wait(sleepSeconds * 1000l);
+                    Thread.sleep(sleepSeconds * 1000l);
                 }
                 catch (InterruptedException e)
                 {

@@ -91,6 +91,16 @@ public class TimerAgentTest
         verify(agentMock, never()).runTask();
     }
 
+    /**
+     * Tests that exception is thrown when run(true) is called on a running agent.
+     */
+    @Test(expected = IllegalStateException.class)
+    public void testRunManuallyAgentWithPreviousStateRunning()
+    {
+        when(agentMock.isRunning()).thenReturn(true);
+        agentMock.run(true);
+    }
+
     @Test
     public void testRunAgentWithPreviousStateSet() throws ReflectiveOperationException
     {
@@ -100,7 +110,7 @@ public class TimerAgentTest
         verify(agent).runTask();
         assertThat("State after start() should be SET", agent.getState(), is(State.SET));
         assertThat(agent.getLastRunDate(), is(notNullValue()));
-        
+
     }
 
     @Test

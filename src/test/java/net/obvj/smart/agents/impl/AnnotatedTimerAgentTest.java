@@ -1,5 +1,7 @@
 package net.obvj.smart.agents.impl;
 
+import static org.junit.Assert.assertNotNull;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -8,6 +10,11 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import net.obvj.smart.TestUtils;
 import net.obvj.smart.agents.test.*;
+import net.obvj.smart.agents.test.invalid.TestAgentWithAllCustomParamsAndPrivateAgentTask;
+import net.obvj.smart.agents.test.invalid.TestAgentWithAllCustomParamsAndPrivateConstructor;
+import net.obvj.smart.agents.test.invalid.TestAgentWithNoNameAndTypeTimerAndNoAgentTask;
+import net.obvj.smart.agents.test.invalid.TestAgentWithNoNameAndTypeTimerAndTwoAgentTasks;
+import net.obvj.smart.agents.test.valid.TestAgentWithNoNameAndTypeTimerAndAgentTask;
 import net.obvj.smart.conf.AgentConfiguration;
 import net.obvj.smart.conf.AgentConfigurationException;
 
@@ -46,7 +53,12 @@ public class AnnotatedTimerAgentTest
     {
         Mockito.when(configuration.getAgentClass())
                 .thenReturn(TestAgentWithNoNameAndTypeTimerAndAgentTask.class.getName());
-        new AnnotatedTimerAgent(configuration).runTask();
+        AnnotatedTimerAgent annotatedTimerAgent = new AnnotatedTimerAgent(configuration);
+        
+        assertNotNull(annotatedTimerAgent.getAnnotatedAgentInstance());
+        assertNotNull(annotatedTimerAgent.getAnnotatedAgentTaskMethod());
+
+        annotatedTimerAgent.runTask();
     }
 
     @Test()

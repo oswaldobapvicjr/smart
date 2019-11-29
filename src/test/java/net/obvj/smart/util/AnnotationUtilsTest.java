@@ -10,7 +10,10 @@ import java.util.Set;
 import org.junit.Test;
 
 import net.obvj.smart.TestUtils;
-import net.obvj.smart.agents.test.*;
+import net.obvj.smart.agents.test.invalid.*;
+import net.obvj.smart.agents.test.valid.DummyDaemonAgent;
+import net.obvj.smart.agents.test.valid.TestAgentWithNoNameAndTypeTimerAndAgentTask;
+import net.obvj.smart.agents.test.valid.TestAgentWithTypeDeterminedBySupertypeTimer;
 import net.obvj.smart.conf.annotation.Agent;
 
 /**
