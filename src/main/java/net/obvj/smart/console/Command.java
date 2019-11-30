@@ -33,7 +33,7 @@ public enum Command
             
             if(!(parameters.length > 1 && ("-a".equals(parameters[1]) || "--all".equals(parameters[1]))))
             {
-                agents = agents.stream().filter(agent -> !agent.hidden).collect(Collectors.toList());
+                agents = agents.stream().filter(agent -> !agent.isHidden()).collect(Collectors.toList());
             }
             
             if (agents.isEmpty())
@@ -47,7 +47,7 @@ public enum Command
 
             for (AgentDTO agent : agents)
             {
-                out.println(String.format("%-42s %-6s %-7s", agent.name, agent.type, agent.state));
+                out.println(String.format("%-42s %-6s %-7s", agent.getName(), agent.getType(), agent.getState()));
             }
         }
     },
@@ -63,7 +63,7 @@ public enum Command
 
             for (ThreadDTO thread : SystemUtils.getAllSystemTheadsDTOs())
             {
-                out.println(String.format("%-4d %-38s %-13s", thread.id, thread.name, thread.state));
+                out.println(String.format("%-4d %-38s %-13s", thread.getId(), thread.getName(), thread.getState()));
             }
         }
     },

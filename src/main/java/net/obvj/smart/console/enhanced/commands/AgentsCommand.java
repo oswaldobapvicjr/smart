@@ -52,11 +52,11 @@ public class AgentsCommand implements Runnable
         Collection<AgentDTO> agents = client.getMBeanProxy().getAgentDTOs();
         if (!all)
         {
-            agents = agents.stream().filter(a -> !a.hidden).collect(Collectors.toSet());
+            agents = agents.stream().filter(a -> !a.isHidden()).collect(Collectors.toSet());
         }
         if (!type.isEmpty())
         {
-            agents = agents.stream().filter(a -> a.type.equalsIgnoreCase(this.type)).collect(Collectors.toSet());
+            agents = agents.stream().filter(a -> a.getType().equalsIgnoreCase(this.type)).collect(Collectors.toSet());
         }
         if (agents.isEmpty())
         {
@@ -71,7 +71,7 @@ public class AgentsCommand implements Runnable
 
     private void printAgent(AgentDTO agent)
     {
-        parent.out.printf(String.format(NAME_TYPE_STATE_PATTERN, agent.name, agent.type, agent.state));
+        parent.out.printf(String.format(NAME_TYPE_STATE_PATTERN, agent.getName(), agent.getType(), agent.getState()));
     }
 
     protected void setType(String type)

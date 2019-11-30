@@ -51,7 +51,7 @@ public class ThreadsCommand implements Runnable
 
     private void printThread(ThreadDTO thread)
     {
-        parent.out.printf(ID_NAME_STATE_PATTERN, thread.id, thread.name, thread.state);
+        parent.out.printf(ID_NAME_STATE_PATTERN, thread.getId(), thread.getName(), thread.getState());
     }
 
 }

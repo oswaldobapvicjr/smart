@@ -13,15 +13,30 @@ public class ThreadDTO implements Serializable
 {
     private static final long serialVersionUID = -6159494396012110476L;
 
-    public final long id;
-    public final String name;
-    public final String state;
+    private final long id;
+    private final String name;
+    private final String state;
 
     public ThreadDTO(long id, String name, String state)
     {
         this.id = id;
         this.name = name;
         this.state = state;
+    }
+
+    public long getId()
+    {
+        return id;
+    }
+
+    public String getName()
+    {
+        return name;
+    }
+
+    public String getState()
+    {
+        return state;
     }
 
     @Override

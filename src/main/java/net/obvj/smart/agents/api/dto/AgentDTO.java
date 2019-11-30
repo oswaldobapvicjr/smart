@@ -13,10 +13,10 @@ public class AgentDTO implements Serializable
 {
     private static final long serialVersionUID = 2513158698979426314L;
 
-    public final String name;
-    public final String type;
-    public final String state;
-    public final boolean hidden;
+    private final String name;
+    private final String type;
+    private final String state;
+    private final boolean hidden;
 
     public AgentDTO(String name, String type, String state, boolean hidden)
     {
@@ -24,6 +24,26 @@ public class AgentDTO implements Serializable
         this.type = type;
         this.state = state;
         this.hidden = hidden;
+    }
+
+    public String getName()
+    {
+        return name;
+    }
+
+    public String getType()
+    {
+        return type;
+    }
+
+    public String getState()
+    {
+        return state;
+    }
+
+    public boolean isHidden()
+    {
+        return hidden;
     }
 
     @Override

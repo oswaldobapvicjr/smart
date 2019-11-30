@@ -12,7 +12,6 @@ import jline.console.completer.ArgumentCompleter.ArgumentList;
 import jline.console.completer.ArgumentCompleter.WhitespaceArgumentDelimiter;
 import net.obvj.smart.conf.properties.SmartProperties;
 import net.obvj.smart.console.enhanced.commands.Commands;
-import net.obvj.smart.util.ApplicationContextFacade;
 import net.obvj.smart.util.ClientApplicationContextFacade;
 import net.obvj.smart.util.ConsoleUtils;
 import picocli.CommandLine;
