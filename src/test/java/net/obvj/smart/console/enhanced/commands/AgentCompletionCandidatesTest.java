@@ -14,7 +14,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import net.obvj.smart.jmx.AgentManagerJMXMBean;
 import net.obvj.smart.jmx.client.AgentManagerJMXClient;
-import net.obvj.smart.util.ApplicationContextFacade;
+import net.obvj.smart.util.ClientApplicationContextFacade;
 
 /**
  * Unit tests for {@link AgentCompletionCandidates}.
@@ -23,7 +23,7 @@ import net.obvj.smart.util.ApplicationContextFacade;
  * @since 2.0
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(ApplicationContextFacade.class)
+@PrepareForTest(ClientApplicationContextFacade.class)
 public class AgentCompletionCandidatesTest
 {
     private static final String[] ALL_AGENTS = new String[] { "agent1", "agent2" };
@@ -36,8 +36,8 @@ public class AgentCompletionCandidatesTest
     @Before
     public void setup()
     {
-        PowerMockito.mockStatic(ApplicationContextFacade.class);
-        PowerMockito.when(ApplicationContextFacade.getBean(AgentManagerJMXClient.class)).thenReturn(agentManagerJMXClient);
+        PowerMockito.mockStatic(ClientApplicationContextFacade.class);
+        PowerMockito.when(ClientApplicationContextFacade.getBean(AgentManagerJMXClient.class)).thenReturn(agentManagerJMXClient);
     }
 
     @Test

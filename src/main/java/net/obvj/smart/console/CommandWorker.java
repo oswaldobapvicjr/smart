@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.obvj.smart.conf.SmartProperties;
+import net.obvj.smart.conf.properties.SmartProperties;
 import net.obvj.smart.util.ApplicationContextFacade;
 import net.obvj.smart.util.ConsoleUtils;
 

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import net.obvj.smart.conf.annotation.Agent;
+import net.obvj.smart.conf.properties.SmartProperties;
 import net.obvj.smart.util.AnnotationUtils;
 
 /**

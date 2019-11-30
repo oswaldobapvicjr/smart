@@ -15,7 +15,7 @@ import javax.management.remote.JMXServiceURL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import net.obvj.smart.conf.SmartProperties;
+import net.obvj.smart.conf.properties.SmartProperties;
 import net.obvj.smart.jmx.AgentManagerJMXMBean;
 
 /**

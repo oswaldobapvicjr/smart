@@ -16,7 +16,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import net.obvj.smart.agents.api.Agent;
-import net.obvj.smart.conf.SmartProperties;
+import net.obvj.smart.conf.properties.SmartProperties;
 import net.obvj.smart.console.ManagementConsole;
 import net.obvj.smart.manager.AgentManager;
 import net.obvj.smart.util.ApplicationContextFacade;

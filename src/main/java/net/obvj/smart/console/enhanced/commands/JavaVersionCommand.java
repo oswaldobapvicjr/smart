@@ -1,7 +1,7 @@
 package net.obvj.smart.console.enhanced.commands;
 
 import net.obvj.smart.jmx.client.AgentManagerJMXClient;
-import net.obvj.smart.util.ApplicationContextFacade;
+import net.obvj.smart.util.ClientApplicationContextFacade;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.ParentCommand;
@@ -22,7 +22,7 @@ import picocli.CommandLine.ParentCommand;
          optionListHeading = "%n@|bold,underline Options|@:%n")
 public class JavaVersionCommand implements Runnable
 {
-    private AgentManagerJMXClient client = ApplicationContextFacade.getBean(AgentManagerJMXClient.class);
+    private AgentManagerJMXClient client = ClientApplicationContextFacade.getBean(AgentManagerJMXClient.class);
 
     @Option(names = { "-h", "--help" }, usageHelp = true, description = "Display this help message.")
     boolean usageHelpRequested;

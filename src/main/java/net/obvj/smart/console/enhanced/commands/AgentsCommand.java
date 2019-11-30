@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 import net.obvj.smart.agents.api.dto.AgentDTO;
 import net.obvj.smart.jmx.client.AgentManagerJMXClient;
-import net.obvj.smart.util.ApplicationContextFacade;
+import net.obvj.smart.util.ClientApplicationContextFacade;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.ParentCommand;
@@ -29,7 +29,7 @@ public class AgentsCommand implements Runnable
 {
     private static final String NAME_TYPE_STATE_PATTERN = "%-42s %-6s %-7s%n";
 
-    private AgentManagerJMXClient client = ApplicationContextFacade.getBean(AgentManagerJMXClient.class);
+    private AgentManagerJMXClient client = ClientApplicationContextFacade.getBean(AgentManagerJMXClient.class);
 
     @Option(names = {"-h", "--help"}, usageHelp = true, description = "Display this help message.")
     boolean usageHelpRequested;

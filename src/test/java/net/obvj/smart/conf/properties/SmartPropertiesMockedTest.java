@@ -1,16 +1,17 @@
-package net.obvj.smart.conf;
+package net.obvj.smart.conf.properties;
 
+import static net.obvj.smart.conf.properties.SmartProperties.*;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
-
-import static net.obvj.smart.conf.SmartProperties.*;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+
+import net.obvj.smart.conf.properties.SmartProperties;
 
 /**
  * Unit tests for the {@link SmartProperties} class.

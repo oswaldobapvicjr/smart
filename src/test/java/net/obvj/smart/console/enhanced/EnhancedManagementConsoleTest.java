@@ -17,15 +17,15 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import net.obvj.smart.conf.SmartProperties;
+import net.obvj.smart.conf.properties.SmartProperties;
 import net.obvj.smart.console.enhanced.EnhancedManagementConsole.Mode;
 import net.obvj.smart.jmx.AgentManagerJMXMBean;
 import net.obvj.smart.jmx.client.AgentManagerJMXClient;
-import net.obvj.smart.util.ApplicationContextFacade;
+import net.obvj.smart.util.ClientApplicationContextFacade;
 import net.obvj.smart.util.ConsoleUtils;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ ConsoleUtils.class, ApplicationContextFacade.class })
+@PrepareForTest({ ConsoleUtils.class, ClientApplicationContextFacade.class })
 public class EnhancedManagementConsoleTest
 {
     @Mock
@@ -39,10 +39,10 @@ public class EnhancedManagementConsoleTest
     public void setup()
     {
         PowerMockito.mockStatic(ConsoleUtils.class);
-        PowerMockito.mockStatic(ApplicationContextFacade.class);
+        PowerMockito.mockStatic(ClientApplicationContextFacade.class);
 
-        PowerMockito.when(ApplicationContextFacade.getBean(SmartProperties.class)).thenReturn(smartProperties);
-        PowerMockito.when(ApplicationContextFacade.getBean(AgentManagerJMXClient.class)).thenReturn(agentManagerJMXClient);
+        PowerMockito.when(ClientApplicationContextFacade.getBean(SmartProperties.class)).thenReturn(smartProperties);
+        PowerMockito.when(ClientApplicationContextFacade.getBean(AgentManagerJMXClient.class)).thenReturn(agentManagerJMXClient);
         PowerMockito.when(agentManagerJMXClient.getMBeanProxy()).thenReturn(agentManagerJMXBean);
         PowerMockito.when(agentManagerJMXBean.getAgentNames()).thenReturn(new String[] { "agent1", "agent2" });
     }

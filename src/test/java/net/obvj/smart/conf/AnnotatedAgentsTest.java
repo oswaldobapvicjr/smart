@@ -20,6 +20,7 @@ import net.obvj.smart.agents.internal.BackgroundAgent;
 import net.obvj.smart.agents.test.valid.DummyDaemonAgent;
 import net.obvj.smart.agents.test.valid.TestAgentWithNoNameAndTypeTimerAndAgentTask;
 import net.obvj.smart.agents.test.valid.TestAgentWithTypeDeterminedBySupertypeTimer;
+import net.obvj.smart.conf.properties.SmartProperties;
 
 /**
  * Unit tests for the {@link AnnotatedAgents} component.

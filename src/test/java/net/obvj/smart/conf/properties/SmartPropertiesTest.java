@@ -1,12 +1,14 @@
-package net.obvj.smart.conf;
+package net.obvj.smart.conf.properties;
 
-import static net.obvj.smart.conf.SmartProperties.*;
+import static net.obvj.smart.conf.properties.SmartProperties.*;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.Test;
+
+import net.obvj.smart.conf.properties.SmartProperties;
 
 /**
  * Unit tests for the {@link SmartProperties} class.

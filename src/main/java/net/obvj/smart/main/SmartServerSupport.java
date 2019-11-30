@@ -11,7 +11,7 @@ import javax.management.ObjectName;
 import net.obvj.smart.agents.api.Agent;
 import net.obvj.smart.conf.AgentConfiguration;
 import net.obvj.smart.conf.AgentLoader;
-import net.obvj.smart.conf.SmartProperties;
+import net.obvj.smart.conf.properties.SmartProperties;
 import net.obvj.smart.console.ManagementConsole;
 import net.obvj.smart.jmx.AgentManagerJMX;
 import net.obvj.smart.jmx.AgentManagerJMXMBean;

@@ -1,4 +1,4 @@
-package net.obvj.smart.conf;
+package net.obvj.smart.conf.properties;
 
 import java.io.IOException;
 import java.io.InputStream;

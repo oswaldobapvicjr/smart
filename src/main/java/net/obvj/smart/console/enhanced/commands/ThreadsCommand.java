@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import net.obvj.smart.jmx.client.AgentManagerJMXClient;
 import net.obvj.smart.jmx.dto.ThreadDTO;
-import net.obvj.smart.util.ApplicationContextFacade;
+import net.obvj.smart.util.ClientApplicationContextFacade;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.ParentCommand;
@@ -27,7 +27,7 @@ public class ThreadsCommand implements Runnable
 {
     private static final String ID_NAME_STATE_PATTERN = "%-4d %-38s %-13s%n";
 
-    private AgentManagerJMXClient client = ApplicationContextFacade.getBean(AgentManagerJMXClient.class);
+    private AgentManagerJMXClient client = ClientApplicationContextFacade.getBean(AgentManagerJMXClient.class);
     
     @Option(names = {"-h", "--help"}, usageHelp = true, description = "Display this help message.")
     boolean usageHelpRequested;
