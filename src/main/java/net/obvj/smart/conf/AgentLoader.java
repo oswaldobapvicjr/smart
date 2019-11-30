@@ -1,5 +1,6 @@
 package net.obvj.smart.conf;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,11 +47,11 @@ public class AgentLoader
     }
 
     /**
-     * @return a {@link Map} of {@link AgentConfiguration} by annotated class name
+     * @return a collection of {@link AgentConfiguration} objects
      */
-    public Map<String, AgentConfiguration> getAgents()
+    public Collection<AgentConfiguration> getAgents()
     {
-        return agentsByClass;
+        return agentsByClass.values();
     }
 
     public AgentConfiguration getAgentConfigurationByClass(String className)

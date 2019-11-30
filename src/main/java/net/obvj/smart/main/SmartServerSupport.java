@@ -1,7 +1,7 @@
 package net.obvj.smart.main;
 
 import java.lang.management.ManagementFactory;
-import java.util.List;
+import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -10,7 +10,7 @@ import javax.management.ObjectName;
 
 import net.obvj.smart.agents.api.Agent;
 import net.obvj.smart.conf.AgentConfiguration;
-import net.obvj.smart.conf.AgentsXml;
+import net.obvj.smart.conf.AgentLoader;
 import net.obvj.smart.conf.SmartProperties;
 import net.obvj.smart.console.ManagementConsole;
 import net.obvj.smart.jmx.AgentManagerJMX;
@@ -28,7 +28,7 @@ public class SmartServerSupport
 {
     protected SmartProperties smartProperties = ApplicationContextFacade.getBean(SmartProperties.class);
     protected AgentManager agentManager = ApplicationContextFacade.getBean(AgentManager.class);
-    protected AgentsXml agentsXml = ApplicationContextFacade.getBean(AgentsXml.class);
+    protected AgentLoader agentLoader = ApplicationContextFacade.getBean(AgentLoader.class);
     protected ManagementConsole managementConsole = ApplicationContextFacade.getBean(ManagementConsole.class);
 
     protected String jmxAgentManagerObjectName = smartProperties
@@ -68,9 +68,9 @@ public class SmartServerSupport
     protected void loadAgents()
     {
         LOG.info("Loading agents...");
-        List<AgentConfiguration> agents = agentsXml.getAgents();
+        Collection<AgentConfiguration> agents = agentLoader.getAgents();
         agents.forEach(this::parseAndLoadAgentConfig);
-        LOG.log(Level.INFO, "{0} agents loaded", agentManager.getAgents().size());
+        LOG.log(Level.INFO, "{0} agent(s) loaded", agentManager.getAgents().size());
     }
 
     private void parseAndLoadAgentConfig(AgentConfiguration agentConfig)
