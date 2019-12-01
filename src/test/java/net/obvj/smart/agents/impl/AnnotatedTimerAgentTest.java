@@ -1,5 +1,6 @@
 package net.obvj.smart.agents.impl;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
@@ -9,7 +10,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import net.obvj.smart.TestUtils;
-import net.obvj.smart.agents.test.*;
 import net.obvj.smart.agents.test.invalid.TestAgentWithAllCustomParamsAndPrivateAgentTask;
 import net.obvj.smart.agents.test.invalid.TestAgentWithAllCustomParamsAndPrivateConstructor;
 import net.obvj.smart.agents.test.invalid.TestAgentWithNoNameAndTypeTimerAndNoAgentTask;
@@ -54,7 +54,7 @@ public class AnnotatedTimerAgentTest
         Mockito.when(configuration.getAgentClass())
                 .thenReturn(TestAgentWithNoNameAndTypeTimerAndAgentTask.class.getName());
         AnnotatedTimerAgent annotatedTimerAgent = new AnnotatedTimerAgent(configuration);
-        
+
         assertNotNull(annotatedTimerAgent.getAnnotatedAgentInstance());
         assertNotNull(annotatedTimerAgent.getAnnotatedAgentTaskMethod());
 
@@ -76,6 +76,17 @@ public class AnnotatedTimerAgentTest
         Mockito.when(configuration.getAgentClass())
                 .thenReturn(TestAgentWithAllCustomParamsAndPrivateAgentTask.class.getName());
         new AnnotatedTimerAgent(configuration);
+    }
+
+    @Test
+    public void toStringPrintsCustomString()
+    {
+        Mockito.when(configuration.getAgentClass())
+                .thenReturn(TestAgentWithNoNameAndTypeTimerAndAgentTask.class.getName());
+        AnnotatedTimerAgent annotatedTimerAgent = new AnnotatedTimerAgent(configuration);
+
+        String string = annotatedTimerAgent.toString();
+        assertEquals("AnnotatedTimerAgent$" + TestAgentWithNoNameAndTypeTimerAndAgentTask.class.getName(), string);
     }
 
 }

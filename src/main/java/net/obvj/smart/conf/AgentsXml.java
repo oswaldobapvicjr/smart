@@ -69,7 +69,8 @@ public class AgentsXml
             unmarshaller.setSchema(loadSchema());
             xmlAgents = (SmartConfiguration) unmarshaller.unmarshal(stream);
 
-            LOG.log(Level.INFO, "{0} agent(s) found", xmlAgents.getAgents().size());
+            LOG.log(Level.INFO, "{0} agent candidate(s) found: {1}",
+                    new Object[] { xmlAgents.getAgents().size(), xmlAgents.getAgents() });
         }
         catch (UnmarshalException e)
         {

@@ -206,4 +206,10 @@ public class AgentConfiguration
         return StringUtils.EMPTY;
     }
 
+    @Override
+    public String toString()
+    {
+        return new StringBuilder("AgentConfiguration (class=").append(agentClass).append(")").toString();
+    }
+
 }

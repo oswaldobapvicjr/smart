@@ -67,10 +67,11 @@ public class SmartServerSupport
 
     protected void loadAgents()
     {
-        LOG.info("Loading agents...");
+        LOG.info("Parsing agents...");
         Collection<AgentConfiguration> agents = agentLoader.getAgents();
         agents.forEach(this::parseAndLoadAgentConfig);
-        LOG.log(Level.INFO, "{0} agent(s) loaded", agentManager.getAgents().size());
+        LOG.log(Level.INFO, "{0} agent(s) parsed: {1}",
+                new Object[] { agentManager.getAgents().size(), agentManager.getAgents() });
     }
 
     private void parseAndLoadAgentConfig(AgentConfiguration agentConfig)

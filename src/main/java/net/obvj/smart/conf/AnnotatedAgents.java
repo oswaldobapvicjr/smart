@@ -1,6 +1,8 @@
 package net.obvj.smart.conf;
 
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,8 @@ import net.obvj.smart.util.AnnotationUtils;
 @Component
 public class AnnotatedAgents
 {
+    private final Logger log = Logger.getLogger("smart.server"); 
+    
     private SmartProperties properties;
 
     private Map<String, AgentConfiguration> agentsByClass = new HashMap<>();
@@ -40,9 +44,13 @@ public class AnnotatedAgents
     protected Set<String> findAnnotatedAgentClasses()
     {
         List<String> searchPackages = getSearchPackages();
+
+        log.log(Level.INFO, "Scanning base packages: {0}", searchPackages);
         Set<String> classNames = new HashSet<>();
         searchPackages.forEach(searchPackage -> classNames
                 .addAll(AnnotationUtils.findClassesWithAnnotation(Agent.class, searchPackage)));
+        
+        log.log(Level.INFO, "{0} agent candidate(s) found: {1}", new Object[] { classNames.size(), classNames });
         return classNames;
     }
 

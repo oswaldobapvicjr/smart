@@ -78,4 +78,13 @@ public class AnnotatedTimerAgent extends TimerAgent
         return annotatedAgentInstance;
     }
 
+    @Override
+    public String toString()
+    {
+        StringBuilder builder = new StringBuilder();
+        builder.append("AnnotatedTimerAgent$").append(annotatedAgentInstance.getClass().getName());
+        return builder.toString();
+    }
+
+    
 }
