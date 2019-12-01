@@ -1,14 +1,15 @@
 package net.obvj.smart.util;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 
 /**
  * Utility methods for the management console
@@ -19,30 +20,52 @@ import java.util.logging.Logger;
 public class ConsoleUtils
 {
     private static final Logger LOG = Logger.getLogger("smart-server");
+    private static final String HEADER_FILE = "header.txt";
 
     private ConsoleUtils()
     {
         throw new IllegalStateException("Utility class");
     }
-    
+
+    /**
+     * Read all lines from the custom header file.
+     * 
+     * @return the lines from the file as a {@link List}
+     */
     public static List<String> readCustomHeaderLines()
     {
-        LOG.fine("Searching for custom header file...");
+        LOG.fine("Searching custom header file...");
+        return readFileLines(HEADER_FILE);
+    }
+
+    /**
+     * Read all lines from an path in the class path, decoded as UTF-8.
+     * 
+     * @param path the absolute path within the class path
+     * @return the lines from the file as a {@link List}
+     */
+    public static List<String> readFileLines(String path)
+    {
+        LOG.log(Level.FINE, "Searching file: {0}", path);
         try
         {
-            URL headerFileURL = ConsoleUtils.class.getClassLoader().getResource("header.txt");
-            if (headerFileURL == null)
+            Resource resource = new ClassPathResource(path);
+            if (resource.exists())
             {
-                LOG.warning("Unable to find header.txt file");
-                return Collections.emptyList();
+                LOG.log(Level.FINE, "{0} found", path);
+                return Files.readAllLines(Paths.get(resource.getURI()));
             }
-            return Files.readAllLines(Paths.get(headerFileURL.toURI()));
+            else
+            {
+                LOG.log(Level.WARNING, "Unable to find {0}", path);
+            }
         }
-        catch (URISyntaxException | IOException e)
+        catch (IOException e)
         {
-            LOG.log(Level.WARNING, "Unable to read header.txt file: {0} ({1})",
-                    new String[] { e.getClass().getName(), e.getLocalizedMessage() });
-            return Collections.emptyList();
+            LOG.log(Level.WARNING, "Error reading file: {0} ({1}: {2})",
+                    new String[] { path, e.getClass().getName(), e.getLocalizedMessage() });
         }
+        return Collections.emptyList();
     }
+
 }

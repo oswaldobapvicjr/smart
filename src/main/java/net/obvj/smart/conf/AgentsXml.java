@@ -55,7 +55,6 @@ public class AgentsXml
     protected static SmartConfiguration loadAgentsXmlFile(String fileName)
     {
         SmartConfiguration xmlAgents = null;
-        LOG.log(Level.INFO, "Searching for agents file: {0}", fileName);
         try (final InputStream stream = AgentsXml.class.getClassLoader().getResourceAsStream(fileName))
         {
             if (stream == null)

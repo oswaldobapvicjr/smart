@@ -22,7 +22,7 @@ import net.obvj.smart.util.AnnotationUtils;
 @Component
 public class AnnotatedAgents
 {
-    private final Logger log = Logger.getLogger("smart.server"); 
+    private final Logger log = Logger.getLogger("smart-server"); 
     
     private SmartProperties properties;
 

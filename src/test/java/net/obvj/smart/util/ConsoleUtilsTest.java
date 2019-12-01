@@ -1,5 +1,9 @@
 package net.obvj.smart.util;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.Collections;
+
 import org.junit.Test;
 
 import net.obvj.smart.TestUtils;
@@ -27,6 +31,12 @@ public class ConsoleUtilsTest
     public void testReadFileFromClasspathReturnsContent()
     {
         TestUtils.assertStringContains(ConsoleUtils.readCustomHeaderLines().toString(), "S.M.A.R.T. Console");
+    }
+    
+    @Test
+    public void testReadFileListWithFileNotFound()
+    {
+        assertEquals(Collections.emptyList(), ConsoleUtils.readFileLines("invalidFile.if"));
     }
 
 }
