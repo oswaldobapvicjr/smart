@@ -6,6 +6,9 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 import net.obvj.smart.agents.impl.AnnotatedTimerAgent;
 import net.obvj.smart.conf.AgentConfiguration;
 import net.obvj.smart.conf.AgentConfigurationException;
@@ -25,7 +28,6 @@ public abstract class TimerAgent extends Agent
 {
     public static final String TYPE = "timer";
 
-    private static final String LINE_SEPARATOR = System.getProperty("line.separator");
     private static final Logger LOG = Logger.getLogger("smart-server");
 
     protected static final String MSG_AGENT_ALREADY_STARTED = "Agent already started";
@@ -236,19 +238,19 @@ public abstract class TimerAgent extends Agent
     }
 
     /**
-     * @return A string with this agent's metadata (name, 'started' flag, 'running' flag,
-     *         'startDate' and 'lastRunDate')
+     * @return A string with current agent status in JSON format
      */
+    @Override
     public String getStatusString()
     {
-        StringBuilder sb = new StringBuilder(getName()).append(" {")
-                .append(LINE_SEPARATOR).append("   type:       ").append(getType())
-                .append(LINE_SEPARATOR).append("   status:     ").append(getState())
-                .append(LINE_SEPARATOR).append("   startDate:  ").append(DateUtils.formatDate(startDate))
-                .append(LINE_SEPARATOR).append("   lastRun:    ").append(DateUtils.formatDate(lastRunDate))
-                .append(LINE_SEPARATOR).append("   frequency:  ").append(interval).append(" ").append(timeUnit)
-                .append(LINE_SEPARATOR).append("}");
-        return sb.toString();
+        ToStringBuilder builder = new ToStringBuilder(this, ToStringStyle.JSON_STYLE);
+        builder.append("name", getName())
+               .append("type", getType())
+               .append("status", getState())
+               .append("startDate", (DateUtils.formatDate(startDate)))
+               .append("lastRunDate", (DateUtils.formatDate(lastRunDate)))
+               .append("frequency", getInterval() + " " + getTimeUnit());
+        return builder.build();
     }
 
     public int getInterval()

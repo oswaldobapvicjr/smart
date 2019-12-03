@@ -22,6 +22,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import net.obvj.smart.TestUtils;
 import net.obvj.smart.agents.api.Agent;
 import net.obvj.smart.agents.api.Agent.State;
 import net.obvj.smart.agents.api.dto.AgentDTO;
@@ -167,9 +168,21 @@ public class AgentManagerTest
     {
         Agent agent = mock(Agent.class);
         when(agent.getName()).thenReturn(AGENT1);
+        when(agent.getStatusString()).thenReturn("{\"statusStr\":\"statusStr1\"}");
+        prepareAgentManager(agent);
+        String agentStatusStrWithoutSpaces = manager.getAgentStatusStr(AGENT1).replace(" ", "");
+        TestUtils.assertStringContains(agentStatusStrWithoutSpaces, "\"statusStr\":\"statusStr1\"");
+    }
+    
+    @Test
+    public void testGetAgentStatusStrNotPrettyPrinted()
+    {
+        Agent agent = mock(Agent.class);
+        when(agent.getName()).thenReturn(AGENT1);
         when(agent.getStatusString()).thenReturn("statusStr1");
         prepareAgentManager(agent);
-        assertEquals("statusStr1", manager.getAgentStatusStr(AGENT1));
+        String agentStatusStr = manager.getAgentStatusStr(AGENT1, false);
+        assertEquals("statusStr1", agentStatusStr);
     }
 
     @Test

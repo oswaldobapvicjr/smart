@@ -117,9 +117,9 @@ public class TimerAgentTest
     public void testGetAgentStatusStr() throws ReflectiveOperationException
     {
         TimerAgent agent = (TimerAgent) Agent.parseAgent(DUMMY_AGENT_CONFIG);
-        String statusWithoutSpaces = agent.getStatusString().replace(" ", "");
-        TestUtils.assertStringContains(statusWithoutSpaces, "DummyAgent", "type:timer", "status:SET", "startDate:null",
-                "lastRun:null", "frequency:30second(s)");
+        String statusWithoutQuotes = agent.getStatusString().replace("\"", "");
+        TestUtils.assertStringContains(statusWithoutQuotes, "name:DummyAgent", "type:timer", "status:SET",
+                "startDate:null", "lastRunDate:null", "frequency:30 second(s)");
     }
 
 }

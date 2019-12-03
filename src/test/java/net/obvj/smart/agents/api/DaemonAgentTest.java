@@ -97,10 +97,10 @@ public class DaemonAgentTest
     public void testGetAgentStatusStr() throws ReflectiveOperationException
     {
         DaemonAgent agent = (DaemonAgent) Agent.parseAgent(DUMMY_AGENT_CONFIG);
-        String statusWithoutSpaces = agent.getStatusString().replace(" ", "");
-        TestUtils.assertStringContains(statusWithoutSpaces, "DummyDaemonAgent", "type:daemon", "status:SET",
+        String statusWithoutQuotes = agent.getStatusString().replace("\"", "");
+        TestUtils.assertStringContains(statusWithoutQuotes, "name:DummyDaemonAgent", "type:daemon", "status:SET",
                 "startDate:null");
-        TestUtils.assertStringDoesNotContain(statusWithoutSpaces, "frequency", "lastRun");
+        TestUtils.assertStringDoesNotContain(statusWithoutQuotes, "frequency", "lastRun");
     }
     
     /**
@@ -111,6 +111,5 @@ public class DaemonAgentTest
     {
         agentMock.run(true);
     }
-
 
 }

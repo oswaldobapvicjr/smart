@@ -12,6 +12,10 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+
 import net.obvj.smart.agents.api.Agent;
 import net.obvj.smart.agents.api.DaemonAgent;
 import net.obvj.smart.agents.api.dto.AgentDTO;
@@ -31,20 +35,21 @@ public class AgentManager
     private static final String MSG_ERROR_LOADING_AGENT = "Error loading agent: %s";
     private static final String MSG_INVALID_AGENT = "Invalid agent: %s";
     private static final String MSG_AGENT_STARTED_PLEASE_STOP_FIRST = "'%s' is started. Please stop the agent before this operation.";
+    private static final String SYSTEM_LINE_SEPARATOR = System.getProperty("line.separator");
 
     private static final Logger LOG = Logger.getLogger("smart-server");
 
     private AgentLoader agentLoader;
 
     private Map<String, Agent> agents = new TreeMap<>();
-    
+
     @Autowired
     public AgentManager(AgentLoader agentLoader)
     {
         this.agentLoader = agentLoader;
         loadAgents();
     }
-    
+
     /**
      * Loads agent candidates retrieved by the {@link AgentLoader}.
      */
@@ -79,7 +84,7 @@ public class AgentManager
             return Optional.empty();
         }
     }
-    
+
     /**
      * Registers a new agent for maintenance
      * 
@@ -249,7 +254,24 @@ public class AgentManager
      */
     public String getAgentStatusStr(String name)
     {
-        return findAgentByName(name).getStatusString();
+        return getAgentStatusStr(name, true);
+    }
+
+    protected String getAgentStatusStr(String name, boolean prettyPrinting)
+    {
+        String statusString = findAgentByName(name).getStatusString();
+        return prettyPrinting ? getPrettyPrintedJson(statusString) : statusString;
+    }
+
+    /**
+     * @param string the JSON object representation to be converted
+     * @return a JSON representation that fits in a page for pretty printing
+     */
+    private String getPrettyPrintedJson(String string)
+    {
+        JsonObject jsonObject = new Gson().fromJson(string, JsonObject.class);
+        String prettyPrintedJson = new GsonBuilder().setPrettyPrinting().create().toJson(jsonObject);
+        return prettyPrintedJson.replace("\n", SYSTEM_LINE_SEPARATOR);
     }
 
 }

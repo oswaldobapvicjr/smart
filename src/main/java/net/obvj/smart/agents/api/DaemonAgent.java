@@ -6,6 +6,9 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 import net.obvj.smart.conf.AgentConfiguration;
 import net.obvj.smart.util.DateUtils;
 
@@ -23,7 +26,6 @@ public abstract class DaemonAgent extends Agent
 {
     public static final String TYPE = "daemon";
 
-    private static final String LINE_SEPARATOR = System.getProperty("line.separator");
     private static final Logger LOG = Logger.getLogger("smart-server");
 
     protected static final String MSG_AGENT_ALREADY_STARTED = "Agent already started";
@@ -190,19 +192,19 @@ public abstract class DaemonAgent extends Agent
     {
         return super.isStarted() || super.isRunning();
     }
-    
+
     /**
-     * @return A string with this agent's metadata (name, type, 'currentState' and
-     *         'startDate')
+     * @return A string with current agent status in JSON format
      */
+    @Override
     public String getStatusString()
     {
-        StringBuilder sb = new StringBuilder(getName()).append(" {")
-                .append(LINE_SEPARATOR).append("   type:       ").append(getType())
-                .append(LINE_SEPARATOR).append("   status:     ").append(getState())
-                .append(LINE_SEPARATOR).append("   startDate:  ").append(DateUtils.formatDate(startDate))
-                .append(LINE_SEPARATOR).append("}");
-        return sb.toString();
+        ToStringBuilder builder = new ToStringBuilder(this, ToStringStyle.JSON_STYLE);
+        builder.append("name", getName())
+               .append("type", getType())
+               .append("status", getState())
+               .append("startDate", (DateUtils.formatDate(startDate)));
+        return builder.build();
     }
 
     /**
