@@ -26,8 +26,7 @@ public class Main extends SmartServerSupport
         // Create shutdown hook
         Runtime.getRuntime().addShutdownHook(new Thread(new ShutdownHook(), "Shutdown"));
 
-        // Loading agents
-        loadAgents();
+        // Start agents
         startAutomaticAgents();
 
         LOG.info("Ready");

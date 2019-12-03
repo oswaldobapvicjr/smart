@@ -2,8 +2,11 @@ package net.obvj.smart.manager;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,14 +28,58 @@ import net.obvj.smart.util.Exceptions;
 @Component
 public class AgentManager
 {
+    private static final String MSG_ERROR_LOADING_AGENT = "Error loading agent: %s";
     private static final String MSG_INVALID_AGENT = "Invalid agent: %s";
     private static final String MSG_AGENT_STARTED_PLEASE_STOP_FIRST = "'%s' is started. Please stop the agent before this operation.";
 
-    @Autowired
-    private AgentLoader agentLoader;
-    
-    private Map<String, Agent> agents = new TreeMap<>();
+    private static final Logger LOG = Logger.getLogger("smart-server");
 
+    private AgentLoader agentLoader;
+
+    private Map<String, Agent> agents = new TreeMap<>();
+    
+    @Autowired
+    public AgentManager(AgentLoader agentLoader)
+    {
+        this.agentLoader = agentLoader;
+        loadAgents();
+    }
+    
+    /**
+     * Loads agent candidates retrieved by the {@link AgentLoader}.
+     */
+    public void loadAgents()
+    {
+        LOG.info("Parsing agents...");
+
+        Collection<AgentConfiguration> agentCandidates = agentLoader.getAgents();
+        agentCandidates.stream().map(this::parseAgent).filter(Optional::isPresent).map(Optional::get)
+                .forEach(this::addAgent);
+
+        LOG.log(Level.INFO, "{0}/{1} agent(s) loaded successfully: {2}",
+                new Object[] { agents.size(), agentCandidates.size(), agents.values() });
+    }
+
+    /**
+     * Parses the given {@link AgentConfiguration}.
+     * 
+     * @param agentConfig the {@link AgentConfiguration} to be parsed
+     * @return an Optional which may contain a valid {@link Agent}, or
+     *         {@link Optional#empty()} if unable to parse the given configuration
+     */
+    private Optional<Agent> parseAgent(AgentConfiguration agentConfig)
+    {
+        try
+        {
+            return Optional.of(Agent.parseAgent(agentConfig));
+        }
+        catch (Exception e)
+        {
+            LOG.log(Level.SEVERE, String.format(MSG_ERROR_LOADING_AGENT, agentConfig.getName()), e);
+            return Optional.empty();
+        }
+    }
+    
     /**
      * Registers a new agent for maintenance
      * 

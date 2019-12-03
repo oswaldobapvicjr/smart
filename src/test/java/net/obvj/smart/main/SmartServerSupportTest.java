@@ -40,9 +40,6 @@ public class SmartServerSupportTest
             .type("daemon").agentClass("net.obvj.smart.agents.test.valid.DummyDaemonAgent").automaticallyStarted(true)
             .build();
 
-    private static final List<AgentConfiguration> ALL_AGENT_CONFIGS = Arrays.asList(DUMMY_AGENT_CONFIG,
-            DUMMY_DAEMON_CONFIG);
-
     @Mock
     private SmartProperties properties;
     @Mock
@@ -68,7 +65,6 @@ public class SmartServerSupportTest
         when(ApplicationContextFacade.getBean(AgentManager.class)).thenReturn(manager);
         when(ApplicationContextFacade.getBean(AgentLoader.class)).thenReturn(agentLoader);
         when(ApplicationContextFacade.getBean(SmartProperties.class)).thenReturn(properties);
-        ;
 
         // Setup agents
         dummyAgent = spy(Agent.parseAgent(DUMMY_AGENT_CONFIG));
@@ -120,28 +116,6 @@ public class SmartServerSupportTest
         support.startAutomaticAgents();
         verify(manager, never()).startAgent("DummyAgent");
         verify(manager).startAgent("DummyDaemon");
-    }
-
-    @Test
-    public void testLoadAgents() throws ReflectiveOperationException
-    {
-        when(Agent.parseAgent(DUMMY_AGENT_CONFIG)).thenReturn(dummyAgent);
-        when(Agent.parseAgent(DUMMY_DAEMON_CONFIG)).thenReturn(dummyDaemon);
-        when(agentLoader.getAgents()).thenReturn(ALL_AGENT_CONFIGS);
-        support.loadAgents();
-        verify(manager).addAgent(dummyAgent);
-        verify(manager).addAgent(dummyDaemon);
-    }
-
-    @Test
-    public void testLoadAgentsWithOneException() throws ReflectiveOperationException
-    {
-        when(Agent.parseAgent(DUMMY_AGENT_CONFIG)).thenReturn(dummyAgent);
-        when(Agent.parseAgent(DUMMY_DAEMON_CONFIG)).thenThrow(new AgentConfigurationException("dummyException"));
-        when(agentLoader.getAgents()).thenReturn(ALL_AGENT_CONFIGS);
-        support.loadAgents();
-        verify(manager).addAgent(dummyAgent);
-        verify(manager, never()).addAgent(dummyDaemon);
     }
 
 }
