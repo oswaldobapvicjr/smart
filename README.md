@@ -1,4 +1,5 @@
-# ![SMART logo](resources/smart_logo.svg)
+![SMART logo](resources/smart_logo.svg)
+
 [![Build Status](https://travis-ci.org/oswaldobapvicjr/smart.svg?branch=master)](https://travis-ci.org/oswaldobapvicjr/smart) [![Coverage Status](https://coveralls.io/repos/github/oswaldobapvicjr/smart/badge.svg?branch=master)](https://coveralls.io/github/oswaldobapvicjr/smart?branch=master)
 
 A lightweight runtime engine for Java agents.
