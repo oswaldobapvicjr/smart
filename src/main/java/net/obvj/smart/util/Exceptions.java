@@ -2,6 +2,7 @@ package net.obvj.smart.util;
 
 import java.io.FileNotFoundException;
 
+import net.obvj.smart.agents.AgentRuntimeException;
 import net.obvj.smart.conf.AgentConfigurationException;
 
 /**
@@ -104,6 +105,19 @@ public final class Exceptions
             final Object... args)
     {
         return new AgentConfigurationException(String.format(format, args), cause);
+    }
+
+    /**
+     * Creates an {@link AgentConfigurationException} with a cause and a formatted message.
+     * 
+     * @param cause  the cause to be set
+     * @param format See {@link String#format(String, Object...)}
+     * @param args   See {@link String#format(String, Object...)}
+     * @return an {@link AgentConfigurationException} with given cause and formatted message
+     */
+    public static AgentRuntimeException agentRuntime(final Throwable cause, final String format, final Object... args)
+    {
+        return new AgentRuntimeException(String.format(format, args), cause);
     }
 
 }

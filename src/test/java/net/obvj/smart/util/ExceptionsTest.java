@@ -1,10 +1,14 @@
 package net.obvj.smart.util;
 
+import static net.obvj.smart.TestUtils.assertException;
+import static net.obvj.smart.TestUtils.checkNoInstancesAllowed;
+
+import java.io.FileNotFoundException;
+
 import org.junit.Test;
 
+import net.obvj.smart.agents.AgentRuntimeException;
 import net.obvj.smart.conf.AgentConfigurationException;
-
-import static net.obvj.smart.TestUtils.*;
 
 /**
  * Unit tests for the {@link Exceptions} class.
@@ -51,12 +55,32 @@ public class ExceptionsTest
         assertException(IllegalStateException.class, EXPECTED_MSG, NullPointerException.class,
                 Exceptions.illegalState(new NullPointerException(), MSG_PATTERN, ARG1, ARG2));
     }
-    
+
+    @Test
+    public void testAgentConfigurationWithMessageAndParams()
+    {
+        assertException(AgentConfigurationException.class, EXPECTED_MSG, null,
+                Exceptions.agentConfiguration(MSG_PATTERN, ARG1, ARG2));
+    }
+
     @Test
     public void testAgentConfigurationWithMessageAndParamsAndCause()
     {
         assertException(AgentConfigurationException.class, EXPECTED_MSG, NullPointerException.class,
                 Exceptions.agentConfiguration(new NullPointerException(), MSG_PATTERN, ARG1, ARG2));
+    }
+    
+    @Test
+    public void testAgentRuntimeWithMessageAndParamsAndCause()
+    {
+        assertException(AgentRuntimeException.class, EXPECTED_MSG, NullPointerException.class,
+                Exceptions.agentRuntime(new NullPointerException(), MSG_PATTERN, ARG1, ARG2));
+    }
+
+    @Test
+    public void testFileNotFoundWithMessageAndParams()
+    {
+        assertException(FileNotFoundException.class, EXPECTED_MSG, Exceptions.fileNotFound(MSG_PATTERN, ARG1, ARG2));
     }
 
 }

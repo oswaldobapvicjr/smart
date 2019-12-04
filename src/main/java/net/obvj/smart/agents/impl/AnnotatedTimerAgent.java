@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 
 import org.apache.commons.lang3.reflect.ConstructorUtils;
 
+import net.obvj.smart.agents.AgentRuntimeException;
 import net.obvj.smart.agents.api.TimerAgent;
 import net.obvj.smart.conf.AgentConfiguration;
 import net.obvj.smart.conf.AgentConfigurationException;
@@ -58,7 +59,7 @@ public class AnnotatedTimerAgent extends TimerAgent
         }
         catch (ReflectiveOperationException e)
         {
-            throw new AgentConfigurationException(e);
+            throw new AgentRuntimeException(e);
         }
     }
 
