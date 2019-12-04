@@ -86,7 +86,8 @@ public class AnnotatedAgentsTest
         when(properties.getPropertiesListSplitBy(SmartProperties.AGENT_SEARCH_PACKAGES, ","))
                 .thenReturn(Arrays.asList("invalid"));
         annotatedAgents = new AnnotatedAgents(properties);
-        assertEquals(0, annotatedAgents.getAgentsByClassName().size());
+        // At least the intenal package must be present
+        assertEquals(1, annotatedAgents.getAgentsByClassName().size());
     }
 
     @Test(expected = AgentConfigurationException.class)

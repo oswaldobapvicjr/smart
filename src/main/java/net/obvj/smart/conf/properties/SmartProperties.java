@@ -26,7 +26,7 @@ public class SmartProperties
     private static final Logger LOG = Logger.getLogger("smart-server");
 
     public static final String AGENT_SEARCH_PACKAGES = "agent.search.packages";
-    protected static final String AGENT_SEARCH_PACKAGES_DEFAULT = "net.obvj.smart.agents.internal";
+    protected static final String AGENT_SEARCH_PACKAGES_DEFAULT = "";
 
     public static final String CONSOLE_PROMPT = "console.prompt";
     protected static final String CONSOLE_PROMPT_DEFAULT = "smart>";

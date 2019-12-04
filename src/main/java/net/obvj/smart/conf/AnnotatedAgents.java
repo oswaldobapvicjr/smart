@@ -22,6 +22,8 @@ import net.obvj.smart.util.AnnotationUtils;
 @Component
 public class AnnotatedAgents
 {
+    private static final List<String> INTERNAL_AGENTS_PACKAGES = Arrays.asList("net.obvj.smart.agents.internal");
+
     private final Logger log = Logger.getLogger("smart-server"); 
     
     private SmartProperties properties;
@@ -55,11 +57,14 @@ public class AnnotatedAgents
     }
 
     /**
-     * @return the search package(s) configured in properties
+     * @return a List containing internal and user-defined package(s) to search for agents
      */
     private List<String> getSearchPackages()
     {
-        return properties.getPropertiesListSplitBy(SmartProperties.AGENT_SEARCH_PACKAGES, ",");
+        List<String> searchPackages = new ArrayList<>(INTERNAL_AGENTS_PACKAGES);
+        List<String> userSearchPackages = properties.getPropertiesListSplitBy(SmartProperties.AGENT_SEARCH_PACKAGES, ",");
+        searchPackages.addAll(userSearchPackages);
+        return searchPackages;
     }
 
     protected Class<?> toClass(String className)
