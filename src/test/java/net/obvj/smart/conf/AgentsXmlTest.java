@@ -3,7 +3,7 @@ package net.obvj.smart.conf;
 import static net.obvj.smart.TestUtils.assertException;
 import static org.junit.Assert.assertEquals;
 
-import java.io.FileNotFoundException;
+import java.util.Collections;
 
 import javax.xml.bind.UnmarshalException;
 
@@ -119,8 +119,7 @@ public class AgentsXmlTest
     @Test
     public void testAgentsFileNotFound()
     {
-        assertException(AgentConfigurationException.class, null, FileNotFoundException.class,
-                () -> AgentsXml.loadAgentsXmlFile("testAgents/notfound.xml"));
+        assertEquals(Collections.emptyList(), AgentsXml.loadAgentsXmlFile("testAgents/notfound.xml").getAgents());
     }
 
     @Test

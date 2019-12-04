@@ -20,6 +20,7 @@ import javax.xml.validation.SchemaFactory;
 import org.springframework.stereotype.Component;
 import org.xml.sax.SAXException;
 
+import net.obvj.smart.conf.xml.EmptySmartConfiguration;
 import net.obvj.smart.conf.xml.SmartConfiguration;
 import net.obvj.smart.util.Exceptions;
 
@@ -59,7 +60,8 @@ public class AgentsXml
         {
             if (stream == null)
             {
-                throw Exceptions.fileNotFound("\"%s\" not found in the class path", fileName);
+                LOG.log(Level.WARNING, "\"{0}\" not found in the class path", fileName);
+                return new EmptySmartConfiguration();
             }
 
             LOG.log(Level.INFO, "{0} found", fileName);

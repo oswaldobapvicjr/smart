@@ -85,7 +85,7 @@ public enum Command
         }
     },
 
-    UPTIME("uptime", "")
+    UPTIME("uptime")
     {
         @Override
         public void execute(String[] parameters, PrintWriter out)
@@ -94,7 +94,7 @@ public enum Command
         }
     },
 
-    START("start", "")
+    START("start")
     {
         @Override
         public void execute(String[] parameters, PrintWriter out)
@@ -122,7 +122,7 @@ public enum Command
         }
     },
 
-    RUN("run", "")
+    RUN("run")
     {
         @Override
         public void execute(String[] parameters, PrintWriter out)
@@ -152,7 +152,7 @@ public enum Command
         }
     },
 
-    STOP("stop", "")
+    STOP("stop")
     {
         @Override
         public void execute(String[] parameters, PrintWriter out)
@@ -181,7 +181,7 @@ public enum Command
         }
     },
 
-    STATUS("status", "")
+    STATUS("status")
     {
         @Override
         public void execute(String[] parameters, PrintWriter out)
@@ -206,7 +206,7 @@ public enum Command
         }
     },
 
-    RESET("reset", "")
+    RESET("reset")
     {
         @Override
         public void execute(String[] parameters, PrintWriter out)
@@ -235,7 +235,7 @@ public enum Command
         }
     },
 
-    DATE("date", "")
+    DATE("date")
     {
         @Override
         public void execute(String[] parameters, PrintWriter out)
@@ -244,7 +244,7 @@ public enum Command
         }
     },
     
-    JAVA_VERSION("java", "")
+    JAVA_VERSION("java")
     {
         @Override
         public void execute(String[] parameters, PrintWriter out)
@@ -253,7 +253,7 @@ public enum Command
         }
     },
 
-    HELP("help", "")
+    HELP("help")
     {
         @Override
         public void execute(String[] parameters, PrintWriter out)
@@ -274,6 +274,11 @@ public enum Command
     private final String name;
     private final String alias;
 
+    private Command(String name)
+    {
+        this(name, "");
+    }
+    
     private Command(String name, String alias)
     {
         this.name = name;
@@ -288,6 +293,11 @@ public enum Command
     public boolean hasAlias()
     {
         return alias != null && !alias.equals("");
+    }
+    
+    public boolean isIdentifiableBy(final String string)
+    {
+        return name.equals(string) || (hasAlias() && alias.equals(string));
     }
 
     public String getName()
@@ -310,9 +320,8 @@ public enum Command
 
     public static Optional<Command> getOptionalByNameOrAlias(String string)
     {
-        return Arrays.stream(values())
-                .filter(command -> command.name.equals(string) || (command.hasAlias() && command.alias.equals(string)))
-                .findFirst();
+        Command[] commands = values();
+        return Arrays.stream(commands).filter(command -> command.isIdentifiableBy(string)).findFirst();
     }
 
 }
