@@ -11,12 +11,15 @@ import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import jline.console.ConsoleReader;
 import net.obvj.smart.conf.properties.SmartProperties;
 import net.obvj.smart.console.enhanced.EnhancedManagementConsole.Mode;
 import net.obvj.smart.jmx.AgentManagerJMXMBean;
@@ -35,9 +38,18 @@ public class EnhancedManagementConsoleTest
     @Mock
     private SmartProperties smartProperties;
     
+    @Mock
+    private ConsoleReader reader;
+    
+    @InjectMocks
+    private EnhancedManagementConsole console;
+    
+    private StringWriter out = new StringWriter();
+    
     @Before
     public void setup()
     {
+        MockitoAnnotations.initMocks(this);
         PowerMockito.mockStatic(ConsoleUtils.class);
         PowerMockito.mockStatic(ClientApplicationContextFacade.class);
 
@@ -45,6 +57,8 @@ public class EnhancedManagementConsoleTest
         PowerMockito.when(ClientApplicationContextFacade.getBean(AgentManagerJMXClient.class)).thenReturn(agentManagerJMXClient);
         PowerMockito.when(agentManagerJMXClient.getMBeanProxy()).thenReturn(agentManagerJMXBean);
         PowerMockito.when(agentManagerJMXBean.getAgentNames()).thenReturn(new String[] { "agent1", "agent2" });
+        
+        Mockito.when(reader.getOutput()).thenReturn(out);
     }
 
     @Test
@@ -108,6 +122,29 @@ public class EnhancedManagementConsoleTest
         console.handleCommandLine("start AgentName");
 
         Mockito.verify(agentManagerJMXBean, Mockito.times(1)).startAgent("AgentName");
+    }
+    
+    @Test
+    public void testRunOnSingleCommandMode() throws IOException
+    {
+        new EnhancedManagementConsole("start AgentName").run();
+        Mockito.verify(agentManagerJMXBean, Mockito.times(1)).startAgent("AgentName");
+    }
+
+    @Test
+    public void testRunOnInteractiveModeWithExitCommand() throws IOException
+    {
+        Mockito.when(reader.readLine()).thenReturn("exit");
+        console.run();
+        Mockito.verifyZeroInteractions(agentManagerJMXBean);
+    }
+    
+    @Test
+    public void testRunOnInteractiveModeWithQuitCommand() throws IOException
+    {
+        Mockito.when(reader.readLine()).thenReturn("quit");
+        console.run();
+        Mockito.verifyZeroInteractions(agentManagerJMXBean);
     }
 
 }

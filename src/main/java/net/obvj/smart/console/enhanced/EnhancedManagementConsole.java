@@ -44,9 +44,9 @@ public class EnhancedManagementConsole implements Runnable
             .getProperty(SmartProperties.CONSOLE_PROMPT) + " ";
 
     private final String[] args;
-    private final ConsoleReader reader;
     private final Commands commands;
     private final Mode mode;
+    private ConsoleReader reader;
 
     public EnhancedManagementConsole(String... args) throws IOException
     {
