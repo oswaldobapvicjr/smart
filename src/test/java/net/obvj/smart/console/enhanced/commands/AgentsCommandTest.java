@@ -139,5 +139,35 @@ public class AgentsCommandTest
 
         assertTrue(sw.toString().contains("No agent found"));
     }
+    
+    @Test
+    public void testListAgentsFilterByName() throws IOException
+    {
+        expectAllAgents();
+        command.setName("name3");
+        command.run();
+
+        // Trim variable padding spaces for testing
+        String out = sw.toString().replace(" ", "");
+        assertFalse("Name1 should not be displayed", out.contains(AGENT1_EXPECTED_STR_COMP));
+        assertFalse("Name2 should not be displayed", out.contains(AGENT2_EXPECTED_STR_COMP));
+        assertTrue("Name3 should be displayed", out.contains(AGENT3_EXPECTED_STR_COMP));
+        assertFalse("The hidden agent should not be displayed", out.contains(HIDDEN_AGENT_EXPECTED_STR_COMP));
+    }
+    
+    @Test
+    public void testListAgentsFilterByNameWildcard() throws IOException
+    {
+        expectAllAgents();
+        command.setName("name*");
+        command.run();
+
+        // Trim variable padding spaces for testing
+        String out = sw.toString().replace(" ", "");
+        assertTrue("Name1 should not be displayed", out.contains(AGENT1_EXPECTED_STR_COMP));
+        assertTrue("Name2 should not be displayed", out.contains(AGENT2_EXPECTED_STR_COMP));
+        assertTrue("Name3 should be displayed", out.contains(AGENT3_EXPECTED_STR_COMP));
+        assertFalse("The hidden agent should not be displayed", out.contains(HIDDEN_AGENT_EXPECTED_STR_COMP));
+    }
 
 }

@@ -5,8 +5,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Predicate;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
 
 import net.obvj.smart.agents.api.dto.AgentDTO;
 import net.obvj.smart.jmx.dto.ThreadDTO;
@@ -30,7 +33,7 @@ public enum Command
         public void execute(String[] parameters, PrintWriter out)
         {
             Collection<AgentDTO> agents = ApplicationContextFacade.getBean(AgentManager.class).getAgentDTOs();
-            
+
             if(!(parameters.length > 1 && ("-a".equals(parameters[1]) || "--all".equals(parameters[1]))))
             {
                 agents = agents.stream().filter(agent -> !agent.isHidden()).collect(Collectors.toList());
@@ -57,11 +60,25 @@ public enum Command
         @Override
         public void execute(String[] parameters, PrintWriter out)
         {
+            Collection<ThreadDTO> threads = SystemUtils.getAllSystemTheadsDTOs();
+
+            if (parameters.length > 1 && StringUtils.isNotEmpty(parameters[1]))
+            {
+                String searchRegex = parameters[1].toLowerCase().replaceAll("\\*", ".*");
+                Predicate<? super ThreadDTO> predicate = thread -> thread.getName().toLowerCase().matches(searchRegex);
+                threads = threads.stream().filter(predicate).collect(Collectors.toSet());
+            }
+            if (threads.isEmpty())
+            {
+                out.println("No thread found");
+                return;
+            }
+
             out.println("");
             out.println("ID   Name                                   State");
             out.println("---- -------------------------------------- -------------");
 
-            for (ThreadDTO thread : SystemUtils.getAllSystemTheadsDTOs())
+            for (ThreadDTO thread : threads)
             {
                 out.println(String.format("%-4d %-38s %-13s", thread.getId(), thread.getName(), thread.getState()));
             }

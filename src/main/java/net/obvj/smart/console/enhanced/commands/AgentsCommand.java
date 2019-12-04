@@ -1,6 +1,7 @@
 package net.obvj.smart.console.enhanced.commands;
 
 import java.util.Collection;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import net.obvj.smart.agents.api.dto.AgentDTO;
@@ -8,6 +9,7 @@ import net.obvj.smart.jmx.client.AgentManagerJMXClient;
 import net.obvj.smart.util.ClientApplicationContextFacade;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
 import picocli.CommandLine.ParentCommand;
 
 /**
@@ -39,6 +41,9 @@ public class AgentsCommand implements Runnable
 
     @Option(names = { "-t", "--type" }, description = "List agents of a specific type.")
     private String type = "";
+    
+    @Parameters(paramLabel = "[<name>]", description = "The name(s) to filter (supports wildcard character \"*\").", defaultValue = "")
+    private String name = "";
 
     @ParentCommand
     private Commands parent;
@@ -57,6 +62,12 @@ public class AgentsCommand implements Runnable
         if (!type.isEmpty())
         {
             agents = agents.stream().filter(a -> a.getType().equalsIgnoreCase(this.type)).collect(Collectors.toSet());
+        }
+        if (!name.isEmpty())
+        {
+            String searchRegex = name.toLowerCase().replaceAll("\\*", ".*");
+            Predicate<? super AgentDTO> predicate = agent -> agent.getName().toLowerCase().matches(searchRegex);
+            agents = agents.stream().filter(predicate).collect(Collectors.toSet());
         }
         if (agents.isEmpty())
         {
@@ -82,6 +93,11 @@ public class AgentsCommand implements Runnable
     protected void setAll(boolean all)
     {
         this.all = all;
+    }
+    
+    protected void setName(String name)
+    {
+        this.name = name;
     }
 
 }

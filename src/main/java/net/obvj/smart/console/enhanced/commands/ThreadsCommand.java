@@ -1,12 +1,15 @@
 package net.obvj.smart.console.enhanced.commands;
 
 import java.util.Collection;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import net.obvj.smart.jmx.client.AgentManagerJMXClient;
 import net.obvj.smart.jmx.dto.ThreadDTO;
 import net.obvj.smart.util.ClientApplicationContextFacade;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
 import picocli.CommandLine.ParentCommand;
 
 /**
@@ -32,6 +35,9 @@ public class ThreadsCommand implements Runnable
     @Option(names = {"-h", "--help"}, usageHelp = true, description = "Display this help message.")
     boolean usageHelpRequested;
 
+    @Parameters(paramLabel = "[<name>]", description = "The name(s) to filter (supports wildcard character \"*\").", defaultValue = "")
+    private String name = "";
+    
     @ParentCommand
     private Commands parent;
 
@@ -41,17 +47,34 @@ public class ThreadsCommand implements Runnable
         parent.out.println("Listing active server threads...");
         parent.out.flush();
 
-        Collection<ThreadDTO> allThreads = client.getMBeanProxy().getAllThreadsInfo();
+        Collection<ThreadDTO> threads = client.getMBeanProxy().getAllThreadsInfo();
+        
+        if (!name.isEmpty())
+        {
+            String searchRegex = name.toLowerCase().replaceAll("\\*", ".*");
+            Predicate<? super ThreadDTO> predicate = thread -> thread.getName().toLowerCase().matches(searchRegex);
+            threads = threads.stream().filter(predicate).collect(Collectors.toSet());
+        }
+        if (threads.isEmpty())
+        {
+            parent.out.println("No thread found");
+            return;
+        }
 
         parent.out.println();
         parent.out.println("ID   Name                                   State");
         parent.out.println("---- -------------------------------------- -------------");
-        allThreads.forEach(this::printThread);
+        threads.forEach(this::printThread);
     }
 
     private void printThread(ThreadDTO thread)
     {
         parent.out.printf(ID_NAME_STATE_PATTERN, thread.getId(), thread.getName(), thread.getState());
+    }
+
+    protected void setName(String name)
+    {
+        this.name = name;
     }
 
 }

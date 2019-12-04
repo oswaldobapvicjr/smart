@@ -1,5 +1,6 @@
 package net.obvj.smart.console.enhanced.commands;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.powermock.api.mockito.PowerMockito.when;
 
@@ -67,6 +68,43 @@ public class ThreadsCommandTest
         String out = sw.toString().replace(" ", "");
         assertTrue(out.contains(THREAD1_EXPECTED_STR_COMP));
         assertTrue(out.contains(THREAD2_EXPECTED_STR_COMP));
+    }
+    
+    @Test
+    public void testListAllThreadsFilterByName() throws IOException
+    {
+        when(jmx.getAllThreadsInfo()).thenReturn(ALL_THREADS_LIST);
+        command.setName("name1");
+        command.run();
+
+        // Trim variable padding spaces for testing
+        String out = sw.toString().replace(" ", "");
+        assertTrue(out.contains(THREAD1_EXPECTED_STR_COMP));
+        assertFalse(out.contains(THREAD2_EXPECTED_STR_COMP));
+    }
+
+    @Test
+    public void testListAllThreadsFilterByNameWildcardWithMatches() throws IOException
+    {
+        when(jmx.getAllThreadsInfo()).thenReturn(ALL_THREADS_LIST);
+        command.setName("name*");
+        command.run();
+
+        // Trim variable padding spaces for testing
+        String out = sw.toString().replace(" ", "");
+        assertTrue(out.contains(THREAD1_EXPECTED_STR_COMP));
+        assertTrue(out.contains(THREAD2_EXPECTED_STR_COMP));
+    }
+    
+    @Test
+    public void testListAllThreadsFilterByNameWildcardNoMatches() throws IOException
+    {
+        when(jmx.getAllThreadsInfo()).thenReturn(ALL_THREADS_LIST);
+        command.setName("*invalid*");
+        command.run();
+
+        String out = sw.toString();
+        assertTrue(out.contains("No thread found"));
     }
 
 }

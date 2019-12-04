@@ -241,12 +241,56 @@ public class CommandTest
         ThreadDTO thread2 = new ThreadDTO(2, "name2", "WAITING");
         List<ThreadDTO> dtos = Arrays.asList(thread1, thread2);
         when(SystemUtils.getAllSystemTheadsDTOs()).thenReturn(dtos);
-        Command.SHOW_THREADS.execute(null, new PrintWriter(out));
+        Command.SHOW_THREADS.execute(new String[] { "threads" }, new PrintWriter(out));
 
         // Trim variable padding spaces for testing
         String out = this.out.toString().replace(" ", "");
         assertTrue(out.contains("1name1RUNNABLE"));
         assertTrue(out.contains("2name2WAITING"));
+    }
+
+    @Test
+    public void testShowThreadsFilterByName()
+    {
+        ThreadDTO thread1 = new ThreadDTO(1, "name1", "RUNNABLE");
+        ThreadDTO thread2 = new ThreadDTO(2, "name2", "WAITING");
+        List<ThreadDTO> dtos = Arrays.asList(thread1, thread2);
+        when(SystemUtils.getAllSystemTheadsDTOs()).thenReturn(dtos);
+        Command.SHOW_THREADS.execute(new String[] { "threads", "name2" }, new PrintWriter(out));
+
+        // Trim variable padding spaces for testing
+        String out = this.out.toString().replace(" ", "");
+        assertFalse(out.contains("1name1RUNNABLE"));
+        assertTrue(out.contains("2name2WAITING"));
+    }
+    
+    @Test
+    public void testShowThreadsFilterByNameWithWildcard()
+    {
+        ThreadDTO thread1 = new ThreadDTO(1, "name1", "RUNNABLE");
+        ThreadDTO thread2 = new ThreadDTO(2, "name2", "WAITING");
+        List<ThreadDTO> dtos = Arrays.asList(thread1, thread2);
+        when(SystemUtils.getAllSystemTheadsDTOs()).thenReturn(dtos);
+        Command.SHOW_THREADS.execute(new String[] { "threads", "name*" }, new PrintWriter(out));
+
+        // Trim variable padding spaces for testing
+        String out = this.out.toString().replace(" ", "");
+        assertTrue(out.contains("1name1RUNNABLE"));
+        assertTrue(out.contains("2name2WAITING"));
+    }
+    
+    @Test
+    public void testShowThreadsFilterByNameWithWildcardNoMatch()
+    {
+        ThreadDTO thread1 = new ThreadDTO(1, "name1", "RUNNABLE");
+        ThreadDTO thread2 = new ThreadDTO(2, "name2", "WAITING");
+        List<ThreadDTO> dtos = Arrays.asList(thread1, thread2);
+        when(SystemUtils.getAllSystemTheadsDTOs()).thenReturn(dtos);
+        Command.SHOW_THREADS.execute(new String[] { "threads", "invalid*" }, new PrintWriter(out));
+
+        // Trim variable padding spaces for testing
+        String out = this.out.toString();
+        assertTrue(out.contains("No thread found"));
     }
 
     @Test
@@ -271,7 +315,7 @@ public class CommandTest
         assertTrue(out.contains("name1DAEMONRUNNING"));
         assertTrue(out.contains("name2TIMERSET"));
     }
-    
+
     @Test
     public void testShowAgentsDoesNotShowHiddenAgents()
     {
@@ -301,7 +345,7 @@ public class CommandTest
         assertTrue(out.contains("name1DAEMONRUNNING"));
         assertTrue(out.contains("name2TIMERSET"));
     }
-    
+
     @Test
     public void testShowAgentsWithOptionAllIncludesHiddenAgents()
     {
