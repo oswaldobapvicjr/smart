@@ -37,6 +37,10 @@ public class SmartServerSupportTest
             .type("timer").agentClass("net.obvj.smart.agents.dummy.DummyAgent").interval("3 hours")
             .automaticallyStarted(false).build();
 
+    private static final AgentConfiguration DUMMY_AGENT_CONFIG_AUTO = new AgentConfiguration.Builder("DummyAgentAuto")
+            .type("timer").agentClass("net.obvj.smart.agents.dummy.DummyAgent").interval("3 hours")
+            .automaticallyStarted(true).build();
+
     @Mock
     private SmartProperties properties;
     @Mock
@@ -48,6 +52,7 @@ public class SmartServerSupportTest
 
     // Agents
     private Agent dummyAgent;
+    private Agent dummyAgentAuto;
     private List<Agent> allAgents;
 
     // Test subject
@@ -64,7 +69,8 @@ public class SmartServerSupportTest
 
         // Setup agents
         dummyAgent = spy(Agent.parseAgent(DUMMY_AGENT_CONFIG));
-        allAgents = Arrays.asList(dummyAgent);
+        dummyAgentAuto = spy(Agent.parseAgent(DUMMY_AGENT_CONFIG_AUTO));
+        allAgents = Arrays.asList(dummyAgent, dummyAgentAuto);
 
         // Allow usage of static method parseAgent
         mockStatic(Agent.class);
@@ -105,11 +111,12 @@ public class SmartServerSupportTest
     }
 
     @Test
-    public void testStartAutomaticAgent()
+    public void testStartAutomaticAgents()
     {
         when(manager.getAgents()).thenReturn(allAgents);
         support.startAutomaticAgents();
         verify(manager, never()).startAgent("DummyAgent");
+        verify(manager).startAgent("DummyAgentAuto");
     }
 
 }

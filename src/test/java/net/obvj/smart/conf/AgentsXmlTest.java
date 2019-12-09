@@ -14,7 +14,7 @@ import net.obvj.smart.conf.xml.SmartConfiguration;
 
 /**
  * Unit tests for the {@link AgentsXml} class.
- * 
+ *
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
@@ -45,7 +45,7 @@ public class AgentsXmlTest
         assertEquals(5, agent.getStopTimeoutInSeconds());
         assertEquals(false, agent.isHidden());
     }
-    
+
     @Test
     public void testLoadTimerAgent30SecondsHidden()
     {
@@ -115,6 +115,20 @@ public class AgentsXmlTest
     public void testAgentsFileNotFound()
     {
         assertEquals(Collections.emptyList(), AgentsXml.loadAgentsXmlFile("testAgents/notfound.xml").getAgents());
+    }
+
+    @Test
+    public void testLoadXmlWithTwoAgents()
+    {
+        AgentsXml config = new AgentsXml(XML_TIMER_AGENT_30_SECONDS);
+        assertEquals(1, config.getAgents().size());
+
+        AgentConfiguration dummyAgent = config.getAgentConfiguration(DUMMY_AGENT);
+        assertEquals(DUMMY_AGENT, dummyAgent.getName());
+        assertEquals(TIMER, dummyAgent.getType());
+        assertEquals(DUMMY_AGENT_CLASS, dummyAgent.getAgentClass());
+        assertEquals("30 seconds", dummyAgent.getInterval());
+        assertEquals(false, dummyAgent.isHidden());
     }
 
     @Test
