@@ -26,7 +26,7 @@ import net.obvj.smart.jmx.client.AgentManagerJMXClient;
 
 /**
  * Unit tests for the {@link AgentsCommand} class
- * 
+ *
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
@@ -35,16 +35,16 @@ public class AgentsCommandTest
 {
     // Test data
     private static final String TIMER = "TIMER";
-    private static final String DAEMON = "DAEMON";
+    private static final String TYPE_EXT = "TYPE_EXT";
 
-    private static final AgentDTO AGENT1 = new AgentDTO("name1", DAEMON, "RUNNING", false);
+    private static final AgentDTO AGENT1 = new AgentDTO("name1", TYPE_EXT, "RUNNING", false);
     private static final AgentDTO AGENT2 = new AgentDTO("name2", TIMER, "SET", false);
     private static final AgentDTO AGENT3 = new AgentDTO("name3", TIMER, "STARTED", false);
     private static final AgentDTO HIDDEN_AGENT = new AgentDTO("name4", TIMER, "STARTED", true);
 
     private static final List<AgentDTO> ALL_AGENTS_LIST = Arrays.asList(AGENT1, AGENT2, AGENT3, HIDDEN_AGENT);
 
-    private static final String AGENT1_EXPECTED_STR_COMP = "name1" + DAEMON + "RUNNING";
+    private static final String AGENT1_EXPECTED_STR_COMP = "name1" + TYPE_EXT + "RUNNING";
     private static final String AGENT2_EXPECTED_STR_COMP = "name2" + TIMER + "SET";
     private static final String AGENT3_EXPECTED_STR_COMP = "name3" + TIMER + "STARTED";
     private static final String HIDDEN_AGENT_EXPECTED_STR_COMP = "name4" + TIMER + "STARTED";
@@ -85,7 +85,7 @@ public class AgentsCommandTest
         assertTrue(out.contains(AGENT3_EXPECTED_STR_COMP));
         assertFalse("The hidden agent should not be displayed", out.contains(HIDDEN_AGENT_EXPECTED_STR_COMP));
     }
-    
+
     @Test
     public void testListAllAgents() throws IOException
     {
@@ -102,15 +102,15 @@ public class AgentsCommandTest
     }
 
     @Test
-    public void testListDaemonAgentOnly() throws IOException
+    public void testListTypeExtAgentOnly() throws IOException
     {
         expectAllAgents();
-        command.setType("daemon");
+        command.setType(TYPE_EXT);
         command.run();
 
         // Trim variable padding spaces for testing
         String out = sw.toString().replace(" ", "");
-        assertTrue("The deamon agent should have been printed", out.contains(AGENT1_EXPECTED_STR_COMP));
+        assertTrue("The TYPE_EXT agent should have been printed", out.contains(AGENT1_EXPECTED_STR_COMP));
         assertFalse("The timer agent should not have been printed", out.contains(AGENT2_EXPECTED_STR_COMP));
         assertFalse("The timer agent should not have been printed", out.contains(AGENT3_EXPECTED_STR_COMP));
         assertFalse("The hidden agent should not be displayed", out.contains(HIDDEN_AGENT_EXPECTED_STR_COMP));
@@ -120,12 +120,12 @@ public class AgentsCommandTest
     public void testListTimerAgentOnly() throws IOException
     {
         expectAllAgents();
-        command.setType("timer");
+        command.setType(TIMER);
         command.run();
 
         // Trim variable padding spaces for testing
         String out = sw.toString().replace(" ", "");
-        assertFalse("The deamon agent should not have been printed", out.contains(AGENT1_EXPECTED_STR_COMP));
+        assertFalse("The TYPE_EXT agent should not have been printed", out.contains(AGENT1_EXPECTED_STR_COMP));
         assertTrue("The timer agent should have been printed", out.contains(AGENT2_EXPECTED_STR_COMP));
         assertTrue("The timer agent should have been printed", out.contains(AGENT3_EXPECTED_STR_COMP));
         assertFalse("The hidden agent should not be displayed", out.contains(HIDDEN_AGENT_EXPECTED_STR_COMP));
@@ -139,7 +139,7 @@ public class AgentsCommandTest
 
         assertTrue(sw.toString().contains("No agent found"));
     }
-    
+
     @Test
     public void testListAgentsFilterByName() throws IOException
     {
@@ -154,7 +154,7 @@ public class AgentsCommandTest
         assertTrue("Name3 should be displayed", out.contains(AGENT3_EXPECTED_STR_COMP));
         assertFalse("The hidden agent should not be displayed", out.contains(HIDDEN_AGENT_EXPECTED_STR_COMP));
     }
-    
+
     @Test
     public void testListAgentsFilterByNameWildcard() throws IOException
     {

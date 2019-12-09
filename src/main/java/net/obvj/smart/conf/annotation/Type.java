@@ -15,11 +15,6 @@ public enum Type
     TIMER("timer"),
 
     /**
-     * A daemon agent is an object that, once started, executes some background logic.
-     */
-    DAEMON("daemon"),
-
-    /**
      * Default element value for annotation. This is used to distinguish the default value for
      * an element and should not otherwise be used.
      */

@@ -17,7 +17,7 @@ import net.obvj.smart.conf.AgentConfiguration;
 
 /**
  * Unit tests for the {@link TimerAgent} class.
- * 
+ *
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
@@ -35,8 +35,8 @@ public class TimerAgentTest
     @Test(expected = IllegalArgumentException.class)
     public void testParseNonTimerAgent() throws ReflectiveOperationException
     {
-        TimerAgent.parseAgent(new AgentConfiguration.Builder("DummyDaemonAgent").type("daemon")
-                .agentClass("net.obvj.smart.agents.dummy.DummyDaemonAgent").build());
+        TimerAgent.parseAgent(new AgentConfiguration.Builder("DummyAgent").type("type_ext")
+                .agentClass("net.obvj.smart.agents.dummy.DummyAgent").build());
     }
 
     /**

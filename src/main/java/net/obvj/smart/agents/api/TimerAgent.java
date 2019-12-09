@@ -20,7 +20,7 @@ import net.obvj.smart.util.TimeUnit;
  * A thread-safe extensible Agent for tasks that are scheduled in the system to run
  * repeatedly, given an interval that is particular to each task. Available operations
  * are: 'start', 'stop', 'run' and 'reset'
- * 
+ *
  * @author oswaldo.bapvic.jr
  * @since 1.0
  */
@@ -43,7 +43,7 @@ public abstract class TimerAgent extends Agent
      */
     private final Object runLock = new Object();
     private final Object changeLock = new Object();
-    
+
     private boolean stopRequested = false;
 
     public TimerAgent()
@@ -61,12 +61,12 @@ public abstract class TimerAgent extends Agent
     }
 
     /**
-     * Creates a new DaemonAgent from the given configuration.
-     * 
+     * Creates a new TimerAgent from the given configuration.
+     *
      * @throws ReflectiveOperationException if the agent class or constructor cannot be found,
      *                                      or the constructor is not accessible, or the agent
      *                                      cannot be instantiated
-     * 
+     *
      * @since 2.0
      */
     public static Agent parseAgent(AgentConfiguration configuration) throws ReflectiveOperationException
@@ -94,7 +94,7 @@ public abstract class TimerAgent extends Agent
      * The produced object can be either a declared child of {@link TimerAgent} or an
      * {@link AnnotatedTimerAgent} which is generated from a class with the {@code @Agent}
      * annotation.
-     * 
+     *
      * @param configuration the {@link AgentConfiguration} to be parsed
      * @return a {@link TimerAgent} instance
      * @throws ReflectiveOperationException if the agent class or constructor cannot be found,
@@ -118,11 +118,13 @@ public abstract class TimerAgent extends Agent
     /**
      * The method called by the Executor Service to execute the agent task.
      */
+    @Override
     public void run()
     {
         run(false);
     }
 
+    @Override
     public void run(boolean manualFlag)
     {
         if (stopRequested && !manualFlag) return;
@@ -162,6 +164,7 @@ public abstract class TimerAgent extends Agent
     /**
      * Starts this agent timer considering the interval settled in this object for execution.
      */
+    @Override
     public final void start()
     {
         switch (getState())
@@ -196,6 +199,7 @@ public abstract class TimerAgent extends Agent
      * Terminates this agent timer gracefully. Does not interfere with a currently executing
      * task, if it exists.
      */
+    @Override
     public final void stop() throws TimeoutException
     {
         stopRequested = true;

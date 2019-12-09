@@ -1,6 +1,8 @@
 package net.obvj.smart.agents.api;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 
 import java.util.Calendar;
@@ -14,14 +16,13 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import net.obvj.smart.agents.api.Agent.State;
 import net.obvj.smart.agents.dummy.DummyAgent;
 import net.obvj.smart.agents.impl.AnnotatedTimerAgent;
-import net.obvj.smart.agents.test.valid.DummyDaemonAgent;
 import net.obvj.smart.agents.test.valid.TestAgentWithNoNameAndTypeTimerAndAgentTask;
 import net.obvj.smart.conf.AgentConfiguration;
 import net.obvj.smart.util.TimeUnit;
 
 /**
  * Unit tests for the {@link Agent} class.
- * 
+ *
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
@@ -32,14 +33,11 @@ public class AgentTest
     private static final int DEFAULT_STOP_TIMEOUT_SECONDS = Integer.MAX_VALUE;
     private static final String DUMMY_AGENT = "DummyAgent";
     private static final String DUMMY_AGENT_CLASS = "net.obvj.smart.agents.dummy.DummyAgent";
-    private static final String DUMMY_DAEMON = "DummyDaemon";
-    private static final String DUMMY_DAEMON_CLASS = "net.obvj.smart.agents.test.valid.DummyDaemonAgent";
     private static final String TIMER = "timer";
-    private static final String DAEMON = "daemon";
 
     // The setting CALLS_REAL_METHODS allows mocking abstract methods/classes
     Agent agent = PowerMockito.mock(Agent.class, Mockito.CALLS_REAL_METHODS);
-    
+
     @Test
     public void testParseTimerAgent30Seconds() throws Exception
     {
@@ -66,7 +64,7 @@ public class AgentTest
         assertThat(timerAgent.getState(), is(State.SET));
         assertThat(timerAgent.isStarted(), is(false));
     }
-    
+
     @Test
     public void testParseTimerAgent30SecondsHidden() throws Exception
     {
@@ -94,7 +92,7 @@ public class AgentTest
         assertThat(timerAgent.getState(), is(State.SET));
         assertThat(timerAgent.isStarted(), is(false));
     }
-    
+
     @Test
     public void testParseTimerAgentDefaultValues() throws Exception
     {
@@ -118,62 +116,18 @@ public class AgentTest
         assertThat(timerAgent.getState(), is(State.SET));
         assertThat(timerAgent.isStarted(), is(false));
     }
-    
-    @Test
-    public void testParseDaemonAgent() throws Exception
-    {
-        AgentConfiguration configuration = new AgentConfiguration.Builder(DUMMY_DAEMON)
-                .type(DAEMON)
-                .agentClass(DUMMY_DAEMON_CLASS)
-                .automaticallyStarted(true)
-                .stopTimeoutInSeconds(1)
-                .build();
 
-        DaemonAgent daemonAgent = (DaemonAgent) Agent.parseAgent(configuration);
-
-        assertThat(daemonAgent.getName(), is(DUMMY_DAEMON));
-        assertThat(daemonAgent.getType(), is(DAEMON));
-        assertThat(daemonAgent.getClass(), is(equalTo(DummyDaemonAgent.class)));
-        assertThat(daemonAgent.getStopTimeoutSeconds(), is(1));
-        assertThat(daemonAgent.getConfiguration(), is(configuration));
-        assertThat(daemonAgent.isHidden(), is(false));
-
-        assertThat(daemonAgent.getState(), is(State.SET));
-        assertThat(daemonAgent.isStarted(), is(false));
-    }
-    
-    @Test
-    public void testParseDaemonAgentDefaultValues() throws Exception
-    {
-        AgentConfiguration configuration = new AgentConfiguration.Builder(DUMMY_DAEMON)
-                .type(DAEMON)
-                .agentClass(DUMMY_DAEMON_CLASS)
-                .build();
-
-        DaemonAgent daemonAgent = (DaemonAgent) Agent.parseAgent(configuration);
-        
-        assertThat(daemonAgent.getName(), is(DUMMY_DAEMON));
-        assertThat(daemonAgent.getType(), is(DAEMON));
-        assertThat(daemonAgent.getClass(), is(equalTo(DummyDaemonAgent.class)));
-        assertThat(daemonAgent.getStopTimeoutSeconds(), is(DEFAULT_STOP_TIMEOUT_SECONDS));
-        assertThat(daemonAgent.getConfiguration(), is(configuration));
-        assertThat(daemonAgent.isHidden(), is(false));
-
-        assertThat(daemonAgent.getState(), is(State.SET));
-        assertThat(daemonAgent.isStarted(), is(false));
-    }
-    
     @Test(expected = IllegalArgumentException.class)
     public void testParseUnknownAgentType() throws Exception
     {
-        AgentConfiguration configuration = new AgentConfiguration.Builder(DUMMY_DAEMON)
+        AgentConfiguration configuration = new AgentConfiguration.Builder(DUMMY_AGENT)
                 .type("unknown")
-                .agentClass(DUMMY_DAEMON_CLASS)
+                .agentClass(DUMMY_AGENT_CLASS)
                 .build();
 
         Agent.parseAgent(configuration);
     }
-    
+
     @Test
     public void testParseAnnotatedTimerAgent() throws Exception
     {
@@ -203,7 +157,7 @@ public class AgentTest
         assertThat(timerAgent.getState(), is(State.SET));
         assertThat(timerAgent.isStarted(), is(false));
     }
-    
+
     @Test
     public void testStatusMethodsForAgentStatusSet()
     {
@@ -212,7 +166,7 @@ public class AgentTest
         assertFalse("expected false on agent.isRunning()", agent.isRunning());
         assertFalse("expected false on agent.isStopped()", agent.isStopped());
     }
-    
+
     @Test
     public void testStatusMethodsForAgentStatusStarted()
     {
@@ -221,7 +175,7 @@ public class AgentTest
         assertFalse("expected false on agent.isRunning()", agent.isRunning());
         assertFalse("expected false on agent.isStopped()", agent.isStopped());
     }
-    
+
     @Test
     public void testStatusMethodsForAgentStatusRunning()
     {
@@ -230,7 +184,7 @@ public class AgentTest
         assertTrue("expected true on agent.isRunning()", agent.isRunning());
         assertFalse("expected false on agent.isStopped()", agent.isStopped());
     }
-    
+
     @Test
     public void testStatusMethodsForAgentStatusStopped()
     {
@@ -239,7 +193,7 @@ public class AgentTest
         assertFalse("expected false on agent.isRunning()", agent.isRunning());
         assertTrue("expected true on agent.isStopped()", agent.isStopped());
     }
-    
+
     @Test
     public void testLastRunDate()
     {
@@ -249,7 +203,7 @@ public class AgentTest
         assertNotSame(now, lastRunDate);
         assertThat(lastRunDate.getTime(), is(now.getTime()));
     }
-    
+
     @Test
     public void testLastRunDateNull()
     {
@@ -261,14 +215,14 @@ public class AgentTest
     @Test
     public void testIsAutomaticallyStarted() throws Exception
     {
-        AgentConfiguration configuration = new AgentConfiguration.Builder(DUMMY_DAEMON)
-                .type(DAEMON)
-                .agentClass(DUMMY_DAEMON_CLASS)
+        AgentConfiguration configuration = new AgentConfiguration.Builder(DUMMY_AGENT)
+                .type(TIMER)
+                .agentClass(DUMMY_AGENT_CLASS)
                 .automaticallyStarted(true)
                 .build();
 
-        DaemonAgent daemonAgent = (DaemonAgent) Agent.parseAgent(configuration);
-        assertTrue(daemonAgent.isAutomaticallyStarted());
+        TimerAgent agent = (TimerAgent) Agent.parseAgent(configuration);
+        assertTrue(agent.isAutomaticallyStarted());
     }
-    
+
 }

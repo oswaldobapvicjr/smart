@@ -6,7 +6,6 @@ import javax.xml.bind.annotation.XmlElement;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.obvj.smart.agents.api.DaemonAgent;
 import net.obvj.smart.agents.api.TimerAgent;
 import net.obvj.smart.conf.annotation.Agent;
 import net.obvj.smart.conf.annotation.Type;
@@ -198,10 +197,6 @@ public class AgentConfiguration
         if (superClass.equals(TimerAgent.class))
         {
             return TimerAgent.TYPE;
-        }
-        else if (superClass.equals(DaemonAgent.class))
-        {
-            return DaemonAgent.TYPE;
         }
         return StringUtils.EMPTY;
     }

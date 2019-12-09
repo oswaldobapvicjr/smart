@@ -25,7 +25,7 @@ import net.obvj.smart.util.ApplicationContextFacade;
 
 /**
  * Unit tests for operations inside {@link SmartServerSupport}, with mocks.
- * 
+ *
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
@@ -36,9 +36,6 @@ public class SmartServerSupportTest
     private static final AgentConfiguration DUMMY_AGENT_CONFIG = new AgentConfiguration.Builder("DummyAgent")
             .type("timer").agentClass("net.obvj.smart.agents.dummy.DummyAgent").interval("3 hours")
             .automaticallyStarted(false).build();
-    private static final AgentConfiguration DUMMY_DAEMON_CONFIG = new AgentConfiguration.Builder("DummyDaemon")
-            .type("daemon").agentClass("net.obvj.smart.agents.test.valid.DummyDaemonAgent").automaticallyStarted(true)
-            .build();
 
     @Mock
     private SmartProperties properties;
@@ -51,7 +48,6 @@ public class SmartServerSupportTest
 
     // Agents
     private Agent dummyAgent;
-    private Agent dummyDaemon;
     private List<Agent> allAgents;
 
     // Test subject
@@ -68,8 +64,7 @@ public class SmartServerSupportTest
 
         // Setup agents
         dummyAgent = spy(Agent.parseAgent(DUMMY_AGENT_CONFIG));
-        dummyDaemon = spy(Agent.parseAgent(DUMMY_DAEMON_CONFIG));
-        allAgents = Arrays.asList(dummyAgent, dummyDaemon);
+        allAgents = Arrays.asList(dummyAgent);
 
         // Allow usage of static method parseAgent
         mockStatic(Agent.class);
@@ -115,7 +110,6 @@ public class SmartServerSupportTest
         when(manager.getAgents()).thenReturn(allAgents);
         support.startAutomaticAgents();
         verify(manager, never()).startAgent("DummyAgent");
-        verify(manager).startAgent("DummyDaemon");
     }
 
 }

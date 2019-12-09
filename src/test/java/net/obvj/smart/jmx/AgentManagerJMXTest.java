@@ -48,10 +48,10 @@ public class AgentManagerJMXTest
     {
         mockStatic(ApplicationContextFacade.class);
         when(ApplicationContextFacade.getBean(AgentManager.class)).thenReturn(manager);
-        
+
         mockStatic(DateUtils.class);
         mockStatic(SystemUtils.class);
-        
+
         jmx = new AgentManagerJMX();
     }
 
@@ -118,26 +118,26 @@ public class AgentManagerJMXTest
     public void testGetAgentDTOs()
     {
         AgentDTO agent1 = new AgentDTO("name1", "TIMER", "STARTED", false);
-        AgentDTO agent2 = new AgentDTO("name2", "DAEMON", "STOPPED", false);
+        AgentDTO agent2 = new AgentDTO("name2", "TIMER", "STOPPED", false);
         List<AgentDTO> dtos = Arrays.asList(agent1, agent2);
         when(manager.getAgentDTOs()).thenReturn(dtos);
         assertTrue(jmx.getAgentDTOs().containsAll(dtos));
     }
-    
+
     @Test
     public void testGetServerDate()
     {
         when(DateUtils.now()).thenReturn("date1");
         assertEquals("date1", jmx.getServerDate());
     }
-    
+
     @Test
     public void testGetServerUptime()
     {
         when(SystemUtils.getSystemUptime()).thenReturn(987l);
         assertEquals(987l, jmx.getServerUptime());
     }
-    
+
     @Test
     public void testGetAllThreadsInfo()
     {
@@ -147,12 +147,12 @@ public class AgentManagerJMXTest
         when(SystemUtils.getAllSystemTheadsDTOs()).thenReturn(dtos);
         assertTrue(jmx.getAllThreadsInfo().containsAll(dtos));
     }
-    
+
     @Test
     public void testGetJavaVersion()
     {
         when(SystemUtils.getJavaVersion()).thenReturn("javaVersion");
         assertEquals("javaVersion", jmx.getJavaVersion());
     }
-  
+
 }

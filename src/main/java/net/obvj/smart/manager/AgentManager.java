@@ -17,7 +17,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
 import net.obvj.smart.agents.api.Agent;
-import net.obvj.smart.agents.api.DaemonAgent;
 import net.obvj.smart.agents.api.dto.AgentDTO;
 import net.obvj.smart.conf.AgentConfiguration;
 import net.obvj.smart.conf.AgentLoader;
@@ -167,16 +166,10 @@ public class AgentManager
      * 
      * @param name the identifier of the agent to be run
      * @throws IllegalArgumentException      if no agent with the given name was found
-     * @throws UnsupportedOperationException if the requested agent is a daemon agent
      */
     public void runNow(String name)
     {
-        Agent agent = findAgentByName(name);
-        if (agent instanceof DaemonAgent)
-        {
-            throw new UnsupportedOperationException("Cannot run a daemon agent task manually");
-        }
-        agent.run(true);
+        findAgentByName(name).run(true);
     }
 
     /**

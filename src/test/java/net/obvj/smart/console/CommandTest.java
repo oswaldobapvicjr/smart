@@ -263,7 +263,7 @@ public class CommandTest
         assertFalse(out.contains("1name1RUNNABLE"));
         assertTrue(out.contains("2name2WAITING"));
     }
-    
+
     @Test
     public void testShowThreadsFilterByNameWithWildcard()
     {
@@ -278,7 +278,7 @@ public class CommandTest
         assertTrue(out.contains("1name1RUNNABLE"));
         assertTrue(out.contains("2name2WAITING"));
     }
-    
+
     @Test
     public void testShowThreadsFilterByNameWithWildcardNoMatch()
     {
@@ -304,7 +304,7 @@ public class CommandTest
     @Test
     public void testShowAgents()
     {
-        AgentDTO agent1 = new AgentDTO("name1", "DAEMON", "RUNNING", false);
+        AgentDTO agent1 = new AgentDTO("name1", "TYPE_EXT", "RUNNING", false);
         AgentDTO agent2 = new AgentDTO("name2", "TIMER", "SET", false);
         List<AgentDTO> dtos = Arrays.asList(agent1, agent2);
         when(manager.getAgentDTOs()).thenReturn(dtos);
@@ -312,14 +312,14 @@ public class CommandTest
 
         // Trim variable padding spaces for testing
         String out = this.out.toString().replace(" ", "");
-        assertTrue(out.contains("name1DAEMONRUNNING"));
+        assertTrue(out.contains("name1TYPE_EXTRUNNING"));
         assertTrue(out.contains("name2TIMERSET"));
     }
 
     @Test
     public void testShowAgentsDoesNotShowHiddenAgents()
     {
-        AgentDTO agent1 = new AgentDTO("name1", "DAEMON", "RUNNING", false);
+        AgentDTO agent1 = new AgentDTO("name1", "TYPE_EXT", "RUNNING", false);
         AgentDTO agent2 = new AgentDTO("name2", "TIMER", "SET", true);
         List<AgentDTO> dtos = Arrays.asList(agent1, agent2);
         when(manager.getAgentDTOs()).thenReturn(dtos);
@@ -327,14 +327,14 @@ public class CommandTest
 
         // Trim variable padding spaces for testing
         String out = this.out.toString().replace(" ", "");
-        assertTrue(out.contains("name1DAEMONRUNNING"));
+        assertTrue(out.contains("name1TYPE_EXTRUNNING"));
         assertFalse("A hidden agent should not be displayed", out.contains("name2TIMERSET"));
     }
 
     @Test
     public void testShowAgentsWithOptionAIncludesHiddenAgents()
     {
-        AgentDTO agent1 = new AgentDTO("name1", "DAEMON", "RUNNING", false);
+        AgentDTO agent1 = new AgentDTO("name1", "TYPE_EXT", "RUNNING", false);
         AgentDTO agent2 = new AgentDTO("name2", "TIMER", "SET", true);
         List<AgentDTO> dtos = Arrays.asList(agent1, agent2);
         when(manager.getAgentDTOs()).thenReturn(dtos);
@@ -342,14 +342,14 @@ public class CommandTest
 
         // Trim variable padding spaces for testing
         String out = this.out.toString().replace(" ", "");
-        assertTrue(out.contains("name1DAEMONRUNNING"));
+        assertTrue(out.contains("name1TYPE_EXTRUNNING"));
         assertTrue(out.contains("name2TIMERSET"));
     }
 
     @Test
     public void testShowAgentsWithOptionAllIncludesHiddenAgents()
     {
-        AgentDTO agent1 = new AgentDTO("name1", "DAEMON", "RUNNING", false);
+        AgentDTO agent1 = new AgentDTO("name1", "TYPE_EXT", "RUNNING", false);
         AgentDTO agent2 = new AgentDTO("name2", "TIMER", "SET", true);
         List<AgentDTO> dtos = Arrays.asList(agent1, agent2);
         when(manager.getAgentDTOs()).thenReturn(dtos);
@@ -357,7 +357,7 @@ public class CommandTest
 
         // Trim variable padding spaces for testing
         String out = this.out.toString().replace(" ", "");
-        assertTrue(out.contains("name1DAEMONRUNNING"));
+        assertTrue(out.contains("name1TYPE_EXTRUNNING"));
         assertTrue(out.contains("name2TIMERSET"));
     }
 

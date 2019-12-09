@@ -9,7 +9,6 @@ import org.junit.Test;
 import net.obvj.smart.agents.test.invalid.TestAgentWithAllCustomParams;
 import net.obvj.smart.agents.test.invalid.TestAgentWithCustomNameAndType;
 import net.obvj.smart.agents.test.invalid.TestAgentWithNoType;
-import net.obvj.smart.agents.test.invalid.TestAgentWithTypeDeterminedBySupertypeDaemon;
 import net.obvj.smart.agents.test.valid.TestAgentWithNoNameAndTypeTimerAndAgentTask;
 import net.obvj.smart.agents.test.valid.TestAgentWithTypeDeterminedBySupertypeTimer;
 
@@ -22,7 +21,6 @@ import net.obvj.smart.agents.test.valid.TestAgentWithTypeDeterminedBySupertypeTi
 public class AgentConfigurationTest
 {
     private static final String NAME1 = "name1";
-    private static final String DAEMON = "daemon";
     private static final String TIMER = "timer";
     private static final String INTERVAL = "90 seconds";
     private static final int STOP_TIMEOUT_SECONDS = 99;
@@ -77,24 +75,6 @@ public class AgentConfigurationTest
 
         // Main subject
         assertThat(configuration.getType(), is(TIMER));
-
-        // Default values
-        assertThat(configuration.getName(), is(clazz.getSimpleName()));
-        assertThat(configuration.getAgentClass(), is(clazz.getCanonicalName()));
-        assertThat(configuration.getInterval(), is(AgentConfiguration.DEFAULT_INTERVAL));
-        assertThat(configuration.getStopTimeoutInSeconds(), is(AgentConfiguration.DEFAULT_STOP_TIMEOUT_IN_SECONDS));
-        assertThat(configuration.isAutomaticallyStarted(), is(AgentConfiguration.DEFAULT_AUTOMATICALLY_STARTED));
-        assertThat(configuration.isHidden(), is(AgentConfiguration.DEFAULT_HIDDEN));
-    }
-
-    @Test()
-    public void fromAnnotatedClass_withAgentAnnotationAndTypeDeterminedBySupertypeDaemon()
-    {
-        Class<?> clazz = TestAgentWithTypeDeterminedBySupertypeDaemon.class;
-        AgentConfiguration configuration = AgentConfiguration.fromAnnotatedClass(clazz);
-
-        // Main subject
-        assertThat(configuration.getType(), is(DAEMON));
 
         // Default values
         assertThat(configuration.getName(), is(clazz.getSimpleName()));

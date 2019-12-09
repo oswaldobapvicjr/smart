@@ -27,12 +27,11 @@ import net.obvj.smart.agents.api.Agent;
 import net.obvj.smart.agents.api.Agent.State;
 import net.obvj.smart.agents.api.dto.AgentDTO;
 import net.obvj.smart.conf.AgentConfiguration;
-import net.obvj.smart.conf.AgentConfigurationException;
 import net.obvj.smart.conf.AgentLoader;
 
 /**
  * Unit tests for the {@link AgentManager} class.
- * 
+ *
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
@@ -43,29 +42,22 @@ public class AgentManagerTest
     // Test data
     private static final String DUMMY_AGENT = "DummyAgent";
     private static final String DUMMY_AGENT_CLASS = "net.obvj.smart.agents.dummy.DummyAgent";
-    private static final String DUMMY_DAEMON = "DummyDaemon";
-    private static final String DUMMY_DAEMON_AGENT_CLASS = "net.obvj.smart.agents.test.valid.DummyDaemonAgent";
     private static final String AGENT1 = "agent1";
     private static final String UNKNOWN = "Unknown";
 
     private static final String TIMER = "timer";
-    private static final String DAEMON = "daemon";
 
-    private static final List<String> names = Arrays.asList(DUMMY_AGENT, DUMMY_DAEMON);
+    private static final List<String> names = Arrays.asList(DUMMY_AGENT);
 
     private static final AgentConfiguration XML_DUMMY_AGENT = new AgentConfiguration.Builder(DUMMY_AGENT).type(TIMER)
             .agentClass(DUMMY_AGENT_CLASS).interval("1 hour").build();
-    private static final AgentConfiguration XML_DUMMY_DAEMON = new AgentConfiguration.Builder(DUMMY_DAEMON).type(DAEMON)
-            .agentClass(DUMMY_DAEMON_AGENT_CLASS).build();
 
     private static final AgentDTO DUMMY_AGENT_DTO = new AgentDTO(DUMMY_AGENT, TIMER, "SET", false);
-    private static final AgentDTO DUMMY_DAEMON_DTO = new AgentDTO(DUMMY_DAEMON, DAEMON, "SET", false);
 
-    private static final List<AgentConfiguration> ALL_AGENT_CONFIGS = Arrays.asList(XML_DUMMY_AGENT, XML_DUMMY_DAEMON);
-    private static final List<AgentDTO> ALL_AGENT_DTOS = Arrays.asList(DUMMY_AGENT_DTO, DUMMY_DAEMON_DTO);
+    private static final List<AgentConfiguration> ALL_AGENT_CONFIGS = Arrays.asList(XML_DUMMY_AGENT);
+    private static final List<AgentDTO> ALL_AGENT_DTOS = Arrays.asList(DUMMY_AGENT_DTO);
 
     private Agent dummyAgent;
-    private Agent dummyDaemonAgent;
     private Agent[] allAgents;
 
     @Mock
@@ -79,8 +71,7 @@ public class AgentManagerTest
         MockitoAnnotations.initMocks(this);
 
         dummyAgent = Agent.parseAgent(XML_DUMMY_AGENT);
-        dummyDaemonAgent = Agent.parseAgent(XML_DUMMY_DAEMON);
-        allAgents = new Agent[] { dummyAgent, dummyDaemonAgent };
+        allAgents = new Agent[] { dummyAgent };
     }
 
     protected void prepareAgentManager(Agent... agents)
@@ -102,7 +93,7 @@ public class AgentManagerTest
     {
         prepareAgentManager(allAgents);
         Collection<Agent> agents = manager.getAgents();
-        assertEquals(2, agents.size());
+        assertEquals(1, agents.size());
         List<String> managerNames = agents.stream().map(Agent::getName).collect(Collectors.toList());
         assertTrue(managerNames.containsAll(names));
     }
@@ -136,7 +127,7 @@ public class AgentManagerTest
     {
         prepareAgentManager(allAgents);
         manager.removeAgent(DUMMY_AGENT);
-        assertEquals(1, manager.getAgents().size());
+        assertEquals(0, manager.getAgents().size());
         assertFalse(manager.getAgents().contains(dummyAgent));
     }
 
@@ -159,7 +150,7 @@ public class AgentManagerTest
     {
         prepareAgentManager(allAgents);
         Collection<AgentDTO> dtos = manager.getAgentDTOs();
-        assertEquals(2, dtos.size());
+        assertEquals(1, dtos.size());
         assertTrue(dtos.containsAll(ALL_AGENT_DTOS));
     }
 
@@ -173,7 +164,7 @@ public class AgentManagerTest
         String agentStatusStrWithoutSpaces = manager.getAgentStatusStr(AGENT1).replace(" ", "");
         TestUtils.assertStringContains(agentStatusStrWithoutSpaces, "\"statusStr\":\"statusStr1\"");
     }
-    
+
     @Test
     public void testGetAgentStatusStrNotPrettyPrinted()
     {
@@ -204,13 +195,6 @@ public class AgentManagerTest
         prepareAgentManager(agent);
         manager.runNow(AGENT1);
         verify(agent).run(true);
-    }
-
-    @Test(expected = UnsupportedOperationException.class)
-    public void testRunDaemonAgent()
-    {
-        prepareAgentManager(dummyDaemonAgent);
-        manager.runNow(DUMMY_DAEMON);
     }
 
     @Test
@@ -256,28 +240,23 @@ public class AgentManagerTest
     {
         PowerMockito.mockStatic(Agent.class);
         PowerMockito.when(Agent.parseAgent(XML_DUMMY_AGENT)).thenReturn(dummyAgent);
-        PowerMockito.when(Agent.parseAgent(XML_DUMMY_DAEMON)).thenReturn(dummyDaemonAgent);
         when(agentLoader.getAgents()).thenReturn(ALL_AGENT_CONFIGS);
-        
+
         manager.loadAgents();
-        assertEquals(2, manager.getAgents().size());
+        assertEquals(1, manager.getAgents().size());
         assertTrue(manager.getAgents().contains(dummyAgent));
-        assertTrue(manager.getAgents().contains(dummyDaemonAgent));
     }
 
     @Test
     public void testLoadAgentsWithOneException() throws ReflectiveOperationException
     {
         PowerMockito.mockStatic(Agent.class);
-        PowerMockito.when(Agent.parseAgent(XML_DUMMY_AGENT)).thenReturn(dummyAgent);
-        PowerMockito.when(Agent.parseAgent(XML_DUMMY_DAEMON))
-                .thenThrow(new AgentConfigurationException("dummyException"));
+        PowerMockito.when(Agent.parseAgent(XML_DUMMY_AGENT)).thenThrow(new IllegalStateException());
         when(agentLoader.getAgents()).thenReturn(ALL_AGENT_CONFIGS);
-        
+
         manager.loadAgents();
-        assertEquals(1, manager.getAgents().size());
-        assertTrue(manager.getAgents().contains(dummyAgent));
-        assertFalse(manager.getAgents().contains(dummyDaemonAgent));
+        assertEquals(0, manager.getAgents().size());
+        assertFalse(manager.getAgents().contains(dummyAgent));
     }
 
 }

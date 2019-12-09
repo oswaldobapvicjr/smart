@@ -17,14 +17,14 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import net.obvj.smart.agents.internal.BackgroundAgent;
-import net.obvj.smart.agents.test.valid.DummyDaemonAgent;
+import net.obvj.smart.agents.test.valid.DummyAgent;
 import net.obvj.smart.agents.test.valid.TestAgentWithNoNameAndTypeTimerAndAgentTask;
 import net.obvj.smart.agents.test.valid.TestAgentWithTypeDeterminedBySupertypeTimer;
 import net.obvj.smart.conf.properties.SmartProperties;
 
 /**
  * Unit tests for the {@link AnnotatedAgents} component.
- * 
+ *
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
@@ -36,7 +36,7 @@ public class AnnotatedAgentsTest
             TestAgentWithNoNameAndTypeTimerAndAgentTask.class.getName(),
             TestAgentWithTypeDeterminedBySupertypeTimer.class.getName());
     private static final List<String> UNEXPECTED_TEST_PACKAGE_AGENT_CLASSES = Arrays
-            .asList(DummyDaemonAgent.class.getName());
+            .asList(DummyAgent.class.getName());
 
     private static final String INTERNAL_PACKAGE = "net.obvj.smart.agents.internal";
     private static final List<String> EXCPECTED_INTERNAL_PACKAGE_AGENT_CLASSES = Arrays

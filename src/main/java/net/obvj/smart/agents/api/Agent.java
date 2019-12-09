@@ -201,10 +201,6 @@ public abstract class Agent implements Runnable
         {
             return TimerAgent.parseAgent(configuration);
         }
-        else if (lType.equalsIgnoreCase("daemon"))
-        {
-            return DaemonAgent.parseAgent(configuration);
-        }
         throw Exceptions.illegalArgument("Unknown agent type: \"%s\"", lType);
     }
 
