@@ -195,6 +195,24 @@ public class AgentTest
     }
 
     @Test
+    public void testStartDate()
+    {
+        Calendar now = Calendar.getInstance();
+        agent.startDate = now;
+        Calendar startDate = agent.getStartDate();
+        assertNotSame(now, startDate);
+        assertThat(startDate.getTime(), is(now.getTime()));
+    }
+
+    @Test
+    public void testStartDateNull()
+    {
+        agent.startDate = null;
+        Calendar lastRunDate = agent.getStartDate();
+        assertNull(lastRunDate);
+    }
+
+    @Test
     public void testLastRunDate()
     {
         Calendar now = Calendar.getInstance();
