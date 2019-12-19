@@ -17,7 +17,7 @@ import net.obvj.smart.conf.annotation.Type;
 @Agent(type = Type.TIMER, hidden = true)
 public class BackgroundAgent
 {
-    private final Logger log = Logger.getLogger("smart-server");
+    private Logger log = Logger.getLogger("smart-server");
 
     @AgentTask
     public void keepAlive()
