@@ -24,7 +24,7 @@ import net.obvj.smart.util.Exceptions;
 
 /**
  * A component that provides methods for Agents maintenance
- * 
+ *
  * @author oswaldo.bapvic.jr
  * @since 1.0
  */
@@ -66,7 +66,7 @@ public class AgentManager
 
     /**
      * Parses the given {@link AgentConfiguration}.
-     * 
+     *
      * @param agentConfig the {@link AgentConfiguration} to be parsed
      * @return an Optional which may contain a valid {@link Agent}, or
      *         {@link Optional#empty()} if unable to parse the given configuration
@@ -86,7 +86,7 @@ public class AgentManager
 
     /**
      * Registers a new agent for maintenance
-     * 
+     *
      * @param agent the agent to be registered
      */
     public void addAgent(Agent agent)
@@ -112,7 +112,7 @@ public class AgentManager
 
     /**
      * Removes an agent identified by the given name, if it is not started
-     * 
+     *
      * @param name the identifier of the agent to be removed
      * @throws IllegalArgumentException if no agent with the given name was found
      * @throws IllegalStateException    if the requested agent is started
@@ -129,7 +129,7 @@ public class AgentManager
 
     /**
      * Creates a new instance of the agent identified by the given name
-     * 
+     *
      * @param name the identifier of the agent to be reset
      * @return {@code true} if the operation succeeds, otherwise {@code false}
      * @throws ReflectiveOperationException if unable to parse a new agent object
@@ -151,7 +151,7 @@ public class AgentManager
 
     /**
      * Starts the agent identified by the given name
-     * 
+     *
      * @param name the identifier of the agent to be started
      * @throws IllegalArgumentException if no agent with the given name was found
      * @throws IllegalStateException    if the requested agent is already started
@@ -163,7 +163,7 @@ public class AgentManager
 
     /**
      * Posts immediate execution of the agent identified by the given name
-     * 
+     *
      * @param name the identifier of the agent to be run
      * @throws IllegalArgumentException      if no agent with the given name was found
      */
@@ -174,7 +174,7 @@ public class AgentManager
 
     /**
      * Posts a graceful stop request for the agent identified by the given name
-     * 
+     *
      * @param name the identifier of the agent to be stopped
      * @throws IllegalArgumentException if no agent with the given name was found
      * @throws TimeoutException         if the requested agent did not complete its normal
@@ -216,7 +216,7 @@ public class AgentManager
 
     /**
      * Returns a flag indicating whether an agent is running or not
-     * 
+     *
      * @param name the identifier of the agent to be reset
      * @return {@code true} if the agent is running, otherwise {@code false}
      * @throws IllegalArgumentException if no agent with the given name was found
@@ -228,7 +228,7 @@ public class AgentManager
 
     /**
      * Returns a flag indicating whether an agent is started or not
-     * 
+     *
      * @param name the identifier of the agent to be reset
      * @return {@code true} if the agent is started, otherwise {@code false}
      * @throws IllegalArgumentException if no agent with the given name was found
@@ -240,7 +240,7 @@ public class AgentManager
 
     /**
      * Returns a string containing agent status information for reporting
-     * 
+     *
      * @param name the identifier of the agent to be reported
      * @return a String containing agent status information and other metadata
      * @throws IllegalArgumentException if no agent with the given name was found

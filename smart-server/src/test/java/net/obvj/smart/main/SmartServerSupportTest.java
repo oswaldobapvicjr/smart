@@ -21,6 +21,7 @@ import net.obvj.smart.agents.Agent;
 import net.obvj.smart.conf.*;
 import net.obvj.smart.conf.properties.SmartProperties;
 import net.obvj.smart.console.ManagementConsole;
+import net.obvj.smart.jmx.JMXException;
 import net.obvj.smart.manager.AgentManager;
 import net.obvj.smart.util.ApplicationContextFacade;
 
@@ -119,6 +120,13 @@ public class SmartServerSupportTest
         support.startAutomaticAgents();
         verify(manager, never()).startAgent("DummyAgent");
         verify(manager).startAgent("DummyAgentAuto");
+    }
+
+    @Test(expected = JMXException.class)
+    public void testRegisterManagedBeanWithException()
+    {
+        when(properties.getProperty(SmartProperties.JMX_AGENT_MANAGER_OBJECT_NAME)).thenReturn("name1");
+        support.registerManagedBean();
     }
 
 }

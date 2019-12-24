@@ -1,12 +1,15 @@
 package net.obvj.smart.main;
 
-import javax.management.JMException;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
+import net.obvj.performetrics.runnable.WallClockTimeRunnableOperation;
 import net.obvj.smart.conf.AgentConfigurationException;
+import net.obvj.smart.jmx.JMXException;
 
 /**
  * S.M.A.R.T. service main class
- * 
+ *
  * @author oswaldo.bapvic.jr
  * @since 1.0
  */
@@ -14,11 +17,11 @@ public class Main extends SmartServerSupport
 {
     /**
      * S.M.A.R.T. Server startup sequence.
-     * 
-     * @throws JMException                 if unable to register S.M.A.R.T. management beans
+     *
+     * @throws JMXException                if unable to register S.M.A.R.T. management beans
      * @throws AgentConfigurationException if unable to load agents configuration file
      */
-    public void start() throws JMException
+    public void start()
     {
         startClassicManagementConsole();
         registerManagedBean();
@@ -28,13 +31,13 @@ public class Main extends SmartServerSupport
 
         // Start agents
         startAutomaticAgents();
-
-        LOG.info("Ready");
     }
 
-    public static void main(String[] args) throws JMException
+    public static void main(String[] args)
     {
-        new Main().start();
+        WallClockTimeRunnableOperation operation = new WallClockTimeRunnableOperation(() -> new Main().start());
+        operation.run();
+        LOG.log(Level.INFO, "Server started in {0} milliseconds", operation.elapsedTime(TimeUnit.MILLISECONDS));
     }
 
 }

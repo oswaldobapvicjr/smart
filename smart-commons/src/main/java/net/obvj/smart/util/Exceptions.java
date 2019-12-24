@@ -4,10 +4,11 @@ import java.io.FileNotFoundException;
 
 import net.obvj.smart.agents.AgentRuntimeException;
 import net.obvj.smart.conf.AgentConfigurationException;
+import net.obvj.smart.jmx.JMXException;
 
 /**
  * Shorthands creating exceptions with a formatted message.
- * 
+ *
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
@@ -20,7 +21,7 @@ public final class Exceptions
 
     /**
      * Creates an {@link IllegalArgumentException} with a formatted message.
-     * 
+     *
      * @param format See {@link String#format(String, Object...)}
      * @param args   See {@link String#format(String, Object...)}
      * @return an {@link IllegalArgumentException} with a formatted message
@@ -32,7 +33,7 @@ public final class Exceptions
 
     /**
      * Creates an {@link IllegalArgumentException} with a cause and a formatted message.
-     * 
+     *
      * @param cause  the cause to be set
      * @param format See {@link String#format(String, Object...)}
      * @param args   See {@link String#format(String, Object...)}
@@ -46,7 +47,7 @@ public final class Exceptions
 
     /**
      * Creates an {@link IllegalStateException} with a formatted message.
-     * 
+     *
      * @param format See {@link String#format(String, Object...)}
      * @param args   See {@link String#format(String, Object...)}
      * @return an {@link IllegalStateException} with a formatted message
@@ -58,7 +59,7 @@ public final class Exceptions
 
     /**
      * Creates an {@link IllegalStateException} with a cause and a formatted message.
-     * 
+     *
      * @param cause  the cause to be set
      * @param format See {@link String#format(String, Object...)}
      * @param args   See {@link String#format(String, Object...)}
@@ -71,7 +72,7 @@ public final class Exceptions
 
     /**
      * Creates a {@link FileNotFoundException} with a formatted message.
-     * 
+     *
      * @param format See {@link String#format(String, Object...)}
      * @param args   See {@link String#format(String, Object...)}
      * @return a {@link FileNotFoundException} with a formatted message
@@ -83,7 +84,7 @@ public final class Exceptions
 
     /**
      * Creates an {@link AgentConfigurationException} with a formatted message.
-     * 
+     *
      * @param format See {@link String#format(String, Object...)}
      * @param args   See {@link String#format(String, Object...)}
      * @return an {@link AgentConfigurationException} with a formatted message
@@ -95,7 +96,7 @@ public final class Exceptions
 
     /**
      * Creates an {@link AgentConfigurationException} with a cause and a formatted message.
-     * 
+     *
      * @param cause  the cause to be set
      * @param format See {@link String#format(String, Object...)}
      * @param args   See {@link String#format(String, Object...)}
@@ -108,16 +109,29 @@ public final class Exceptions
     }
 
     /**
-     * Creates an {@link AgentConfigurationException} with a cause and a formatted message.
-     * 
+     * Creates an {@link AgentRuntimeException} with a cause and a formatted message.
+     *
      * @param cause  the cause to be set
      * @param format See {@link String#format(String, Object...)}
      * @param args   See {@link String#format(String, Object...)}
-     * @return an {@link AgentConfigurationException} with given cause and formatted message
+     * @return an {@link AgentRuntimeException} with given cause and formatted message
      */
     public static AgentRuntimeException agentRuntime(final Throwable cause, final String format, final Object... args)
     {
         return new AgentRuntimeException(String.format(format, args), cause);
+    }
+
+    /**
+     * Creates a {@link JMXException} with a cause and a formatted message.
+     *
+     * @param cause  the cause to be set
+     * @param format See {@link String#format(String, Object...)}
+     * @param args   See {@link String#format(String, Object...)}
+     * @return a {@link JMXException} with given cause and formatted message
+     */
+    public static JMXException jmx(final Throwable cause, final String format, final Object... args)
+    {
+        return new JMXException(String.format(format, args), cause);
     }
 
 }

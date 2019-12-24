@@ -9,10 +9,11 @@ import org.junit.Test;
 
 import net.obvj.smart.agents.AgentRuntimeException;
 import net.obvj.smart.conf.AgentConfigurationException;
+import net.obvj.smart.jmx.JMXException;
 
 /**
  * Unit tests for the {@link Exceptions} class.
- * 
+ *
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
@@ -69,12 +70,19 @@ public class ExceptionsTest
         assertException(AgentConfigurationException.class, EXPECTED_MSG, NullPointerException.class,
                 Exceptions.agentConfiguration(new NullPointerException(), MSG_PATTERN, ARG1, ARG2));
     }
-    
+
     @Test
     public void testAgentRuntimeWithMessageAndParamsAndCause()
     {
         assertException(AgentRuntimeException.class, EXPECTED_MSG, NullPointerException.class,
                 Exceptions.agentRuntime(new NullPointerException(), MSG_PATTERN, ARG1, ARG2));
+    }
+
+    @Test
+    public void testJmxWithMessageAndParamsAndCause()
+    {
+        assertException(JMXException.class, EXPECTED_MSG, NullPointerException.class,
+                Exceptions.jmx(new NullPointerException(), MSG_PATTERN, ARG1, ARG2));
     }
 
     @Test

@@ -13,7 +13,7 @@ import org.junit.Test;
 
 /**
  * Unit tests for operations inside {@link SmartServerSupport}, with no mocks.
- * 
+ *
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
@@ -26,12 +26,13 @@ public class SmartServerSupportNoMocksTest
     private SmartServerSupport support = new SmartServerSupport();
 
     @Test
-    public void testRegisteredManagedBean() throws Exception
+    public void testRegisteredManagedBeanWithCustomObjectName() throws Exception
     {
-        support.registerManagedBean();
-        ObjectName name = new ObjectName(support.jmxAgentManagerObjectName);
+        String objectName = "net.obvj.smart.jmx:type=TestAgentManagerJMX";
+        support.registerManagedBean(objectName);
+        ObjectName name = new ObjectName(objectName);
 
-        assertTrue("Manageg bean not registered", ManagementFactory.getPlatformMBeanServer().isRegistered(name));
+        assertTrue("Managed bean not registered", ManagementFactory.getPlatformMBeanServer().isRegistered(name));
 
         MBeanOperationInfo[] operations = ManagementFactory.getPlatformMBeanServer().getMBeanInfo(name).getOperations();
         List<String> names = Arrays.stream(operations).map(MBeanOperationInfo::getName).collect(Collectors.toList());

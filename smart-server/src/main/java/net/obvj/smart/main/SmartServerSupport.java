@@ -14,10 +14,11 @@ import net.obvj.smart.jmx.AgentManagerJMX;
 import net.obvj.smart.jmx.AgentManagerJMXMBean;
 import net.obvj.smart.manager.AgentManager;
 import net.obvj.smart.util.ApplicationContextFacade;
+import net.obvj.smart.util.Exceptions;
 
 /**
  * S.M.A.R.T. server support methods
- * 
+ *
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
@@ -27,11 +28,7 @@ public class SmartServerSupport
     protected AgentManager agentManager = ApplicationContextFacade.getBean(AgentManager.class);
     protected ManagementConsole managementConsole = ApplicationContextFacade.getBean(ManagementConsole.class);
 
-    protected String jmxAgentManagerObjectName = smartProperties
-            .getProperty(SmartProperties.JMX_AGENT_MANAGER_OBJECT_NAME);
-
     protected static final Logger LOG = Logger.getLogger("smart-server");
-
 
     public boolean isClassicConsoleEnabled()
     {
@@ -72,12 +69,27 @@ public class SmartServerSupport
         agentManager.startAgent(agent.getName());
     }
 
-    protected void registerManagedBean() throws JMException
+    protected void registerManagedBean()
     {
-        LOG.info("Creating and registering Managed Beans...");
+        String jmxAgentManagerObjectName = smartProperties.getProperty(SmartProperties.JMX_AGENT_MANAGER_OBJECT_NAME);
+        registerManagedBean(jmxAgentManagerObjectName);
+    }
+
+    protected void registerManagedBean(String objectName)
+    {
+        LOG.log(Level.INFO, "Creating and registering Managed Bean {0}", objectName);
         AgentManagerJMXMBean mBean = new AgentManagerJMX();
-        ObjectName name = new ObjectName(jmxAgentManagerObjectName);
-        ManagementFactory.getPlatformMBeanServer().registerMBean(mBean, name);
+
+        try
+        {
+            ObjectName name = new ObjectName(objectName);
+            ManagementFactory.getPlatformMBeanServer().registerMBean(mBean, name);
+        }
+        catch (JMException cause)
+        {
+            throw Exceptions.jmx(cause, "Unable to register Managed Bean: %s", objectName);
+        }
+
     }
 
 }

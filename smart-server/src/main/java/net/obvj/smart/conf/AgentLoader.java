@@ -4,20 +4,28 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import net.obvj.performetrics.Counter;
+import net.obvj.performetrics.Counter.Type;
+import net.obvj.performetrics.Stopwatch;
+
 /**
  * A component that loads agent objects by coordinating configuration data from
  * annotations and XML file.
- * 
+ *
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
 @Component
 public class AgentLoader
 {
+    private static final Logger LOG = Logger.getLogger("smart-server");
+
     private AnnotatedAgents annotatedAgents;
     private AgentsXml xmlAgents;
 
@@ -33,6 +41,8 @@ public class AgentLoader
 
     public void loadAgents()
     {
+        Stopwatch stopwatch = Stopwatch.createStarted(Counter.Type.WALL_CLOCK_TIME);
+
         Map<String, AgentConfiguration> annotatedAgentsByClass = annotatedAgents.getAgentsByClassName();
         List<AgentConfiguration> xmlAgentsList = xmlAgents.getAgents();
 
@@ -44,6 +54,10 @@ public class AgentLoader
         xmlAgentsList.forEach(xmlAgent -> overlayedAgentsByClass.put(xmlAgent.getAgentClass(), xmlAgent));
 
         this.agentsByClass = overlayedAgentsByClass;
+
+        long elapsedTime = stopwatch.getCounter(Type.WALL_CLOCK_TIME).elapsedTime();
+        LOG.log(Level.INFO, "{0} agents(s) loaded in {1} nanoseconds",
+                new Object[] { agentsByClass.size(), elapsedTime });
     }
 
     /**
