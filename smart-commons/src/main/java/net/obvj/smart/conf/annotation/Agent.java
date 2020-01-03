@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
  * Identify the annotated class as an Agent.
  * <p>
  * The annotated class is the implementation class of the Agent.
- * 
+ *
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
@@ -28,9 +28,9 @@ public @interface Agent
     /**
      * The type of this Agent.
      * <p>
-     * If not specified, the type of this Agent will be inferred from the super class.
+     * If not specified, {@link Type#TIMER} will be considered.
      */
-    Type type() default Type.DEFAULT;
+    Type type() default Type.TIMER;
 
     /**
      * The interval between executions for this Agent (only applicable for Timer Agents).

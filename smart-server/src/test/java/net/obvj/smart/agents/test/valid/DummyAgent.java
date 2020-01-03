@@ -1,17 +1,18 @@
 package net.obvj.smart.agents.test.valid;
 
-import net.obvj.smart.agents.TimerAgent;
+import net.obvj.smart.conf.annotation.Agent;
+import net.obvj.smart.conf.annotation.AgentTask;
 
 /**
- * A valid dummy agent without annotation
+ * A valid dummy agent without specific type in annotation
  *
  * @author oswaldo.bapvic.jr
- * @since 1.0
  */
-public class DummyAgent extends TimerAgent
+@Agent
+public class DummyAgent
 {
-    @Override
-    protected void runTask()
+    @AgentTask
+    public void runTask()
     {
     }
 

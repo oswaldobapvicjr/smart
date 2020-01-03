@@ -10,11 +10,11 @@ import net.obvj.smart.agents.test.invalid.TestAgentWithAllCustomParams;
 import net.obvj.smart.agents.test.invalid.TestAgentWithCustomNameAndType;
 import net.obvj.smart.agents.test.invalid.TestAgentWithNoType;
 import net.obvj.smart.agents.test.valid.TestAgentWithNoNameAndTypeTimerAndAgentTask;
-import net.obvj.smart.agents.test.valid.TestAgentWithTypeDeterminedBySupertypeTimer;
+import net.obvj.smart.conf.annotation.Type;
 
 /**
  * Unit tests for the {@link AgentConfiguration}.
- * 
+ *
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
@@ -31,10 +31,9 @@ public class AgentConfigurationTest
         AgentConfiguration.fromAnnotatedClass(Boolean.class);
     }
 
-    @Test(expected = AgentConfigurationException.class)
     public void fromAnnotatedClass_withAgentAnnotationWithNoType()
     {
-        AgentConfiguration.fromAnnotatedClass(TestAgentWithNoType.class);
+        assertThat(AgentConfiguration.fromAnnotatedClass(TestAgentWithNoType.class).getType(), is(Type.TIMER));
     }
 
     @Test()
@@ -61,24 +60,6 @@ public class AgentConfigurationTest
         assertThat(configuration.getName(), is(NAME1));
         assertThat(configuration.getType(), is(TIMER));
         assertThat(configuration.getAgentClass(), is(TestAgentWithCustomNameAndType.class.getCanonicalName()));
-        assertThat(configuration.getInterval(), is(AgentConfiguration.DEFAULT_INTERVAL));
-        assertThat(configuration.getStopTimeoutInSeconds(), is(AgentConfiguration.DEFAULT_STOP_TIMEOUT_IN_SECONDS));
-        assertThat(configuration.isAutomaticallyStarted(), is(AgentConfiguration.DEFAULT_AUTOMATICALLY_STARTED));
-        assertThat(configuration.isHidden(), is(AgentConfiguration.DEFAULT_HIDDEN));
-    }
-
-    @Test()
-    public void fromAnnotatedClass_withAgentAnnotationAndTypeDeterminedBySupertypeTimer()
-    {
-        Class<?> clazz = TestAgentWithTypeDeterminedBySupertypeTimer.class;
-        AgentConfiguration configuration = AgentConfiguration.fromAnnotatedClass(clazz);
-
-        // Main subject
-        assertThat(configuration.getType(), is(TIMER));
-
-        // Default values
-        assertThat(configuration.getName(), is(clazz.getSimpleName()));
-        assertThat(configuration.getAgentClass(), is(clazz.getCanonicalName()));
         assertThat(configuration.getInterval(), is(AgentConfiguration.DEFAULT_INTERVAL));
         assertThat(configuration.getStopTimeoutInSeconds(), is(AgentConfiguration.DEFAULT_STOP_TIMEOUT_IN_SECONDS));
         assertThat(configuration.isAutomaticallyStarted(), is(AgentConfiguration.DEFAULT_AUTOMATICALLY_STARTED));

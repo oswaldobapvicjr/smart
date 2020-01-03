@@ -13,7 +13,6 @@ import net.obvj.smart.TestUtils;
 import net.obvj.smart.agents.test.invalid.*;
 import net.obvj.smart.agents.test.valid.DummyAgent;
 import net.obvj.smart.agents.test.valid.TestAgentWithNoNameAndTypeTimerAndAgentTask;
-import net.obvj.smart.agents.test.valid.TestAgentWithTypeDeterminedBySupertypeTimer;
 import net.obvj.smart.conf.annotation.Agent;
 
 /**
@@ -34,9 +33,9 @@ public class AnnotationUtilsTest
             TestAgentWithNoNameAndTypeTimerAndAgentTask.class.getName(),
             TestAgentWithNoNameAndTypeTimerAndNoAgentTask.class.getName(),
             TestAgentWithNoNameAndTypeTimerAndTwoAgentTasks.class.getName(), TestAgentWithNoType.class.getName(),
-            TestAgentWithTypeDeterminedBySupertypeTimer.class.getName());
+            DummyAgent.class.getName());
 
-    private static final List<String> UNEXPECTED_AGENT_CLASS_NAMES = Arrays.asList(DummyAgent.class.getName());
+    private static final List<String> UNEXPECTED_AGENT_CLASS_NAMES = Arrays.asList(TestClassNotAgent.class.getName());
 
     /**
      * Tests that no instances of this utility class are created

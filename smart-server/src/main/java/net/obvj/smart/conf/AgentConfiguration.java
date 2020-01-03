@@ -6,14 +6,12 @@ import javax.xml.bind.annotation.XmlElement;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.obvj.smart.agents.TimerAgent;
 import net.obvj.smart.conf.annotation.Agent;
-import net.obvj.smart.conf.annotation.Type;
 import net.obvj.smart.util.Exceptions;
 
 /**
  * An object that contains the set-up of an agent from the {@code agents.xml} file
- * 
+ *
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
@@ -98,7 +96,7 @@ public class AgentConfiguration
 
     /**
      * An {@link AgentConfiguration} builder.
-     * 
+     *
      * @author oswaldo.bapvic.jr
      * @since 2.0
      */
@@ -177,9 +175,7 @@ public class AgentConfiguration
         // Name: If not specified in annotation, then use the class simple name
         String name = StringUtils.defaultIfEmpty(annotation.name(), clazz.getSimpleName());
 
-        // Type: If not specified in annotation, try to infer by the class it implements
-        String type = Type.DEFAULT == annotation.type() ? inferTypeFromSuperclass(clazz) : annotation.type().toString();
-
+        String type = annotation.type().toString();
         String agentClass = clazz.getCanonicalName();
         String interval = annotation.interval();
         int stopTimeoutInSeconds = annotation.stopTimeoutInSeconds();
@@ -189,16 +185,6 @@ public class AgentConfiguration
         Builder builder = new Builder(name).type(type).agentClass(agentClass).interval(interval)
                 .stopTimeoutInSeconds(stopTimeoutInSeconds).automaticallyStarted(automaticallyStarted).hidden(hidden);
         return builder.build();
-    }
-
-    private static String inferTypeFromSuperclass(Class<?> clazz)
-    {
-        Class<?> superClass = clazz.getSuperclass();
-        if (superClass.equals(TimerAgent.class))
-        {
-            return TimerAgent.TYPE;
-        }
-        return StringUtils.EMPTY;
     }
 
     @Override

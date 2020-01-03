@@ -10,7 +10,6 @@ public class TypeTest
     public void toString_succeeds()
     {
         assertEquals("timer", Type.TIMER.toString());
-        assertEquals("<<default>>", Type.DEFAULT.toString());
     }
 
 }

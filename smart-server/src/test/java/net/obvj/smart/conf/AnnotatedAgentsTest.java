@@ -17,9 +17,9 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import net.obvj.smart.agents.internal.BackgroundAgent;
+import net.obvj.smart.agents.test.invalid.TestClassNotAgent;
 import net.obvj.smart.agents.test.valid.DummyAgent;
 import net.obvj.smart.agents.test.valid.TestAgentWithNoNameAndTypeTimerAndAgentTask;
-import net.obvj.smart.agents.test.valid.TestAgentWithTypeDeterminedBySupertypeTimer;
 import net.obvj.smart.conf.properties.SmartProperties;
 
 /**
@@ -31,12 +31,11 @@ import net.obvj.smart.conf.properties.SmartProperties;
 @RunWith(MockitoJUnitRunner.class)
 public class AnnotatedAgentsTest
 {
-    private static final String TEST_PACKAGE = "net.obvj.smart.agents.test.valid";
-    private static final List<String> EXCPECTED_TEST_PACKAGE_AGENT_CLASSES = Arrays.asList(
-            TestAgentWithNoNameAndTypeTimerAndAgentTask.class.getName(),
-            TestAgentWithTypeDeterminedBySupertypeTimer.class.getName());
+    private static final String TEST_PACKAGE = "net.obvj.smart.agents.test";
+    private static final List<String> EXCPECTED_TEST_PACKAGE_AGENT_CLASSES = Arrays
+            .asList(TestAgentWithNoNameAndTypeTimerAndAgentTask.class.getName(), DummyAgent.class.getName());
     private static final List<String> UNEXPECTED_TEST_PACKAGE_AGENT_CLASSES = Arrays
-            .asList(DummyAgent.class.getName());
+            .asList(TestClassNotAgent.class.getName());
 
     private static final String INTERNAL_PACKAGE = "net.obvj.smart.agents.internal";
     private static final List<String> EXCPECTED_INTERNAL_PACKAGE_AGENT_CLASSES = Arrays

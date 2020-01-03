@@ -55,7 +55,8 @@ public class AgentTest
 
         assertThat(timerAgent.getName(), is(DUMMY_AGENT));
         assertThat(timerAgent.getType(), is(TIMER));
-        assertThat(timerAgent.getClass(), is(equalTo(DummyAgent.class)));
+        assertThat(timerAgent.getClass(), is(equalTo(AnnotatedTimerAgent.class)));
+        assertThat(timerAgent.getConfiguration().getAgentClass(), is(DummyAgent.class.getName()));
         assertThat(timerAgent.getStopTimeoutSeconds(), is(5));
         assertThat(timerAgent.getConfiguration(), is(configuration));
         assertThat(timerAgent.isHidden(), is(false));
@@ -83,7 +84,8 @@ public class AgentTest
 
         assertThat(timerAgent.getName(), is(DUMMY_AGENT));
         assertThat(timerAgent.getType(), is(TIMER));
-        assertThat(timerAgent.getClass(), is(equalTo(DummyAgent.class)));
+        assertThat(timerAgent.getClass(), is(equalTo(AnnotatedTimerAgent.class)));
+        assertThat(timerAgent.getConfiguration().getAgentClass(), is(DummyAgent.class.getName()));
         assertThat(timerAgent.getStopTimeoutSeconds(), is(5));
         assertThat(timerAgent.getConfiguration(), is(configuration));
         assertThat(timerAgent.isHidden(), is(true));
@@ -107,7 +109,8 @@ public class AgentTest
 
         assertThat(timerAgent.getName(), is(DUMMY_AGENT));
         assertThat(timerAgent.getType(), is(TIMER));
-        assertThat(timerAgent.getClass(), is(equalTo(DummyAgent.class)));
+        assertThat(timerAgent.getClass(), is(equalTo(AnnotatedTimerAgent.class)));
+        assertThat(timerAgent.getConfiguration().getAgentClass(), is(DummyAgent.class.getName()));
         assertThat(timerAgent.getStopTimeoutSeconds(), is(DEFAULT_STOP_TIMEOUT_SECONDS));
         assertThat(timerAgent.getConfiguration(), is(configuration));
         assertThat(timerAgent.isHidden(), is(false));
