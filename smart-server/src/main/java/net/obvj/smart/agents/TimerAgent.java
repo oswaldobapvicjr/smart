@@ -9,9 +9,7 @@ import java.util.logging.Logger;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import net.obvj.smart.agents.impl.AnnotatedTimerAgent;
 import net.obvj.smart.conf.AgentConfiguration;
-import net.obvj.smart.conf.AgentConfigurationException;
 import net.obvj.smart.util.DateUtils;
 import net.obvj.smart.util.TimeInterval;
 import net.obvj.smart.util.TimeUnit;
@@ -46,73 +44,24 @@ public abstract class TimerAgent extends Agent
 
     private boolean stopRequested = false;
 
-    public TimerAgent()
-    {
-        this(null, 1, TimeUnit.DEFAULT);
-    }
-
-    private TimerAgent(String name, int interval, TimeUnit timeUnit)
-    {
-        setName(name == null ? this.getClass().getSimpleName() : name);
-        setType(TYPE);
-        this.interval = interval;
-        this.timeUnit = timeUnit;
-        setState(State.SET);
-    }
-
     /**
-     * Creates a new TimerAgent from the given configuration.
+     * Builds a {@link TimerAgent} from the given configuration.
      *
-     * @throws ReflectiveOperationException if the agent class or constructor cannot be found,
-     *                                      or the constructor is not accessible, or the agent
-     *                                      cannot be instantiated
-     *
-     * @since 2.0
+     * @param configuration the {@link AgentConfiguration} to be set
      */
-    public static Agent parseAgent(AgentConfiguration configuration) throws ReflectiveOperationException
+    public TimerAgent(AgentConfiguration configuration)
     {
+        super(configuration);
+
         if (!TYPE.equalsIgnoreCase(configuration.getType()))
         {
             throw new IllegalArgumentException("Not a timer agent");
         }
 
-        TimerAgent agent = instantiateAgent(configuration);
-        agent.setConfiguration(configuration);
-        agent.setName(configuration.getName());
-        agent.setStopTimeoutSeconds(configuration.getStopTimeoutInSeconds());
-
         TimeInterval timeInterval = TimeInterval.of(configuration.getInterval());
-        agent.interval = timeInterval.getDuration();
-        agent.timeUnit = timeInterval.getTimeUnit();
-
-        return agent;
-    }
-
-    /**
-     * Instantiates a {@link TimerAgent}.
-     * <p>
-     * The produced object can be either a declared child of {@link TimerAgent} or an
-     * {@link AnnotatedTimerAgent} which is generated from a class with the {@code @Agent}
-     * annotation.
-     *
-     * @param configuration the {@link AgentConfiguration} to be parsed
-     * @return a {@link TimerAgent} instance
-     * @throws ReflectiveOperationException if the agent class or constructor cannot be found,
-     *                                      or the constructor is not accessible, or the agent
-     *                                      cannot be instantiated
-     * @throws AgentConfigurationException  if invalid configuration data is received, or the
-     *                                      system is unable to instantiate an agent based on
-     *                                      the given configuration
-     */
-    private static TimerAgent instantiateAgent(AgentConfiguration configuration) throws ReflectiveOperationException
-    {
-        String agentClassName = configuration.getAgentClass();
-        Class<?> agentClass = Class.forName(agentClassName);
-        if (TimerAgent.class.equals(agentClass.getSuperclass()))
-        {
-            return (TimerAgent) agentClass.getConstructor().newInstance();
-        }
-        return new AnnotatedTimerAgent(configuration);
+        this.interval = timeInterval.getDuration();
+        this.timeUnit = timeInterval.getTimeUnit();
+        setState(State.SET);
     }
 
     /**

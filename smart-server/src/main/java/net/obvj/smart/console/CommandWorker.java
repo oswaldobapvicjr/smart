@@ -26,7 +26,7 @@ public class CommandWorker implements Runnable
     protected static final String MSG_SESSION_CLOSED_DUE_TO_INACTIVITY = "Sesion closed due to inactivity.";
     protected static final String MSG_CLOSING_CONSOLE_SESSION = "Closing console session...";
 
-    protected static String PROMPT = ApplicationContextFacade.getBean(SmartProperties.class)
+    protected static String prompt = ApplicationContextFacade.getBean(SmartProperties.class)
             .getProperty(SmartProperties.CONSOLE_PROMPT) + " ";
 
     protected static final List<String> HINTS = Arrays.asList(" Type 'help' for a list of available commands.",
@@ -68,7 +68,7 @@ public class CommandWorker implements Runnable
             while (true)
             {
                 sendLine();
-                send(PROMPT);
+                send(prompt);
                 String commandLine = readLine();
 
                 if (!"".equals(commandLine))

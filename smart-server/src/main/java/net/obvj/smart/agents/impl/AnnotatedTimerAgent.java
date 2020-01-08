@@ -24,8 +24,7 @@ public class AnnotatedTimerAgent extends TimerAgent
 
     public AnnotatedTimerAgent(AgentConfiguration configuration)
     {
-        super();
-        setConfiguration(configuration);
+        super(configuration);
         init();
     }
 

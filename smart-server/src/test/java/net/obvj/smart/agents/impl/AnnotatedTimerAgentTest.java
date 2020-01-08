@@ -3,6 +3,7 @@ package net.obvj.smart.agents.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -20,7 +21,7 @@ import net.obvj.smart.conf.AgentConfigurationException;
 
 /**
  * Unit tests for the {@link AnnotatedTimerAgent}.
- * 
+ *
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
@@ -31,6 +32,13 @@ public class AnnotatedTimerAgentTest
     AgentConfiguration configuration;
 
     AnnotatedTimerAgent agent;
+
+    @Before
+    public void setup()
+    {
+        Mockito.when(configuration.getType()).thenReturn("timer");
+        Mockito.when(configuration.getInterval()).thenReturn("60 seconds");
+    }
 
     @Test(expected = AgentConfigurationException.class)
     public void initForClassWithoutAgentTaskAnnotation()

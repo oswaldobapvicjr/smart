@@ -5,6 +5,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeoutException;
 
+import net.obvj.smart.agents.impl.AnnotatedTimerAgent;
 import net.obvj.smart.conf.AgentConfiguration;
 import net.obvj.smart.util.DateUtils;
 import net.obvj.smart.util.Exceptions;
@@ -23,11 +24,7 @@ public abstract class Agent implements Runnable
         SET, STARTED, RUNNING, STOPPED, ERROR;
     }
 
-    private AgentConfiguration configuration;
-
-    private String name;
-    private String type;
-    private int stopTimeoutSeconds = Integer.MAX_VALUE;
+    private final AgentConfiguration configuration;
 
     private State currentState;
 
@@ -43,50 +40,27 @@ public abstract class Agent implements Runnable
      */
     protected Calendar lastRunDate;
 
-    public Agent()
+    public Agent(AgentConfiguration configuration)
     {
-        threadFactory = new AgentThreadFactory(name);
+        this.configuration = configuration;
+        threadFactory = new AgentThreadFactory(getName());
         schedule = Executors.newSingleThreadScheduledExecutor(threadFactory);
     }
 
-    protected void setName(String name)
-    {
-        this.name = name;
-        threadFactory.setAgentName(name);
-    }
-
     /**
-     * @return This agent's identifier name
+     * @return This agent's identifier name, as in {@link AgentConfiguration}.
      */
     public String getName()
     {
-        return name;
-    }
-
-    protected void setType(String type)
-    {
-        this.type = type;
+        return configuration.getName();
     }
 
     /**
-     * @return This agent's type
+     * @return This agent's type, as in {@link AgentConfiguration}.
      */
     public String getType()
     {
-        return type.toLowerCase();
-    }
-
-    /**
-     * @param stopTimeoutSeconds the stop timeout in seconds to set.
-     */
-    protected void setStopTimeoutSeconds(int stopTimeoutSeconds)
-    {
-        this.stopTimeoutSeconds = stopTimeoutSeconds;
-    }
-
-    protected void setConfiguration(AgentConfiguration configuration)
-    {
-        this.configuration = configuration;
+        return configuration.getType().toLowerCase();
     }
 
     /**
@@ -98,19 +72,20 @@ public abstract class Agent implements Runnable
     }
 
     /**
-     * @return Whether this agent is configured to start automatically, default is {@code true}. 
+     * @return Whether this agent is configured to start automatically, as in
+     *         {@link AgentConfiguration}.
      */
     public boolean isAutomaticallyStarted()
     {
-        return getConfiguration() == null || getConfiguration().isAutomaticallyStarted();
+        return configuration.isAutomaticallyStarted();
     }
-    
+
     /**
-     * @return Whether this agent is hidden, default is {@code false}. 
+     * @return Whether this agent is hidden, as in {@link AgentConfiguration}.
      */
     public boolean isHidden()
     {
-        return getConfiguration() == null || getConfiguration().isHidden();
+        return getConfiguration().isHidden();
     }
 
     protected void setState(State currentState)
@@ -132,7 +107,7 @@ public abstract class Agent implements Runnable
      */
     public boolean isStarted()
     {
-        return (getState() == State.STARTED);
+        return (currentState == State.STARTED);
     }
 
     /**
@@ -141,7 +116,7 @@ public abstract class Agent implements Runnable
      */
     public boolean isRunning()
     {
-        return (getState() == State.RUNNING);
+        return (currentState == State.RUNNING);
     }
 
     /**
@@ -150,7 +125,7 @@ public abstract class Agent implements Runnable
      */
     public boolean isStopped()
     {
-        return (getState() == State.STOPPED);
+        return (currentState == State.STOPPED);
     }
 
     /**
@@ -176,30 +151,31 @@ public abstract class Agent implements Runnable
 
     public abstract void run(boolean manualFlag);
 
+    /**
+     * @return This agent's stop timeout in seconds, as in {@link AgentConfiguration}. If a
+     *         negative amount is configured, then {@link Integer#MAX_VALUE} will be returned.
+     */
     public int getStopTimeoutSeconds()
     {
+        int stopTimeoutSeconds = configuration.getStopTimeoutInSeconds();
         return stopTimeoutSeconds >= 0 ? stopTimeoutSeconds : Integer.MAX_VALUE;
     }
 
     public abstract String getStatusString();
 
-
     /**
      * Creates a new Agent from the given {@link AgentConfiguration}.
-     * 
-     * @throws ReflectiveOperationException if the agent class or constructor cannot be found,
-     *                                      or the constructor is not accessible, or the agent
-     *                                      cannot be instantiated
-     * @throws NullPointerException         if a null agent configuration is received
-     * @throws IllegalArgumentException     if an unknown agent type is received
+     *
+     * @throws NullPointerException     if a null agent configuration is received
+     * @throws IllegalArgumentException if an unknown agent type is received
      * @since 2.0
      */
-    public static Agent parseAgent(AgentConfiguration configuration) throws ReflectiveOperationException
+    public static Agent parseAgent(AgentConfiguration configuration)
     {
         String lType = configuration.getType();
         if (lType.equalsIgnoreCase("timer"))
         {
-            return TimerAgent.parseAgent(configuration);
+            return new AnnotatedTimerAgent(configuration);
         }
         throw Exceptions.illegalArgument("Unknown agent type: \"%s\"", lType);
     }

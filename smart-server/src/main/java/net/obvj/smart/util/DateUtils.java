@@ -7,7 +7,7 @@ import java.util.Date;
 
 /**
  * Utility methods for working with dates
- * 
+ *
  * @author oswaldo.bapvic.jr
  * @since 1.0
  */
@@ -20,7 +20,7 @@ public class DateUtils
     {
         throw new IllegalStateException("Utility class");
     }
-    
+
     /**
      * @return current date and time, formatted
      */
@@ -31,7 +31,7 @@ public class DateUtils
 
     /**
      * Formats the given calendar using internally standardized date format
-     * 
+     *
      * @param calendar the calendar to be formatted
      * @return a formatted date
      */
@@ -39,10 +39,10 @@ public class DateUtils
     {
         return calendar != null ? formatDate(calendar.getTime()) : "null";
     }
-    
+
     /**
      * Formats the given date using internally standardized date format
-     * 
+     *
      * @param date the date to be formatted
      * @return a formatted date
      */
@@ -56,7 +56,7 @@ public class DateUtils
      * <p>
      * For example: if current time is 23:38:26 (MM:SS:mi), and the interval is set to 1, the
      * adjusted date will be 23:39:00.
-     * 
+     *
      * @param intervalInMinutes the interval in minutes for the first start date
      * @return the adjusted start date for the given interval in minutes
      */
@@ -77,11 +77,11 @@ public class DateUtils
      * <ul>
      * <li>if current time is 23:38:26 (MM:SS:mi), and the interval is set to 1 with
      * {@code TimeUnit.MINUTES}, the adjusted date will be 23:39:00</li>
-     * 
+     *
      * <li>if current time is 23:38:26 (MM:SS:mi), and the interval is set to 1 with
      * {@code TimeUnit.HOURS}, the adjusted date will be 00:00:00 (next day)</li>
      * </ul>
-     * 
+     *
      * @param interval the interval for the first start date
      * @param timeUnit the given interval's time unit
      * @return the adjusted start date for the given interval and time unit
@@ -91,6 +91,7 @@ public class DateUtils
         return getExactStartDateEvery(interval, timeUnit, Calendar.getInstance());
     }
 
+    @SuppressWarnings("squid:S128")
     protected static Date getExactStartDateEvery(int interval, TimeUnit timeUnit, Calendar baseCalendar)
     {
         Calendar start = (Calendar) baseCalendar.clone();
