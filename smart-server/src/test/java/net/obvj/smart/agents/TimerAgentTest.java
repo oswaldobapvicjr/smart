@@ -14,6 +14,7 @@ import org.mockito.Mockito;
 import net.obvj.smart.TestUtils;
 import net.obvj.smart.agents.Agent;
 import net.obvj.smart.agents.TimerAgent;
+import net.obvj.smart.agents.impl.AnnotatedTimerAgent;
 import net.obvj.smart.agents.Agent.State;
 import net.obvj.smart.conf.AgentConfiguration;
 
@@ -37,7 +38,7 @@ public class TimerAgentTest
     @Test(expected = IllegalArgumentException.class)
     public void testParseNonTimerAgent() throws ReflectiveOperationException
     {
-        TimerAgent.parseAgent(new AgentConfiguration.Builder("DummyAgent").type("type_ext")
+        new AnnotatedTimerAgent(new AgentConfiguration.Builder("DummyAgent").type("type_ext")
                 .agentClass("net.obvj.smart.agents.dummy.DummyAgent").build());
     }
 

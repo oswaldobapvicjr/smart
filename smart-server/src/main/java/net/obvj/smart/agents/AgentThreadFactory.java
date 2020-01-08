@@ -47,9 +47,4 @@ public class AgentThreadFactory implements ThreadFactory
         return String.format(THREAD_NAME_FORMAT, agentName, nextSequenceNumber.getAndIncrement());
     }
 
-    public void setAgentName(String agentName)
-    {
-        this.agentName = agentName;
-    }
-
 }
