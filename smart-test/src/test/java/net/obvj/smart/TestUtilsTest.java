@@ -40,9 +40,37 @@ public class TestUtilsTest
     };
 
     @Test
-    public void checkNoInstancesAllowed_classWithPrivateConstructor_suceeds() throws ReflectiveOperationException
+    public void checkNoInstancesAllowed_withClassWithPrivateConstructor_suceeds() throws ReflectiveOperationException
     {
-        TestUtils.checkNoInstancesAllowed(TestUtils.class, UnsupportedOperationException.class, "Utility class");
+        TestUtils.assertNoInstancesAllowed(TestUtils.class);
+    }
+
+    @Test
+    public void checkNoInstancesAllowed_withExpectedThrowableAndClassWithPrivateConstructor_suceeds()
+            throws ReflectiveOperationException
+    {
+        TestUtils.assertNoInstancesAllowed(TestUtils.class, UnsupportedOperationException.class);
+    }
+
+    @Test
+    public void checkNoInstancesAllowed_withAllParamsAndClassWithPrivateConstructor_suceeds()
+            throws ReflectiveOperationException
+    {
+        TestUtils.assertNoInstancesAllowed(TestUtils.class, UnsupportedOperationException.class, "Utility class");
+    }
+
+    @Test(expected = AssertionError.class)
+    public void checkNoInstancesAllowed_withUnexpectedMessageAndClassWithPrivateConstructor_fails()
+            throws ReflectiveOperationException
+    {
+        TestUtils.assertNoInstancesAllowed(TestUtils.class, UnsupportedOperationException.class, "Invalid message");
+    }
+
+    @Test(expected = AssertionError.class)
+    public void checkNoInstancesAllowed_withUnexpectedThrowableAndClassWithPrivateConstructor_fails()
+            throws ReflectiveOperationException
+    {
+        TestUtils.assertNoInstancesAllowed(TestUtils.class, NullPointerException.class, "Utility class");
     }
 
     @Test
@@ -52,7 +80,7 @@ public class TestUtilsTest
         {
             try
             {
-                TestUtils.checkNoInstancesAllowed(String.class, UnsupportedOperationException.class, null);
+                TestUtils.assertNoInstancesAllowed(String.class, UnsupportedOperationException.class);
             }
             catch (ReflectiveOperationException e)
             {
@@ -69,7 +97,7 @@ public class TestUtilsTest
         {
             try
             {
-                TestUtils.checkNoInstancesAllowed(Runtime.class, UnsupportedOperationException.class, null);
+                TestUtils.assertNoInstancesAllowed(Runtime.class, UnsupportedOperationException.class);
             }
             catch (ReflectiveOperationException e)
             {

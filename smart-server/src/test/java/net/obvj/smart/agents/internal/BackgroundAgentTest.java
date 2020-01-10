@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import net.obvj.smart.agents.Agent;
+import net.obvj.smart.agents.AgentFactory;
 import net.obvj.smart.agents.impl.AnnotatedTimerAgent;
 import net.obvj.smart.conf.AgentConfiguration;
 import net.obvj.smart.conf.annotation.AgentTask;
@@ -50,7 +51,7 @@ public class BackgroundAgentTest
     @Test
     public void testAgentIsParsable() throws ReflectiveOperationException
     {
-        Agent agent = Agent.parseAgent(AgentConfiguration.fromAnnotatedClass(BackgroundAgent.class));
+        Agent agent = AgentFactory.create(AgentConfiguration.fromAnnotatedClass(BackgroundAgent.class));
         assertThat(agent, is(instanceOf(AnnotatedTimerAgent.class)));
     }
 

@@ -17,6 +17,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
 import net.obvj.smart.agents.Agent;
+import net.obvj.smart.agents.AgentFactory;
 import net.obvj.smart.agents.dto.AgentDTO;
 import net.obvj.smart.conf.AgentConfiguration;
 import net.obvj.smart.conf.AgentLoader;
@@ -57,7 +58,7 @@ public class AgentManager
         LOG.info("Parsing agents...");
 
         Collection<AgentConfiguration> agentCandidates = agentLoader.getAgents();
-        agentCandidates.stream().map(this::parseAgent).filter(Optional::isPresent).map(Optional::get)
+        agentCandidates.stream().map(this::createAgent).filter(Optional::isPresent).map(Optional::get)
                 .forEach(this::addAgent);
 
         LOG.log(Level.INFO, "{0}/{1} agent(s) loaded successfully: {2}",
@@ -65,21 +66,21 @@ public class AgentManager
     }
 
     /**
-     * Parses the given {@link AgentConfiguration}.
+     * Creates an Agent for the given {@link AgentConfiguration}.
      *
-     * @param agentConfig the {@link AgentConfiguration} to be parsed
+     * @param agentConfiguration the {@link AgentConfiguration} to be parsed
      * @return an Optional which may contain a valid {@link Agent}, or
      *         {@link Optional#empty()} if unable to parse the given configuration
      */
-    private Optional<Agent> parseAgent(AgentConfiguration agentConfig)
+    private Optional<Agent> createAgent(AgentConfiguration agentConfiguration)
     {
         try
         {
-            return Optional.of(Agent.parseAgent(agentConfig));
+            return Optional.of(AgentFactory.create(agentConfiguration));
         }
         catch (Exception e)
         {
-            LOG.log(Level.SEVERE, String.format(MSG_ERROR_LOADING_AGENT, agentConfig.getName()), e);
+            LOG.log(Level.SEVERE, String.format(MSG_ERROR_LOADING_AGENT, agentConfiguration.getName()), e);
             return Optional.empty();
         }
     }
@@ -145,7 +146,7 @@ public class AgentManager
         }
         AgentConfiguration agentConfig = agentLoader
                 .getAgentConfigurationByClass(agent.getConfiguration().getAgentClass());
-        Agent newAgent = Agent.parseAgent(agentConfig);
+        Agent newAgent = AgentFactory.create(agentConfig);
         addAgent(newAgent);
     }
 

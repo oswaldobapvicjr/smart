@@ -1,7 +1,7 @@
 package net.obvj.smart.util;
 
 import static net.obvj.smart.TestUtils.assertStringContains;
-import static net.obvj.smart.TestUtils.checkNoInstancesAllowed;
+import static net.obvj.smart.TestUtils.assertNoInstancesAllowed;
 import static org.junit.Assert.assertTrue;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.when;
@@ -58,7 +58,7 @@ public class SystemUtilsTest
     @Test
     public void testNoInstancesAllowed() throws Exception
     {
-        checkNoInstancesAllowed(SystemUtils.class, IllegalStateException.class, "Utility class");
+        assertNoInstancesAllowed(SystemUtils.class, IllegalStateException.class, "Utility class");
     }
 
     @Test

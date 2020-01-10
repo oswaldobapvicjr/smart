@@ -24,7 +24,7 @@ public class ApplicationContextFacadeTest
     @Test
     public void testNoInstancesAllowed() throws Exception
     {
-        TestUtils.checkNoInstancesAllowed(ApplicationContextFacade.class, IllegalStateException.class, "Utility class");
+        TestUtils.assertNoInstancesAllowed(ApplicationContextFacade.class, IllegalStateException.class, "Utility class");
     }
     
     @Test

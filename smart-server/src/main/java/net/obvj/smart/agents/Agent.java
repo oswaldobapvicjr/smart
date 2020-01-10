@@ -5,10 +5,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeoutException;
 
-import net.obvj.smart.agents.impl.AnnotatedTimerAgent;
 import net.obvj.smart.conf.AgentConfiguration;
 import net.obvj.smart.util.DateUtils;
-import net.obvj.smart.util.Exceptions;
 
 /**
  * A common interface for all managed agents
@@ -64,7 +62,7 @@ public abstract class Agent implements Runnable
     }
 
     /**
-     * @return This agent's source configuration data
+     * @return This agent's configuration data
      */
     public AgentConfiguration getConfiguration()
     {
@@ -72,8 +70,8 @@ public abstract class Agent implements Runnable
     }
 
     /**
-     * @return Whether this agent is configured to start automatically, as in
-     *         {@link AgentConfiguration}.
+     * @return {@code true} if this agent is configured to start automatically, as in
+     *         {@link AgentConfiguration}; otherwise, {@code false}.
      */
     public boolean isAutomaticallyStarted()
     {
@@ -81,11 +79,12 @@ public abstract class Agent implements Runnable
     }
 
     /**
-     * @return Whether this agent is hidden, as in {@link AgentConfiguration}.
+     * @return {@code true} if this agent is hidden, as in {@link AgentConfiguration};
+     *         otherwise, {@code false}.
      */
     public boolean isHidden()
     {
-        return getConfiguration().isHidden();
+        return configuration.isHidden();
     }
 
     protected void setState(State currentState)
@@ -102,34 +101,34 @@ public abstract class Agent implements Runnable
     }
 
     /**
-     * @return <code>true</code> if this agent's timer (not its task) is currently started or
-     *         <code>false</code> instead.
+     * @return {@code true} if this agent's timer (not its task) is currently started;
+     *         otherwise {@code false}.
      */
     public boolean isStarted()
     {
-        return (currentState == State.STARTED);
+        return currentState == State.STARTED;
     }
 
     /**
-     * @return <code>true</code> if this agent's task is currently running or
-     *         <code>false</code> instead.
+     * @return {@code true} if this agent's task is currently running; otherwise
+     *         {@code false}.
      */
     public boolean isRunning()
     {
-        return (currentState == State.RUNNING);
+        return currentState == State.RUNNING;
     }
 
     /**
-     * @return <code>true</code> if this agent's timer (not its task) is currently started or
-     *         <code>false</code> instead.
+     * @return {@code true} if this agent's timer is currently stopped; otherwise
+     *         {@code false}.
      */
     public boolean isStopped()
     {
-        return (currentState == State.STOPPED);
+        return currentState == State.STOPPED;
     }
 
     /**
-     * @return The date & time this agent was started (scheduled)
+     * @return The date & time this agent was started (scheduled).
      */
     public Calendar getStartDate()
     {
@@ -137,8 +136,7 @@ public abstract class Agent implements Runnable
     }
 
     /**
-     * @return The date & time when this agent task was last executed (automatically or
-     *         manually by the run method)
+     * @return The date & time when this agent task was last executed.
      */
     public Calendar getLastRunDate()
     {
@@ -162,22 +160,5 @@ public abstract class Agent implements Runnable
     }
 
     public abstract String getStatusString();
-
-    /**
-     * Creates a new Agent from the given {@link AgentConfiguration}.
-     *
-     * @throws NullPointerException     if a null agent configuration is received
-     * @throws IllegalArgumentException if an unknown agent type is received
-     * @since 2.0
-     */
-    public static Agent parseAgent(AgentConfiguration configuration)
-    {
-        String lType = configuration.getType();
-        if (lType.equalsIgnoreCase("timer"))
-        {
-            return new AnnotatedTimerAgent(configuration);
-        }
-        throw Exceptions.illegalArgument("Unknown agent type: \"%s\"", lType);
-    }
 
 }

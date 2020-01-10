@@ -46,7 +46,7 @@ public class AnnotationUtilsTest
     @Test
     public void testNoInstancesAllowed() throws Exception
     {
-        TestUtils.checkNoInstancesAllowed(AnnotationUtils.class, IllegalStateException.class, "Utility class");
+        TestUtils.assertNoInstancesAllowed(AnnotationUtils.class, IllegalStateException.class, "Utility class");
     }
 
     @Test

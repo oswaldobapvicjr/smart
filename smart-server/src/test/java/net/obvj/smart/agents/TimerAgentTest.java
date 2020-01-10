@@ -12,10 +12,8 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import net.obvj.smart.TestUtils;
-import net.obvj.smart.agents.Agent;
-import net.obvj.smart.agents.TimerAgent;
-import net.obvj.smart.agents.impl.AnnotatedTimerAgent;
 import net.obvj.smart.agents.Agent.State;
+import net.obvj.smart.agents.impl.AnnotatedTimerAgent;
 import net.obvj.smart.conf.AgentConfiguration;
 
 /**
@@ -107,7 +105,7 @@ public class TimerAgentTest
     @Test
     public void testRunAgentWithPreviousStateSet() throws ReflectiveOperationException
     {
-        TimerAgent agent = spy((TimerAgent) Agent.parseAgent(DUMMY_AGENT_CONFIG));
+        TimerAgent agent = spy((TimerAgent) AgentFactory.create(DUMMY_AGENT_CONFIG));
         assertThat("State before run() should be SET", agent.getState(), is(State.SET));
         agent.run();
         verify(agent).runTask();
@@ -119,7 +117,7 @@ public class TimerAgentTest
     @Test
     public void testGetAgentStatusStr() throws ReflectiveOperationException
     {
-        TimerAgent agent = (TimerAgent) Agent.parseAgent(DUMMY_AGENT_CONFIG);
+        TimerAgent agent = (TimerAgent) AgentFactory.create(DUMMY_AGENT_CONFIG);
         String statusWithoutQuotes = agent.getStatusString().replace("\"", "");
         TestUtils.assertStringContains(statusWithoutQuotes, "name:DummyAgent", "type:timer", "status:SET",
                 "startDate:null", "lastRunDate:null", "frequency:30 second(s)");

@@ -1,7 +1,7 @@
 package net.obvj.smart.util;
 
 import static net.obvj.smart.TestUtils.assertException;
-import static net.obvj.smart.TestUtils.checkNoInstancesAllowed;
+import static net.obvj.smart.TestUtils.assertNoInstancesAllowed;
 
 import java.io.FileNotFoundException;
 
@@ -27,7 +27,7 @@ public class ExceptionsTest
     @Test
     public void testNoInstances() throws Exception
     {
-        checkNoInstancesAllowed(Exceptions.class, IllegalStateException.class, "Utility class");
+        assertNoInstancesAllowed(Exceptions.class, IllegalStateException.class, "Utility class");
     }
 
     @Test

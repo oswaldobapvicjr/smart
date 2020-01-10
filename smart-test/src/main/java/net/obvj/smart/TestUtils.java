@@ -29,23 +29,52 @@ public class TestUtils
     /**
      * Tests that no instances of an utility class are created.
      *
-     * @param utilityClass           the class subject to test
+     * @param targetClass the class to be tested
+     * @throws AssertionError               if the target class is instantiated
+     * @throws ReflectiveOperationException in case of errors getting constructor metadata or
+     *                                      instantiating the private constructor
+     */
+    public static void assertNoInstancesAllowed(Class<?> targetClass) throws ReflectiveOperationException
+    {
+        assertNoInstancesAllowed(targetClass, null);
+    }
+
+    /**
+     * Tests that no instances of an utility class are created.
+     *
+     * @param targetClass            the class to be tested
+     * @param expectedThrowableClass the expected throwable to be checked in case the
+     *                               constructor is called
+     * @throws AssertionError               if the target class is instantiated or a different
+     *                                      throwable class is received
+     * @throws ReflectiveOperationException in case of errors getting constructor metadata or
+     *                                      instantiating the private constructor
+     */
+    public static void assertNoInstancesAllowed(Class<?> targetClass, Class<? extends Throwable> expectedThrowableClass)
+            throws ReflectiveOperationException
+    {
+        assertNoInstancesAllowed(targetClass, expectedThrowableClass, null);
+    }
+
+    /**
+     * Tests that no instances of an utility class are created.
+     *
+     * @param targetClass            the class to be tested
      * @param expectedThrowableClass the expected throwable to be checked in case the
      *                               constructor is called
      * @param expectedErrorMessage   the expected error message to be checked in case the
      *                               constructor is called
-     * @throws IllegalArgumentException
-     * @throws IllegalAccessException
-     * @throws InstantiationException
-     * @throws Exception                in case of errors getting constructor metadata or
-     *                                  instantiating the private constructor via Reflection
+     * @throws AssertionError               if the target class is instantiated or a different
+     *                                      throwable class is received
+     * @throws ReflectiveOperationException in case of errors getting constructor metadata or
+     *                                      instantiating the private constructor
      */
-    public static void checkNoInstancesAllowed(Class<?> utilityClass, Class<? extends Throwable> expectedThrowableClass,
+    public static void assertNoInstancesAllowed(Class<?> targetClass, Class<? extends Throwable> expectedThrowableClass,
             String expectedErrorMessage) throws ReflectiveOperationException
     {
         try
         {
-            Constructor<?> constructor = utilityClass.getDeclaredConstructor();
+            Constructor<?> constructor = targetClass.getDeclaredConstructor();
             assertTrue("Constructor should be private", Modifier.isPrivate(constructor.getModifiers()));
             constructor.setAccessible(true);
             constructor.newInstance();
@@ -54,8 +83,15 @@ public class TestUtils
         catch (InvocationTargetException ite)
         {
             Throwable cause = ite.getCause();
-            assertThat(cause, is(instanceOf(expectedThrowableClass)));
-            assertThat(cause.getMessage(), is(expectedErrorMessage));
+
+            if (expectedThrowableClass != null)
+            {
+                assertThat(cause, is(instanceOf(expectedThrowableClass)));
+            }
+            if (expectedErrorMessage != null)
+            {
+                assertThat(cause.getMessage(), is(expectedErrorMessage));
+            }
         }
     }
 
@@ -97,8 +133,15 @@ public class TestUtils
             Class<? extends Throwable> expectedCause, Throwable throwable)
     {
         assertThat("Unexpected throwable class:", throwable, is(instanceOf(expectedThrowable)));
-        if (expectedMessage != null) assertThat("Unexpected message:", throwable.getMessage(), is(expectedMessage));
-        if (expectedCause != null) assertThat("Unexpected cause:", throwable.getCause(), is(instanceOf(expectedCause)));
+
+        if (expectedMessage != null)
+        {
+            assertThat("Unexpected message:", throwable.getMessage(), is(expectedMessage));
+        }
+        if (expectedCause != null)
+        {
+            assertThat("Unexpected cause:", throwable.getCause(), is(instanceOf(expectedCause)));
+        }
     }
 
     /**

@@ -25,6 +25,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import net.obvj.smart.TestUtils;
 import net.obvj.smart.agents.Agent;
 import net.obvj.smart.agents.Agent.State;
+import net.obvj.smart.agents.AgentFactory;
 import net.obvj.smart.agents.dto.AgentDTO;
 import net.obvj.smart.conf.AgentConfiguration;
 import net.obvj.smart.conf.AgentLoader;
@@ -36,7 +37,7 @@ import net.obvj.smart.conf.AgentLoader;
  * @since 2.0
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(Agent.class)
+@PrepareForTest(AgentFactory.class)
 public class AgentManagerTest
 {
     // Test data
@@ -70,7 +71,7 @@ public class AgentManagerTest
     {
         MockitoAnnotations.initMocks(this);
 
-        dummyAgent = Agent.parseAgent(XML_DUMMY_AGENT);
+        dummyAgent = AgentFactory.create(XML_DUMMY_AGENT);
         allAgents = new Agent[] { dummyAgent };
     }
 
@@ -238,8 +239,8 @@ public class AgentManagerTest
     @Test
     public void testLoadAgents() throws ReflectiveOperationException
     {
-        PowerMockito.mockStatic(Agent.class);
-        PowerMockito.when(Agent.parseAgent(XML_DUMMY_AGENT)).thenReturn(dummyAgent);
+        PowerMockito.mockStatic(AgentFactory.class);
+        PowerMockito.when(AgentFactory.create(XML_DUMMY_AGENT)).thenReturn(dummyAgent);
         when(agentLoader.getAgents()).thenReturn(ALL_AGENT_CONFIGS);
 
         manager.loadAgents();
@@ -250,8 +251,8 @@ public class AgentManagerTest
     @Test
     public void testLoadAgentsWithOneException() throws ReflectiveOperationException
     {
-        PowerMockito.mockStatic(Agent.class);
-        PowerMockito.when(Agent.parseAgent(XML_DUMMY_AGENT)).thenThrow(new IllegalStateException());
+        PowerMockito.mockStatic(AgentFactory.class);
+        PowerMockito.when(AgentFactory.create(XML_DUMMY_AGENT)).thenThrow(new IllegalStateException());
         when(agentLoader.getAgents()).thenReturn(ALL_AGENT_CONFIGS);
 
         manager.loadAgents();

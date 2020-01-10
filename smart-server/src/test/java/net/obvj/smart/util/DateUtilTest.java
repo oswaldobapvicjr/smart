@@ -46,7 +46,7 @@ public class DateUtilTest
     @Test
     public void testNoInstancesAllowed() throws Exception
     {
-        TestUtils.checkNoInstancesAllowed(DateUtils.class, IllegalStateException.class, "Utility class");
+        TestUtils.assertNoInstancesAllowed(DateUtils.class, IllegalStateException.class, "Utility class");
     }
 
     /**

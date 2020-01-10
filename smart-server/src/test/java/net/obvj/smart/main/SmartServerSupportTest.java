@@ -18,7 +18,9 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import net.obvj.smart.agents.Agent;
-import net.obvj.smart.conf.*;
+import net.obvj.smart.agents.AgentFactory;
+import net.obvj.smart.conf.AgentConfiguration;
+import net.obvj.smart.conf.AgentLoader;
 import net.obvj.smart.conf.properties.SmartProperties;
 import net.obvj.smart.console.ManagementConsole;
 import net.obvj.smart.jmx.JMXException;
@@ -71,8 +73,8 @@ public class SmartServerSupportTest
         when(ApplicationContextFacade.getBean(SmartProperties.class)).thenReturn(properties);
 
         // Setup agents
-        dummyAgent = spy(Agent.parseAgent(DUMMY_AGENT_CONFIG));
-        dummyAgentAuto = spy(Agent.parseAgent(DUMMY_AGENT_CONFIG_AUTO));
+        dummyAgent = spy(AgentFactory.create(DUMMY_AGENT_CONFIG));
+        dummyAgentAuto = spy(AgentFactory.create(DUMMY_AGENT_CONFIG_AUTO));
         allAgents = Arrays.asList(dummyAgent, dummyAgentAuto);
 
         // Allow usage of static method parseAgent
