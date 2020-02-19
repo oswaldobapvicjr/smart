@@ -11,6 +11,7 @@ import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -28,7 +29,7 @@ import net.obvj.smart.util.ClientApplicationContextFacade;
 import net.obvj.smart.util.ConsoleUtils;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ ConsoleUtils.class, ClientApplicationContextFacade.class })
+@PrepareForTest({ ConsoleUtils.class, ClientApplicationContextFacade.class})
 public class EnhancedManagementConsoleTest
 {
     @Mock
@@ -37,7 +38,6 @@ public class EnhancedManagementConsoleTest
     private AgentManagerJMXClient agentManagerJMXClient;
     @Mock
     private SmartProperties smartProperties;
-    
     @Mock
     private ConsoleReader reader;
     
@@ -80,9 +80,6 @@ public class EnhancedManagementConsoleTest
     @Test
     public void testPrintHeaderOnInteractiveMode() throws IOException
     {
-        // Building a console with interactive mode
-        EnhancedManagementConsole console = new EnhancedManagementConsole();
-
         PowerMockito.when(ConsoleUtils.readCustomHeaderLines())
                 .thenReturn(Arrays.asList("Header line 1", "Header line 2"));
         StringWriter sw = new StringWriter();
@@ -118,12 +115,17 @@ public class EnhancedManagementConsoleTest
     @Test
     public void testHandleCommandLine() throws IOException
     {
-        EnhancedManagementConsole console = new EnhancedManagementConsole();
         console.handleCommandLine("start AgentName");
-
         Mockito.verify(agentManagerJMXBean, Mockito.times(1)).startAgent("AgentName");
     }
     
+    @Test
+    public void testHandleHelpCommandLine() throws IOException
+    {
+        console.handleCommandLine("help");
+        Mockito.verify(reader).println(ArgumentMatchers.contains("Available commands:"));
+    }
+
     @Test
     public void testRunOnSingleCommandMode() throws IOException
     {

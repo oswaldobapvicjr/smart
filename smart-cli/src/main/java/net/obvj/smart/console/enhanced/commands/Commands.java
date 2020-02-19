@@ -8,11 +8,11 @@ import picocli.CommandLine.Command;
 
 /**
  * A base command that groups all commands available to the Enhanced Management Console
- * 
+ *
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
-@Command(name = "", header = "",
+@Command(name = "", synopsisHeading = "", synopsisSubcommandLabel = "",
          commandListHeading = "Available commands:%n%n",
          subcommands = { AgentsCommand.class,
                          ClearScreenCommand.class,
@@ -36,18 +36,19 @@ public class Commands implements Runnable
         this.reader = reader;
         out = new PrintWriter(reader.getOutput());
     }
-    
+
     protected Commands(PrintWriter out)
     {
         this.reader = null;
         this.out = out;
     }
 
+    @Override
     public void run()
     {
         out.println(new CommandLine(this).getUsageMessage());
     }
-    
+
     protected ConsoleReader getConsoleReader()
     {
         return reader;

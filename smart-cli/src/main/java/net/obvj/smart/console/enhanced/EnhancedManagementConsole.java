@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang3.StringUtils;
+
 import jline.console.ConsoleReader;
 import jline.console.completer.ArgumentCompleter.ArgumentList;
 import jline.console.completer.ArgumentCompleter.WhitespaceArgumentDelimiter;
@@ -87,9 +89,9 @@ public class EnhancedManagementConsole implements Runnable
                 while ((line = reader.readLine()) != null)
                 {
                     line = line.trim();
-                    if (!"".equals(line))
+                    if (StringUtils.isNotEmpty(line))
                     {
-                        if ("exit".equals(line) || "quit".equals(line))
+                        if (StringUtils.equalsAny(line, "exit", "quit"))
                         {
                             break;
                         }
@@ -114,9 +116,16 @@ public class EnhancedManagementConsole implements Runnable
     {
         try
         {
-            ArgumentList list = new WhitespaceArgumentDelimiter().delimit(line, line.length());
-            new CommandLine(commands).execute(list.getArguments());
-            reader.println();
+            if (StringUtils.equals(line, "help"))
+            {
+                reader.println(new CommandLine(commands).getUsageMessage());
+            }
+            else
+            {
+                ArgumentList list = new WhitespaceArgumentDelimiter().delimit(line, line.length());
+                new CommandLine(commands).execute(list.getArguments());
+                reader.println();
+            }
         }
         finally
         {
