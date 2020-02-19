@@ -19,11 +19,9 @@ import picocli.CommandLine.ParentCommand;
  * @since 2.0
  */
 @Command(name = "threads",
-         headerHeading = "@|bold,underline Usage|@:%n%n",
-         header = "List server threads",
-         synopsisHeading = "%n",
-         descriptionHeading = "%n@|bold,underline Description|@:%n%n",
-         description = "Display all currently active threads and their states in the server.",
+         headerHeading = "%n",
+         descriptionHeading = "%n@|bold,underline Description|@:%n",
+         description = "Lists all active threads in the server side and their states.",
          parameterListHeading = "%n@|bold,underline Parameters|@:%n",
          optionListHeading = "%n@|bold,underline Options|@:%n")
 public class ThreadsCommand implements Runnable

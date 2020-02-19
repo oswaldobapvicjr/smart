@@ -13,11 +13,9 @@ import picocli.CommandLine.ParentCommand;
  * @since 2.0
  */
 @Command(name = "date",
-         headerHeading = "@|bold,underline Usage|@:%n%n",
-         header = "Display server date",
-         synopsisHeading = "%n",
-         descriptionHeading = "%n@|bold,underline Description|@:%n%n",
-         description = "Retrieve server current date and time",
+         headerHeading = "%n",
+         descriptionHeading = "%n@|bold,underline Description|@:%n",
+         description = "Displays server's current date and time",
          parameterListHeading = "%n@|bold,underline Parameters|@:%n",
          optionListHeading = "%n@|bold,underline Options|@:%n")
 public class DateCommand implements Runnable

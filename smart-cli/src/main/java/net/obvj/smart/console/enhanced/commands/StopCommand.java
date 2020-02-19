@@ -16,11 +16,9 @@ import picocli.CommandLine.ParentCommand;
  * @since 2.0
  */
 @Command(name = "stop",
-         headerHeading = "@|bold,underline Usage|@:%n%n",
-         header = "Stops an agent",
-         synopsisHeading = "%n",
-         descriptionHeading = "%n@|bold,underline Description|@:%n%n",
-         description = "Gracefully stop the agent identified with the given name.",
+         headerHeading = "%n",
+         descriptionHeading = "%n@|bold,underline Description|@:%n",
+         description = "Stops an agent.",
          parameterListHeading = "%n@|bold,underline Parameters|@:%n",
          optionListHeading = "%n@|bold,underline Options|@:%n")
 public class StopCommand implements Runnable

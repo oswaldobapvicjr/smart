@@ -13,12 +13,12 @@ import picocli.CommandLine.ParentCommand;
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
-@Command(name = "clear", aliases = "cls",
-         headerHeading = "@|bold,underline Usage|@:%n%n",
-         header = "Clear the screen",
-         synopsisHeading = "%n",
-         descriptionHeading = "%n@|bold,underline Description|@:%n%n",
-         description = "Clear the screen")
+@Command(name = "clear",
+         aliases = "cls",
+         headerHeading = "%n",
+         descriptionHeading = "%n@|bold,underline Description|@:%n",
+         description = "Clears the screen",
+         optionListHeading = "%n@|bold,underline Options|@:%n")
 public class ClearScreenCommand implements Callable<Void>
 {
     @Option(names = {"-h", "--help"}, usageHelp = true, description = "Display this help message.")

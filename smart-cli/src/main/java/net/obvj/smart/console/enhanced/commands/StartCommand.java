@@ -14,11 +14,9 @@ import picocli.CommandLine.ParentCommand;
  * @since 2.0
  */
 @Command(name = "start",
-         headerHeading = "@|bold,underline Usage|@:%n%n",
-         header = "Start an agent",
-         synopsisHeading = "%n",
-         descriptionHeading = "%n@|bold,underline Description|@:%n%n",
-         description = "Start the agent identified with the given name.",
+         headerHeading = "%n",
+         descriptionHeading = "%n@|bold,underline Description|@:%n",
+         description = "Starts an agent.",
          parameterListHeading = "%n@|bold,underline Parameters|@:%n",
          optionListHeading = "%n@|bold,underline Options|@:%n")
 public class StartCommand implements Runnable

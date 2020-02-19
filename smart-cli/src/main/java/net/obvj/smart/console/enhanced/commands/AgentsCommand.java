@@ -20,11 +20,9 @@ import picocli.CommandLine.ParentCommand;
  */
 @Command(name = "agents",
          aliases = "ls",
-         headerHeading = "@|bold,underline Usage|@:%n%n",
-         header = "List agents",
-         synopsisHeading = "%n",
-         descriptionHeading = "%n@|bold,underline Description|@:%n%n",
-         description = "Shows all managed agents and their current states",
+         headerHeading = "%n",
+         descriptionHeading = "%n@|bold,underline Description|@:%n",
+         description = "Lists managed agents and their current states",
          parameterListHeading = "%n@|bold,underline Parameters|@:%n",
          optionListHeading = "%n@|bold,underline Options|@:%n")
 public class AgentsCommand implements Runnable

@@ -13,11 +13,9 @@ import picocli.CommandLine.ParentCommand;
  * @since 2.0
  */
 @Command(name = "java",
-         headerHeading = "@|bold,underline Usage|@:%n%n",
-         header = "Display Java Runtime/VM information",
-         synopsisHeading = "%n",
-         descriptionHeading = "%n@|bold,underline Description|@:%n%n",
-         description = "Retrieve server-side Java runtime/VM information.",
+         headerHeading = "%n",
+         descriptionHeading = "%n@|bold,underline Description|@:%n",
+         description = "Retrieves server-side Java runtime/VM information.",
          parameterListHeading = "%n@|bold,underline Parameters|@:%n",
          optionListHeading = "%n@|bold,underline Options|@:%n")
 public class JavaVersionCommand implements Runnable
