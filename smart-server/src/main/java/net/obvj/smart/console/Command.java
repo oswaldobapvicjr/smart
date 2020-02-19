@@ -21,24 +21,24 @@ import net.obvj.smart.util.SystemUtils;
 
 /**
  * A set of commands and business logic available to the classic management console
- * 
+ *
  * @author oswaldo.bapvic.jr
  * @since 1.0
  */
 public enum Command
 {
-    SHOW_AGENTS("show-agents", "agents")
+    SHOW_AGENTS("agents", "ls")
     {
         @Override
         public void execute(String[] parameters, PrintWriter out)
         {
             Collection<AgentDTO> agents = ApplicationContextFacade.getBean(AgentManager.class).getAgentDTOs();
 
-            if(!(parameters.length > 1 && ("-a".equals(parameters[1]) || "--all".equals(parameters[1]))))
+            if (!(parameters.length > 1 && StringUtils.equalsAny(parameters[1], "-a", "--all")))
             {
                 agents = agents.stream().filter(agent -> !agent.isHidden()).collect(Collectors.toList());
             }
-            
+
             if (agents.isEmpty())
             {
                 out.println("No agent found");
@@ -55,7 +55,7 @@ public enum Command
         }
     },
 
-    SHOW_THREADS("show-threads", "threads")
+    SHOW_THREADS("threads")
     {
         @Override
         public void execute(String[] parameters, PrintWriter out)
@@ -243,7 +243,7 @@ public enum Command
             out.println(DateUtils.now());
         }
     },
-    
+
     JAVA_VERSION("java")
     {
         @Override
@@ -259,7 +259,9 @@ public enum Command
         public void execute(String[] parameters, PrintWriter out)
         {
             out.println("Available commands:");
-            Arrays.stream(values()).forEachOrdered(command -> printCommand(out, command));
+            Arrays.stream(values())
+                    .sorted((command1, command2) -> StringUtils.compare(command1.getName(), command2.getName()))
+                    .forEach(command -> printCommand(out, command));
         }
 
         private void printCommand(PrintWriter out, Command command)
@@ -269,8 +271,8 @@ public enum Command
     };
 
     protected static final String MISSING_PARAMETER_AGENT_NAME = "Missing parameter: <agent-name>";
-    private static final Logger log = Logger.getLogger("smart-server"); 
-    
+    private static final Logger log = Logger.getLogger("smart-server");
+
     private final String name;
     private final String alias;
 
@@ -278,7 +280,7 @@ public enum Command
     {
         this(name, "");
     }
-    
+
     private Command(String name, String alias)
     {
         this.name = name;
@@ -292,9 +294,9 @@ public enum Command
 
     public boolean hasAlias()
     {
-        return alias != null && !alias.equals("");
+        return StringUtils.isNotEmpty(alias);
     }
-    
+
     public boolean isIdentifiableBy(final String string)
     {
         return name.equals(string) || (hasAlias() && alias.equals(string));
