@@ -16,12 +16,12 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import jline.console.ConsoleReader;
-import net.obvj.smart.TestUtils;
+import net.obvj.junit.utils.TestUtils;
 import net.obvj.smart.jmx.client.AgentManagerJMXClient;
 
 /**
  * Unit tests for the {@link Commands} class
- * 
+ *
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */

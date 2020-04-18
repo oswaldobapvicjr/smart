@@ -1,7 +1,7 @@
 package net.obvj.smart.util;
 
-import static net.obvj.smart.TestUtils.assertException;
-import static net.obvj.smart.TestUtils.assertNoInstancesAllowed;
+import static net.obvj.junit.utils.TestUtils.assertException;
+import static net.obvj.junit.utils.TestUtils.assertNoInstancesAllowed;
 
 import java.io.FileNotFoundException;
 

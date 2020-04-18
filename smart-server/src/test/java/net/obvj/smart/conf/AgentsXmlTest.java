@@ -1,6 +1,6 @@
 package net.obvj.smart.conf;
 
-import static net.obvj.smart.TestUtils.assertException;
+import static net.obvj.junit.utils.TestUtils.assertException;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Collections;

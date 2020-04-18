@@ -6,11 +6,11 @@ import java.util.Collections;
 
 import org.junit.Test;
 
-import net.obvj.smart.TestUtils;
+import net.obvj.junit.utils.TestUtils;
 
 /**
  * Unit tests for the {@link ConsoleUtils} class.
- * 
+ *
  * @author oswaldo.bapvic.jr
  */
 public class ConsoleUtilsTest
@@ -26,13 +26,13 @@ public class ConsoleUtilsTest
     {
         TestUtils.assertNoInstancesAllowed(ConsoleUtils.class, IllegalStateException.class, "Utility class");
     }
-    
+
     @Test
     public void testReadFileFromClasspathReturnsContent()
     {
         TestUtils.assertStringContains(ConsoleUtils.readCustomHeaderLines().toString(), "S.M.A.R.T. Console");
     }
-    
+
     @Test
     public void testReadFileListWithFileNotFound()
     {

@@ -22,13 +22,6 @@
             <version>${project.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>net.obvj</groupId>
-            <artifactId>smart-test</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-
         <!-- 3PP dependencies -->
         <dependency>
             <groupId>info.picocli</groupId>

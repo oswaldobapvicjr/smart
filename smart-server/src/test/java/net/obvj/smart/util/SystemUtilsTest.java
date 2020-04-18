@@ -1,7 +1,7 @@
 package net.obvj.smart.util;
 
-import static net.obvj.smart.TestUtils.assertStringContains;
-import static net.obvj.smart.TestUtils.assertNoInstancesAllowed;
+import static net.obvj.junit.utils.TestUtils.assertStringContains;
+import static net.obvj.junit.utils.TestUtils.assertNoInstancesAllowed;
 import static org.junit.Assert.assertTrue;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.when;
@@ -17,7 +17,7 @@ import net.obvj.smart.jmx.dto.ThreadDTO;
 
 /**
  * Unit tests for the {@link SystemUtils} class.
- * 
+ *
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */

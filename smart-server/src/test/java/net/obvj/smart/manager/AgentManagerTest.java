@@ -22,7 +22,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import net.obvj.smart.TestUtils;
+import net.obvj.junit.utils.TestUtils;
 import net.obvj.smart.agents.Agent;
 import net.obvj.smart.agents.Agent.State;
 import net.obvj.smart.agents.AgentFactory;

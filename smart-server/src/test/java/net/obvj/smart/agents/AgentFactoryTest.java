@@ -8,7 +8,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import net.obvj.smart.TestUtils;
+import net.obvj.junit.utils.TestUtils;
 import net.obvj.smart.agents.Agent.State;
 import net.obvj.smart.agents.dummy.DummyAgent;
 import net.obvj.smart.agents.impl.AnnotatedTimerAgent;

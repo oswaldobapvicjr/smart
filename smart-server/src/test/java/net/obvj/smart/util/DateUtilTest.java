@@ -9,11 +9,11 @@ import java.util.TimeZone;
 
 import org.junit.Test;
 
-import net.obvj.smart.TestUtils;
+import net.obvj.junit.utils.TestUtils;
 
 /**
  * Unit tests for the {@link DateUtils} class.
- * 
+ *
  * @author oswaldo.bapvic.jr
  * @since 1.0
  */

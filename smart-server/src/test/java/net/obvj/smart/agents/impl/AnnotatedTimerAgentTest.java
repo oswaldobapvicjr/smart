@@ -10,7 +10,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import net.obvj.smart.TestUtils;
+import net.obvj.junit.utils.TestUtils;
 import net.obvj.smart.agents.test.invalid.TestAgentWithAllCustomParamsAndPrivateAgentTask;
 import net.obvj.smart.agents.test.invalid.TestAgentWithAllCustomParamsAndPrivateConstructor;
 import net.obvj.smart.agents.test.invalid.TestAgentWithNoNameAndTypeTimerAndNoAgentTask;

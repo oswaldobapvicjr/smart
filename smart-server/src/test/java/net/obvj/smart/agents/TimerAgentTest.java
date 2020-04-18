@@ -11,7 +11,7 @@ import java.util.concurrent.TimeoutException;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import net.obvj.smart.TestUtils;
+import net.obvj.junit.utils.TestUtils;
 import net.obvj.smart.agents.Agent.State;
 import net.obvj.smart.agents.impl.AnnotatedTimerAgent;
 import net.obvj.smart.conf.AgentConfiguration;

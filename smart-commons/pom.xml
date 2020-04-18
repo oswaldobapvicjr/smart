@@ -13,14 +13,4 @@
     <artifactId>smart-commons</artifactId>
     <name>smart-commons</name>
 
-    <dependencies>
-
-        <dependency>
-            <groupId>net.obvj</groupId>
-            <artifactId>smart-test</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-    </dependencies>
 </project>

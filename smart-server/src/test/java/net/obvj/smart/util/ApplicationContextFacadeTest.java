@@ -4,12 +4,12 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
-import net.obvj.smart.TestUtils;
+import net.obvj.junit.utils.TestUtils;
 import net.obvj.smart.manager.AgentManager;
 
 /**
  * Unit tests for the {@link ApplicationContextFacade}
- * 
+ *
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
@@ -26,7 +26,7 @@ public class ApplicationContextFacadeTest
     {
         TestUtils.assertNoInstancesAllowed(ApplicationContextFacade.class, IllegalStateException.class, "Utility class");
     }
-    
+
     @Test
     public void testRetrieveAgentManagerBean()
     {

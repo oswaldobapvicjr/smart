@@ -4,12 +4,12 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
-import net.obvj.smart.TestUtils;
+import net.obvj.junit.utils.TestUtils;
 import net.obvj.smart.jmx.client.AgentManagerJMXClient;
 
 /**
  * Unit tests for the {@link ClientApplicationContextFacade}
- * 
+ *
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
