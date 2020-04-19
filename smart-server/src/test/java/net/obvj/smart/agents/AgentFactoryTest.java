@@ -53,7 +53,7 @@ public class AgentFactoryTest
         assertThat(timerAgent.getConfiguration(), is(configuration));
         assertThat(timerAgent.isHidden(), is(false));
 
-        assertThat(timerAgent.getInterval(), is(30));
+        assertThat(timerAgent.getIntervalDuration(), is(30));
         assertThat(timerAgent.getTimeUnit(), is(TimeUnit.SECONDS));
 
         assertThat(timerAgent.getState(), is(State.SET));
@@ -77,7 +77,7 @@ public class AgentFactoryTest
         assertThat(timerAgent.getConfiguration(), is(configuration));
         assertThat(timerAgent.isHidden(), is(true));
 
-        assertThat(timerAgent.getInterval(), is(30));
+        assertThat(timerAgent.getIntervalDuration(), is(30));
         assertThat(timerAgent.getTimeUnit(), is(TimeUnit.SECONDS));
 
         assertThat(timerAgent.getState(), is(State.SET));
@@ -100,7 +100,7 @@ public class AgentFactoryTest
         assertThat(timerAgent.getConfiguration(), is(configuration));
         assertThat(timerAgent.isHidden(), is(false));
 
-        assertThat(timerAgent.getInterval(), is(1));
+        assertThat(timerAgent.getIntervalDuration(), is(1));
         assertThat(timerAgent.getTimeUnit(), is(TimeUnit.MINUTES));
 
         assertThat(timerAgent.getState(), is(State.SET));
@@ -134,7 +134,7 @@ public class AgentFactoryTest
         assertThat(timerAgent.getConfiguration(), is(configuration));
         assertThat(timerAgent.isHidden(), is(true));
 
-        assertThat(timerAgent.getInterval(), is(30));
+        assertThat(timerAgent.getIntervalDuration(), is(30));
         assertThat(timerAgent.getTimeUnit(), is(TimeUnit.SECONDS));
 
         assertThat(timerAgent.getState(), is(State.SET));

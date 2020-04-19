@@ -32,8 +32,7 @@ public abstract class TimerAgent extends Agent
     protected static final String MSG_AGENT_ALREADY_STOPPED = "Agent already stopped";
     protected static final String MSG_AGENT_ALREADY_RUNNING = "Agent task already in execution";
 
-    private int interval;
-    private TimeUnit timeUnit;
+    private TimeInterval interval;
 
     /*
      * This object is used to control access to the task execution independently of other
@@ -59,8 +58,7 @@ public abstract class TimerAgent extends Agent
         }
 
         TimeInterval timeInterval = TimeInterval.of(configuration.getInterval());
-        this.interval = timeInterval.getDuration();
-        this.timeUnit = timeInterval.getTimeUnit();
+        this.interval = timeInterval;
         setState(State.SET);
     }
 
@@ -132,13 +130,13 @@ public abstract class TimerAgent extends Agent
                 throw new IllegalStateException(MSG_AGENT_ALREADY_STARTED);
             }
             LOG.log(Level.INFO, "Starting agent: {0}", getName());
-            Date start = DateUtils.getExactStartDateEvery(interval, timeUnit);
+            Date start = DateUtils.getExactStartDateEvery(interval.getDuration(), interval.getTimeUnit());
 
             schedule.scheduleAtFixedRate(this, (start.getTime() - System.currentTimeMillis()),
-                    timeUnit.toMillis(interval), java.util.concurrent.TimeUnit.MILLISECONDS);
+                    interval.toMillis(), java.util.concurrent.TimeUnit.MILLISECONDS);
 
-            LOG.log(Level.INFO, "Agent {0} scheduled to run every {1} {2}. Start programmed to {3}",
-                    new Object[] { getName(), interval, timeUnit, DateUtils.formatDate(start) });
+            LOG.log(Level.INFO, "Agent {0} scheduled to run every {1}. Start programmed to {2}",
+                    new Object[] { getName(), interval, DateUtils.formatDate(start) });
             setState(State.STARTED);
             startDate = Calendar.getInstance();
         }
@@ -197,23 +195,25 @@ public abstract class TimerAgent extends Agent
     public String getStatusString()
     {
         ToStringBuilder builder = new ToStringBuilder(this, ToStringStyle.JSON_STYLE);
-        builder.append("name", getName())
-               .append("type", getType())
-               .append("status", getState())
-               .append("startDate", (DateUtils.formatDate(startDate)))
-               .append("lastRunDate", (DateUtils.formatDate(lastRunDate)))
-               .append("frequency", getInterval() + " " + getTimeUnit());
+        builder.append("name", getName()).append("type", getType()).append("status", getState())
+                .append("startDate", (DateUtils.formatDate(startDate)))
+                .append("lastRunDate", (DateUtils.formatDate(lastRunDate))).append("frequency", interval);
         return builder.build();
     }
 
-    public int getInterval()
+    public TimeInterval getFrequency()
     {
-        return interval;
+        return new TimeInterval(interval.getDuration(), interval.getTimeUnit());
+    }
+
+    public int getIntervalDuration()
+    {
+        return interval.getDuration();
     }
 
     public TimeUnit getTimeUnit()
     {
-        return timeUnit;
+        return interval.getTimeUnit();
     }
 
     /**

@@ -1,13 +1,19 @@
 package net.obvj.smart.util;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.junit.Test;
+import org.springframework.util.CollectionUtils;
 
 /**
  * Unit tests for the {@link TimeInterval} class.
- * 
+ *
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
@@ -89,6 +95,30 @@ public class TimeIntervalTest
     public void testTimeIntervalOfEmptyString()
     {
         TimeInterval.of("");
+    }
+
+    @Test
+    public void testEqualsAndHashCode()
+    {
+        Set<TimeInterval> set = new HashSet<>();
+        set.add(TimeInterval.of("1 second"));
+        set.add(TimeInterval.of("1s"));
+        set.add(TimeInterval.of("1SECOND"));
+        assertThat(set.size(), is(1));
+    }
+
+    @Test
+    public void testEquals()
+    {
+        assertThat(TimeInterval.of("10 seconds").equals(TimeInterval.of("10 s")), is(true));
+        assertThat(TimeInterval.of("10 seconds").equals(null), is(false));
+        assertThat(TimeInterval.of("10 seconds").equals(new Object()), is(false));
+    }
+
+    @Test
+    public void testToMillis()
+    {
+        assertThat(TimeInterval.of("2seconds").toMillis(), is(2000L));
     }
 
 }

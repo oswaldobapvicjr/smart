@@ -1,8 +1,7 @@
 package net.obvj.smart.agents;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 
@@ -15,6 +14,7 @@ import net.obvj.junit.utils.TestUtils;
 import net.obvj.smart.agents.Agent.State;
 import net.obvj.smart.agents.impl.AnnotatedTimerAgent;
 import net.obvj.smart.conf.AgentConfiguration;
+import net.obvj.smart.util.TimeInterval;
 
 /**
  * Unit tests for the {@link TimerAgent} class.
@@ -121,6 +121,13 @@ public class TimerAgentTest
         String statusWithoutQuotes = agent.getStatusString().replace("\"", "");
         TestUtils.assertStringContains(statusWithoutQuotes, "name:DummyAgent", "type:timer", "status:SET",
                 "startDate:null", "lastRunDate:null", "frequency:30 second(s)");
+    }
+
+    @Test
+    public void testGetFrequency()
+    {
+        TimerAgent agent = (TimerAgent) AgentFactory.create(DUMMY_AGENT_CONFIG);
+        assertThat(agent.getFrequency(), is(equalTo(TimeInterval.of("30 seconds"))));
     }
 
 }
