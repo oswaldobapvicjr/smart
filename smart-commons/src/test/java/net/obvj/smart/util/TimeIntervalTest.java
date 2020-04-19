@@ -1,15 +1,12 @@
 package net.obvj.smart.util;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Test;
-import org.springframework.util.CollectionUtils;
 
 /**
  * Unit tests for the {@link TimeInterval} class.
@@ -119,6 +116,21 @@ public class TimeIntervalTest
     public void testToMillis()
     {
         assertThat(TimeInterval.of("2seconds").toMillis(), is(2000L));
+    }
+
+    @Test
+    public void testCopyTimeInterval()
+    {
+        TimeInterval original = TimeInterval.of("50 seconds");
+        TimeInterval clone = new TimeInterval(original);
+        assertEquals(original, clone);
+        assertNotSame(original, clone);
+    }
+
+    @Test
+    public void testToString()
+    {
+        assertThat(TimeInterval.of("10s").toString(), is("10 second(s)"));
     }
 
 }

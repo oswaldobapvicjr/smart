@@ -203,7 +203,7 @@ public abstract class TimerAgent extends Agent
 
     public TimeInterval getFrequency()
     {
-        return new TimeInterval(interval.getDuration(), interval.getTimeUnit());
+        return new TimeInterval(interval);
     }
 
     public int getIntervalDuration()

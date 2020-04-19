@@ -24,6 +24,11 @@ public class TimeInterval
         this.timeUnit = timeUnit;
     }
 
+    public TimeInterval(TimeInterval source)
+    {
+        this(source.getDuration(), source.getTimeUnit());
+    }
+
     public static TimeInterval of(String input)
     {
         int digits = extractFirstDigitGroupFromString(input);
