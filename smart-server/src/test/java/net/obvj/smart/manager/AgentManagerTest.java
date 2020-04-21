@@ -51,7 +51,7 @@ public class AgentManagerTest
     private static final List<String> names = Arrays.asList(DUMMY_AGENT);
 
     private static final AgentConfiguration XML_DUMMY_AGENT = new AgentConfiguration.Builder(DUMMY_AGENT).type(TIMER)
-            .agentClass(DUMMY_AGENT_CLASS).interval("1 hour").build();
+            .agentClass(DUMMY_AGENT_CLASS).frequency("1 hour").build();
 
     private static final AgentDTO DUMMY_AGENT_DTO = new AgentDTO(DUMMY_AGENT, TIMER, "SET", false);
 

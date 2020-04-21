@@ -37,7 +37,7 @@ public class AnnotatedTimerAgentTest
     public void setup()
     {
         Mockito.when(configuration.getType()).thenReturn("timer");
-        Mockito.when(configuration.getInterval()).thenReturn("60 seconds");
+        Mockito.when(configuration.getFrequency()).thenReturn("60 seconds");
     }
 
     @Test(expected = AgentConfigurationException.class)

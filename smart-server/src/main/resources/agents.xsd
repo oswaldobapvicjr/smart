@@ -26,7 +26,7 @@
                     nillable="false" />
                 <xs:element name="class" maxOccurs="1" minOccurs="1" type="xs:string"
                     nillable="false" />
-                <xs:element name="interval" minOccurs="0" maxOccurs="1" type="xs:string" />
+                <xs:element name="frequency" minOccurs="0" maxOccurs="1" type="xs:string" />
                 <xs:element name="started" minOccurs="0" maxOccurs="1" type="xs:boolean"
                     default="true" />
                 <xs:element name="stopTimeoutInSeconds" minOccurs="0" maxOccurs="1"
@@ -45,7 +45,7 @@
 
     <xs:simpleType name="agentType">
         <xs:restriction base="xs:string">
-            <xs:pattern value="timer|daemon" />
+            <xs:pattern value="timer|cron" />
         </xs:restriction>
     </xs:simpleType>
 

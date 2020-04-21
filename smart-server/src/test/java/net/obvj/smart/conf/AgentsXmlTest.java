@@ -40,7 +40,7 @@ public class AgentsXmlTest
         assertEquals(DUMMY_AGENT, agent.getName());
         assertEquals(DUMMY_AGENT_CLASS, agent.getAgentClass());
         assertEquals(TIMER, agent.getType());
-        assertEquals("30 seconds", agent.getInterval());
+        assertEquals("30 seconds", agent.getFrequency());
         assertEquals(false, agent.isAutomaticallyStarted());
         assertEquals(5, agent.getStopTimeoutInSeconds());
         assertEquals(false, agent.isHidden());
@@ -55,7 +55,7 @@ public class AgentsXmlTest
         assertEquals(DUMMY_AGENT, agent.getName());
         assertEquals(DUMMY_AGENT_CLASS, agent.getAgentClass());
         assertEquals(TIMER, agent.getType());
-        assertEquals("30 seconds", agent.getInterval());
+        assertEquals("30 seconds", agent.getFrequency());
         assertEquals(false, agent.isAutomaticallyStarted());
         assertEquals(5, agent.getStopTimeoutInSeconds());
         assertEquals(true, agent.isHidden());
@@ -70,7 +70,7 @@ public class AgentsXmlTest
         assertEquals(DUMMY_AGENT, agent.getName());
         assertEquals(DUMMY_AGENT_CLASS, agent.getAgentClass());
         assertEquals(TIMER, agent.getType());
-        assertEquals("1", agent.getInterval());
+        assertEquals("1", agent.getFrequency());
         assertEquals(true, agent.isAutomaticallyStarted());
         assertEquals(DEFAULT_STOP_TIMEOUT_SECONDS, agent.getStopTimeoutInSeconds());
         assertEquals(false, agent.isHidden());
@@ -127,7 +127,7 @@ public class AgentsXmlTest
         assertEquals(DUMMY_AGENT, dummyAgent.getName());
         assertEquals(TIMER, dummyAgent.getType());
         assertEquals(DUMMY_AGENT_CLASS, dummyAgent.getAgentClass());
-        assertEquals("30 seconds", dummyAgent.getInterval());
+        assertEquals("30 seconds", dummyAgent.getFrequency());
         assertEquals(false, dummyAgent.isHidden());
     }
 

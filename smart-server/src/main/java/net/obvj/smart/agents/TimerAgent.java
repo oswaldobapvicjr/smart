@@ -44,7 +44,7 @@ public abstract class TimerAgent extends Agent
             throw new IllegalArgumentException("Not a timer agent");
         }
 
-        TimeInterval timeInterval = TimeInterval.of(configuration.getInterval());
+        TimeInterval timeInterval = TimeInterval.of(configuration.getFrequency());
         this.interval = timeInterval;
 
         threadFactory = new AgentThreadFactory(getName());

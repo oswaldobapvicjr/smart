@@ -45,7 +45,7 @@ public class AgentConfigurationTest
         assertThat(configuration.getName(), is(TestAgentWithNoNameAndTypeTimerAndAgentTask.class.getSimpleName()));
         assertThat(configuration.getType(), is(TIMER));
         assertThat(configuration.getAgentClass(), is(TestAgentWithNoNameAndTypeTimerAndAgentTask.class.getCanonicalName()));
-        assertThat(configuration.getInterval(), is(AgentConfiguration.DEFAULT_INTERVAL));
+        assertThat(configuration.getFrequency(), is(AgentConfiguration.DEFAULT_FREQUENCY));
         assertThat(configuration.getStopTimeoutInSeconds(), is(AgentConfiguration.DEFAULT_STOP_TIMEOUT_IN_SECONDS));
         assertThat(configuration.isAutomaticallyStarted(), is(AgentConfiguration.DEFAULT_AUTOMATICALLY_STARTED));
         assertThat(configuration.isHidden(), is(AgentConfiguration.DEFAULT_HIDDEN));
@@ -60,7 +60,7 @@ public class AgentConfigurationTest
         assertThat(configuration.getName(), is(NAME1));
         assertThat(configuration.getType(), is(TIMER));
         assertThat(configuration.getAgentClass(), is(TestAgentWithCustomNameAndType.class.getCanonicalName()));
-        assertThat(configuration.getInterval(), is(AgentConfiguration.DEFAULT_INTERVAL));
+        assertThat(configuration.getFrequency(), is(AgentConfiguration.DEFAULT_FREQUENCY));
         assertThat(configuration.getStopTimeoutInSeconds(), is(AgentConfiguration.DEFAULT_STOP_TIMEOUT_IN_SECONDS));
         assertThat(configuration.isAutomaticallyStarted(), is(AgentConfiguration.DEFAULT_AUTOMATICALLY_STARTED));
         assertThat(configuration.isHidden(), is(AgentConfiguration.DEFAULT_HIDDEN));
@@ -74,7 +74,7 @@ public class AgentConfigurationTest
 
         assertThat(configuration.getName(), is(NAME1));
         assertThat(configuration.getType(), is(TIMER));
-        assertThat(configuration.getInterval(), is(INTERVAL));
+        assertThat(configuration.getFrequency(), is(INTERVAL));
         assertThat(configuration.getAgentClass(), is(clazz.getCanonicalName()));
         assertThat(configuration.getStopTimeoutInSeconds(), is(STOP_TIMEOUT_SECONDS));
         assertThat(configuration.isAutomaticallyStarted(), is(false));

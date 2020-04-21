@@ -43,7 +43,7 @@ public class BackgroundAgentTest
         AgentConfiguration config = AgentConfiguration.fromAnnotatedClass(BackgroundAgent.class);
         assertThat(config.getName(), is("BackgroundAgent"));
         assertThat(config.getType(), is("timer"));
-        assertThat(config.getInterval(), is("1"));
+        assertThat(config.getFrequency(), is("1"));
         assertThat(config.isAutomaticallyStarted(), is(true));
         assertThat(config.isHidden(), is(true));
     }

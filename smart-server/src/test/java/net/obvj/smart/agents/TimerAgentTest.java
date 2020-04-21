@@ -27,7 +27,7 @@ public class TimerAgentTest
     private TimerAgent agentMock = mock(TimerAgent.class, Mockito.CALLS_REAL_METHODS);
 
     private static final AgentConfiguration DUMMY_AGENT_CONFIG = new AgentConfiguration.Builder("DummyAgent")
-            .type("timer").agentClass("net.obvj.smart.agents.dummy.DummyAgent").interval("30 seconds")
+            .type("timer").agentClass("net.obvj.smart.agents.dummy.DummyAgent").frequency("30 seconds")
             .automaticallyStarted(false).stopTimeoutInSeconds(5).build();
 
     /**

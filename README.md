@@ -31,6 +31,6 @@ This is a sample configuration of a timer agent that will execute every 30 secon
   <name>DummyAgent</name>
   <type>timer</type>
   <class>net.obvj.smart.agents.dummy.DummyAgent</class>
-  <interval>30 seconds</interval>
+  <frequency>30 seconds</frequency>
 </agent>
 ```

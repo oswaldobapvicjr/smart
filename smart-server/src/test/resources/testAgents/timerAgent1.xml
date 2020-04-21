@@ -8,7 +8,7 @@
             <name>XmlName</name>
             <type>timer</type>
             <class>net.obvj.smart.agents.test.valid.TestTimerAgent1</class>
-            <interval>30 seconds</interval>
+            <frequency>30 seconds</frequency>
         </agent>
     </agents>
 </smart>

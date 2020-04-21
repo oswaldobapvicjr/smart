@@ -40,7 +40,7 @@ public class AgentFactoryTest
     public void create_timerAgent30Seconds() throws Exception
     {
         AgentConfiguration configuration = new AgentConfiguration.Builder(DUMMY_AGENT).type(TIMER)
-                .agentClass(DUMMY_AGENT_CLASS).interval("30 seconds").automaticallyStarted(false)
+                .agentClass(DUMMY_AGENT_CLASS).frequency("30 seconds").automaticallyStarted(false)
                 .stopTimeoutInSeconds(5).build();
 
         TimerAgent timerAgent = (TimerAgent) AgentFactory.create(configuration);
@@ -64,7 +64,7 @@ public class AgentFactoryTest
     public void create_timerAgent30SecondsHidden() throws Exception
     {
         AgentConfiguration configuration = new AgentConfiguration.Builder(DUMMY_AGENT).type(TIMER)
-                .agentClass(DUMMY_AGENT_CLASS).interval("30 seconds").automaticallyStarted(false)
+                .agentClass(DUMMY_AGENT_CLASS).frequency("30 seconds").automaticallyStarted(false)
                 .stopTimeoutInSeconds(5).hidden(true).build();
 
         TimerAgent timerAgent = (TimerAgent) AgentFactory.create(configuration);
@@ -122,7 +122,7 @@ public class AgentFactoryTest
         Class<TestAgentWithNoNameAndTypeTimerAndAgentTask> testClass = TestAgentWithNoNameAndTypeTimerAndAgentTask.class;
 
         AgentConfiguration configuration = new AgentConfiguration.Builder(DUMMY_AGENT).type(TIMER)
-                .agentClass(testClass.getName()).interval("30 seconds").automaticallyStarted(false)
+                .agentClass(testClass.getName()).frequency("30 seconds").automaticallyStarted(false)
                 .stopTimeoutInSeconds(5).hidden(true).build();
 
         TimerAgent timerAgent = (TimerAgent) AgentFactory.create(configuration);

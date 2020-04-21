@@ -18,7 +18,7 @@ import net.obvj.smart.util.Exceptions;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AgentConfiguration
 {
-    protected static final String DEFAULT_INTERVAL = "1";
+    protected static final String DEFAULT_FREQUENCY = "1";
     protected static final int DEFAULT_STOP_TIMEOUT_IN_SECONDS = Integer.MAX_VALUE;
     protected static final boolean DEFAULT_AUTOMATICALLY_STARTED = true;
     protected static final boolean DEFAULT_HIDDEN = false;
@@ -32,8 +32,8 @@ public class AgentConfiguration
     @XmlElement(name = "class")
     private String agentClass;
 
-    @XmlElement(name = "interval")
-    private String interval = DEFAULT_INTERVAL;
+    @XmlElement(name = "frequency")
+    private String frequency = DEFAULT_FREQUENCY;
 
     @XmlElement(name = "started")
     private boolean automaticallyStarted = DEFAULT_AUTOMATICALLY_STARTED;
@@ -53,7 +53,7 @@ public class AgentConfiguration
         this.name = builder.name;
         this.type = builder.type;
         this.agentClass = builder.agentClass;
-        this.interval = builder.interval;
+        this.frequency = builder.frequency;
         this.automaticallyStarted = builder.automaticallyStarted.booleanValue();
         this.stopTimeoutInSeconds = builder.stopTimeoutInSeconds.intValue();
         this.hidden = builder.hidden;
@@ -74,9 +74,9 @@ public class AgentConfiguration
         return agentClass;
     }
 
-    public String getInterval()
+    public String getFrequency()
     {
-        return interval;
+        return frequency;
     }
 
     public boolean isAutomaticallyStarted()
@@ -105,7 +105,7 @@ public class AgentConfiguration
         private String name;
         private String type;
         private String agentClass;
-        private String interval;
+        private String frequency;
         private Boolean automaticallyStarted = Boolean.valueOf(DEFAULT_AUTOMATICALLY_STARTED);
         private Integer stopTimeoutInSeconds = Integer.valueOf(DEFAULT_STOP_TIMEOUT_IN_SECONDS);
         private Boolean hidden = Boolean.valueOf(DEFAULT_HIDDEN);
@@ -127,9 +127,9 @@ public class AgentConfiguration
             return this;
         }
 
-        public Builder interval(String interval)
+        public Builder frequency(String frequency)
         {
-            this.interval = interval;
+            this.frequency = frequency;
             return this;
         }
 
@@ -155,11 +155,8 @@ public class AgentConfiguration
         {
             if (StringUtils.isEmpty(name)) throw new IllegalStateException("name cannot be null");
             if (StringUtils.isEmpty(type)) throw new AgentConfigurationException("type cannot be null");
-            if (agentClass == null) throw new AgentConfigurationException("agentClass cannot be null");
-
-            // The default interval can only be set for timer agents
-            if (StringUtils.isEmpty(interval) && type.equals("timer")) interval = DEFAULT_INTERVAL;
-
+            if (StringUtils.isEmpty(agentClass)) throw new AgentConfigurationException("agentClass cannot be null");
+            if (StringUtils.isEmpty(frequency)) frequency = DEFAULT_FREQUENCY;
             return new AgentConfiguration(this);
         }
     }
@@ -177,12 +174,12 @@ public class AgentConfiguration
 
         String type = annotation.type().toString();
         String agentClass = clazz.getCanonicalName();
-        String interval = annotation.frequency();
+        String frequency = annotation.frequency();
         int stopTimeoutInSeconds = annotation.stopTimeoutInSeconds();
         boolean automaticallyStarted = annotation.automaticallyStarted();
         boolean hidden = annotation.hidden();
 
-        Builder builder = new Builder(name).type(type).agentClass(agentClass).interval(interval)
+        Builder builder = new Builder(name).type(type).agentClass(agentClass).frequency(frequency)
                 .stopTimeoutInSeconds(stopTimeoutInSeconds).automaticallyStarted(automaticallyStarted).hidden(hidden);
         return builder.build();
     }
