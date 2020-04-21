@@ -1,10 +1,9 @@
 package net.obvj.smart.agents;
 
-import java.util.Calendar;
 import java.util.Date;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -26,22 +25,10 @@ public abstract class TimerAgent extends Agent
 {
     public static final String TYPE = "timer";
 
-    private static final Logger LOG = Logger.getLogger("smart-server");
-
-    protected static final String MSG_AGENT_ALREADY_STARTED = "Agent already started";
-    protected static final String MSG_AGENT_ALREADY_STOPPED = "Agent already stopped";
-    protected static final String MSG_AGENT_ALREADY_RUNNING = "Agent task already in execution";
-
     private TimeInterval interval;
 
-    /*
-     * This object is used to control access to the task execution independently of other
-     * operations.
-     */
-    private final Object runLock = new Object();
-    private final Object changeLock = new Object();
-
-    private boolean stopRequested = false;
+    private AgentThreadFactory threadFactory;
+    private ScheduledExecutorService schedule;
 
     /**
      * Builds a {@link TimerAgent} from the given configuration.
@@ -59,87 +46,25 @@ public abstract class TimerAgent extends Agent
 
         TimeInterval timeInterval = TimeInterval.of(configuration.getInterval());
         this.interval = timeInterval;
+
+        threadFactory = new AgentThreadFactory(getName());
+        schedule = Executors.newSingleThreadScheduledExecutor(threadFactory);
+
         setState(State.SET);
-    }
-
-    /**
-     * The method called by the Executor Service to execute the agent task.
-     */
-    @Override
-    public void run()
-    {
-        run(false);
-    }
-
-    @Override
-    public void run(boolean manualFlag)
-    {
-        if (stopRequested && !manualFlag) return;
-        if (isRunning())
-        {
-            if (manualFlag)
-            {
-                throw new IllegalStateException(MSG_AGENT_ALREADY_RUNNING);
-            }
-            LOG.fine(MSG_AGENT_ALREADY_RUNNING);
-        }
-        else
-        {
-            synchronized (runLock)
-            {
-                State previousState = getState();
-                setState(State.RUNNING);
-                lastRunDate = Calendar.getInstance();
-                LOG.log(Level.FINEST, "Agent task started");
-                try
-                {
-                    runTask();
-                }
-                catch (Exception e)
-                {
-                    LOG.log(Level.SEVERE, "Agent task ended with an exception", e);
-                }
-                finally
-                {
-                    setState(previousState);
-                    LOG.log(Level.FINEST, "Agent task complete.");
-                }
-            }
-        }
     }
 
     /**
      * Starts this agent timer considering the interval settled in this object for execution.
      */
     @Override
-    public final void start()
+    public final void onStart()
     {
-        switch (getState())
-        {
-        case STARTED:
-            throw new IllegalStateException(MSG_AGENT_ALREADY_STARTED);
-        case STOPPED:
-            throw new IllegalStateException("Agent was stopped. Please reset this agent before restarting");
-        default:
-            break;
-        }
-        synchronized (changeLock)
-        {
-            if (isStarted())
-            {
-                throw new IllegalStateException(MSG_AGENT_ALREADY_STARTED);
-            }
-            LOG.log(Level.INFO, "Starting agent: {0}", getName());
-            Date start = DateUtils.getExactStartDateEvery(interval.getDuration(), interval.getTimeUnit());
+        Date start = DateUtils.getExactStartDateEvery(interval.getDuration(), interval.getTimeUnit());
+        schedule.scheduleAtFixedRate(this, (start.getTime() - System.currentTimeMillis()), interval.toMillis(),
+                java.util.concurrent.TimeUnit.MILLISECONDS);
 
-            schedule.scheduleAtFixedRate(this, (start.getTime() - System.currentTimeMillis()),
-                    interval.toMillis(), java.util.concurrent.TimeUnit.MILLISECONDS);
-
-            LOG.log(Level.INFO, "Agent {0} scheduled to run every {1}. Start programmed to {2}",
-                    new Object[] { getName(), interval, DateUtils.formatDate(start) });
-            setState(State.STARTED);
-            startDate = Calendar.getInstance();
-        }
+        LOG.log(Level.INFO, "Agent {0} scheduled to run every {1}. First execution will be at: {2}",
+                new Object[] { getName(), interval, DateUtils.formatDate(start) });
     }
 
     /**
@@ -147,45 +72,9 @@ public abstract class TimerAgent extends Agent
      * task, if it exists.
      */
     @Override
-    public final void stop() throws TimeoutException
+    public final void onStop()
     {
-        stopRequested = true;
-        if (isStopped())
-        {
-            throw new IllegalStateException(MSG_AGENT_ALREADY_STOPPED);
-        }
-        synchronized (changeLock)
-        {
-            if (isStopped())
-            {
-                throw new IllegalStateException(MSG_AGENT_ALREADY_STOPPED);
-            }
-            LOG.info("Stopping agent...");
-            int sleepSeconds = 2;
-            int attempts = getStopTimeoutSeconds() / sleepSeconds;
-            while (isRunning() && attempts-- > 0)
-            {
-                try
-                {
-                    LOG.info("Agent task in execution. Waiting for its completion.");
-                    Thread.sleep(sleepSeconds * 1000l);
-                }
-                catch (InterruptedException e)
-                {
-                    LOG.log(Level.WARNING, "Thread was interrupted.", e);
-                    // Restore interrupted state
-                    Thread.currentThread().interrupt();
-                }
-            }
-            if (isRunning())
-            {
-                throw new TimeoutException("Timeout waiting for agent task to complete. Please try again later.");
-            }
-            schedule.shutdown();
-            setState(State.STOPPED);
-            startDate = null;
-            LOG.info("Agent stopped successfully.");
-        }
+        schedule.shutdown();
     }
 
     /**
@@ -215,11 +104,5 @@ public abstract class TimerAgent extends Agent
     {
         return interval.getTimeUnit();
     }
-
-    /**
-     * Implements the logic for concrete agents. This method cannot be accessed externally.
-     * Its functionality will be available via the run() method.
-     */
-    protected abstract void runTask();
 
 }

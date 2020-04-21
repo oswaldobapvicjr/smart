@@ -177,7 +177,7 @@ public class AgentConfiguration
 
         String type = annotation.type().toString();
         String agentClass = clazz.getCanonicalName();
-        String interval = annotation.interval();
+        String interval = annotation.frequency();
         int stopTimeoutInSeconds = annotation.stopTimeoutInSeconds();
         boolean automaticallyStarted = annotation.automaticallyStarted();
         boolean hidden = annotation.hidden();

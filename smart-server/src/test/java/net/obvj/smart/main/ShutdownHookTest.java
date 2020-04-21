@@ -24,7 +24,7 @@ import net.obvj.smart.util.ApplicationContextFacade;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "javax.management.*" })
-@PrepareForTest({ ApplicationContextFacade.class })
+@PrepareForTest({ ApplicationContextFacade.class, Agent.class })
 public class ShutdownHookTest
 {
     @Mock

@@ -33,11 +33,11 @@ public @interface Agent
     Type type() default Type.TIMER;
 
     /**
-     * The interval between executions for this Agent (only applicable for Timer Agents).
+     * The execution frequency for this Agent.
      * <p>
      * If not specified, the default interval of 1 minute will be considered.
      */
-    String interval() default "1";
+    String frequency() default "1";
 
     /**
      * Declares whether this Agent is started when the server is started.

@@ -6,9 +6,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Identify the annotated method as the one that implements the task to be executed for a
- * class with annotated with {@code @Agent}.
- * 
+ * Identifies the annotated method as the one to be executed for a class annotated with
+ * {@code @Agent}.
+ *
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */

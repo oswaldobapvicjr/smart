@@ -1,9 +1,9 @@
 package net.obvj.smart.agents;
 
 import java.util.Calendar;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.obvj.smart.conf.AgentConfiguration;
 import net.obvj.smart.util.DateUtils;
@@ -22,12 +22,15 @@ public abstract class Agent implements Runnable
         SET, STARTED, RUNNING, STOPPED, ERROR;
     }
 
+    protected static final Logger LOG = Logger.getLogger("smart-server");
+
+    protected static final String MSG_AGENT_ALREADY_STARTED = "Agent already started";
+    protected static final String MSG_AGENT_ALREADY_STOPPED = "Agent already stopped";
+    protected static final String MSG_AGENT_ALREADY_RUNNING = "Agent task already in execution";
+
     private final AgentConfiguration configuration;
 
     private State currentState;
-
-    private AgentThreadFactory threadFactory;
-    protected ScheduledExecutorService schedule;
 
     /*
      * Stores the date & time this agent was started (schedule)
@@ -38,11 +41,18 @@ public abstract class Agent implements Runnable
      */
     protected Calendar lastRunDate;
 
+    /*
+     * This object is used to control access to the task execution independently of other
+     * operations.
+     */
+    private final Object runLock = new Object();
+    private final Object changeLock = new Object();
+
+    private boolean stopRequested = false;
+
     public Agent(AgentConfiguration configuration)
     {
         this.configuration = configuration;
-        threadFactory = new AgentThreadFactory(getName());
-        schedule = Executors.newSingleThreadScheduledExecutor(threadFactory);
     }
 
     /**
@@ -143,11 +153,133 @@ public abstract class Agent implements Runnable
         return DateUtils.getClonedDate(lastRunDate);
     }
 
-    public abstract void start();
+    /**
+     * Starts this agent timer considering the interval settled in this object for execution.
+     */
+    public final void start()
+    {
+        switch (getState())
+        {
+        case STARTED:
+            throw new IllegalStateException(MSG_AGENT_ALREADY_STARTED);
+        case STOPPED:
+            throw new IllegalStateException("Agent was stopped. Please reset this agent before restarting");
+        default:
+            break;
+        }
+        synchronized (changeLock)
+        {
+            if (isStarted())
+            {
+                throw new IllegalStateException(MSG_AGENT_ALREADY_STARTED);
+            }
+            LOG.log(Level.INFO, "Starting agent: {0}", getName());
+            onStart();
+            setState(State.STARTED);
+            startDate = Calendar.getInstance();
+        }
+    }
 
-    public abstract void stop() throws TimeoutException;
+    public abstract void onStart();
 
-    public abstract void run(boolean manualFlag);
+    /**
+     * Terminates this agent timer gracefully. Does not interfere with a currently executing
+     * task, if it exists.
+     */
+    public final void stop() throws TimeoutException
+    {
+        stopRequested = true;
+        if (isStopped())
+        {
+            throw new IllegalStateException(MSG_AGENT_ALREADY_STOPPED);
+        }
+        synchronized (changeLock)
+        {
+            if (isStopped())
+            {
+                throw new IllegalStateException(MSG_AGENT_ALREADY_STOPPED);
+            }
+            LOG.info("Stopping agent...");
+            int sleepSeconds = 2;
+            int attempts = getStopTimeoutSeconds() / sleepSeconds;
+            while (isRunning() && attempts-- > 0)
+            {
+                try
+                {
+                    LOG.info("Agent task in execution. Waiting for its completion.");
+                    Thread.sleep(sleepSeconds * 1000l);
+                }
+                catch (InterruptedException e)
+                {
+                    LOG.log(Level.WARNING, "Thread was interrupted.", e);
+                    // Restore interrupted state
+                    Thread.currentThread().interrupt();
+                }
+            }
+            if (isRunning())
+            {
+                throw new TimeoutException("Timeout waiting for agent task to complete. Please try again later.");
+            }
+            onStop();
+            setState(State.STOPPED);
+            startDate = null;
+            LOG.info("Agent stopped successfully.");
+        }
+    }
+
+    public abstract void onStop();
+
+    /**
+     * The method called to execute the agent task automatically (either by the Executor
+     * Service or the Cron Selector).
+     */
+    @Override
+    public void run()
+    {
+        run(false);
+    }
+
+    public void run(boolean manualFlag)
+    {
+        if (stopRequested && !manualFlag) return;
+        if (isRunning())
+        {
+            if (manualFlag)
+            {
+                throw new IllegalStateException(MSG_AGENT_ALREADY_RUNNING);
+            }
+            LOG.fine(MSG_AGENT_ALREADY_RUNNING);
+        }
+        else
+        {
+            synchronized (runLock)
+            {
+                State previousState = getState();
+                setState(State.RUNNING);
+                lastRunDate = Calendar.getInstance();
+                LOG.log(Level.FINEST, "Agent task started");
+                try
+                {
+                    runTask();
+                }
+                catch (Exception e)
+                {
+                    LOG.log(Level.SEVERE, "Agent task ended with an exception", e);
+                }
+                finally
+                {
+                    setState(previousState);
+                    LOG.log(Level.FINEST, "Agent task complete.");
+                }
+            }
+        }
+    }
+
+    /**
+     * Implements the logic for concrete agents. This method cannot be accessed externally.
+     * Its functionality will be available via the run() method.
+     */
+    protected abstract void runTask();
 
     /**
      * @return This agent's stop timeout in seconds, as in {@link AgentConfiguration}. If a

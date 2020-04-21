@@ -4,7 +4,7 @@ import net.obvj.smart.conf.annotation.Agent;
 import net.obvj.smart.conf.annotation.AgentTask;
 import net.obvj.smart.conf.annotation.Type;
 
-@Agent(type = Type.TIMER, interval = "29 seconds", hidden = true)
+@Agent(type = Type.TIMER, frequency = "29 seconds", hidden = true)
 public class TestTimerAgent1
 {
     @AgentTask
