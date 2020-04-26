@@ -4,12 +4,12 @@ import net.obvj.smart.conf.annotation.Agent;
 import net.obvj.smart.conf.annotation.AgentTask;
 import net.obvj.smart.conf.annotation.Type;
 
-@Agent(type = Type.TIMER)
-public class TestAgentWithNoNameAndTypeTimerAndAgentTask
+@Agent(type = Type.CRON)
+public class TestAgentWithNoNameAndTypeCronAndAgentTask
 {
     @AgentTask
-    public void timerTaskMethod()
+    public void cronTaskMethod()
     {
-        System.out.println("timerTaskMethod() called");
+        System.out.println("cronTaskMethod() called");
     }
 }

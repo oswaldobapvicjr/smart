@@ -2,6 +2,7 @@ package net.obvj.smart.util;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -33,7 +34,7 @@ public class DateUtils
      * Formats the given calendar using internally standardized date format
      *
      * @param calendar the calendar to be formatted
-     * @return a formatted date
+     * @return a formatted string
      */
     public static String formatDate(Calendar calendar)
     {
@@ -41,10 +42,21 @@ public class DateUtils
     }
 
     /**
+     * Formats the given {@link ZonedDateTime} using internally standardized date format
+     *
+     * @param zonedDateTime the object to be formatted
+     * @return a formatted string
+     */
+    public static String formatDate(ZonedDateTime zonedDateTime)
+    {
+        return formatDate(Date.from(zonedDateTime.toInstant()));
+    }
+
+    /**
      * Formats the given date using internally standardized date format
      *
      * @param date the date to be formatted
-     * @return a formatted date
+     * @return a formatted string
      */
     public static String formatDate(Date date)
     {

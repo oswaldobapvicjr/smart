@@ -6,9 +6,9 @@
 
         <agent>
             <name>DummyAgent</name>
-            <type>timer</type>
+            <type>cron</type>
             <class>net.obvj.smart.agents.dummy.DummyAgent</class>
-            <frequency>30 seconds</frequency>
+            <frequency>* * * * *</frequency>
         </agent>
 
     </agents>

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import net.obvj.smart.agents.impl.AnnotatedCronAgent;
 import net.obvj.smart.agents.impl.AnnotatedTimerAgent;
 import net.obvj.smart.conf.AgentConfiguration;
 import net.obvj.smart.util.Exceptions;
@@ -21,6 +22,7 @@ public class AgentFactory
     static
     {
         IMPLEMENTATIONS.put("timer", AnnotatedTimerAgent::new);
+        IMPLEMENTATIONS.put("cron", AnnotatedCronAgent::new);
     }
 
     private AgentFactory()

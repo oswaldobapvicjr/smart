@@ -63,8 +63,8 @@ public class AnnotatedTimerAgentTest
                 .thenReturn(TestAgentWithNoNameAndTypeTimerAndAgentTask.class.getName());
         AnnotatedTimerAgent annotatedTimerAgent = new AnnotatedTimerAgent(configuration);
 
-        assertNotNull(annotatedTimerAgent.getAnnotatedAgentInstance());
-        assertNotNull(annotatedTimerAgent.getAnnotatedAgentTaskMethod());
+        assertNotNull(annotatedTimerAgent.getMetadata().getAgentInstance());
+        assertNotNull(annotatedTimerAgent.getMetadata().getAgentTaskMethod());
 
         annotatedTimerAgent.runTask();
     }

@@ -1,20 +1,20 @@
 package net.obvj.smart.agents.impl;
 
 import net.obvj.smart.agents.AnnotatedAgent;
-import net.obvj.smart.agents.TimerAgent;
+import net.obvj.smart.agents.CronAgent;
 import net.obvj.smart.conf.AgentConfiguration;
 
 /**
- * A {@link TimerAgent} that runs an object annotated with {@code @Agent}.
+ * A {@link CronAgent} that runs an object annotated with {@code @Agent}.
  *
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
-public class AnnotatedTimerAgent extends TimerAgent
+public class AnnotatedCronAgent extends CronAgent
 {
     private final AnnotatedAgent annotatedAgent;
 
-    public AnnotatedTimerAgent(AgentConfiguration configuration)
+    public AnnotatedCronAgent(AgentConfiguration configuration)
     {
         super(configuration);
         annotatedAgent = new AnnotatedAgent(configuration);
@@ -24,7 +24,7 @@ public class AnnotatedTimerAgent extends TimerAgent
      * Executes the method annotated with {@code AgentTask} in the annotated agent instance.
      */
     @Override
-    protected void runTask()
+    protected void doRunTask()
     {
         annotatedAgent.runAgentTask();
     }
@@ -41,7 +41,7 @@ public class AnnotatedTimerAgent extends TimerAgent
     public String toString()
     {
         StringBuilder builder = new StringBuilder();
-        builder.append("AnnotatedTimerAgent$").append(annotatedAgent.getAgentClass().getName());
+        builder.append("AnnotatedCronAgent$").append(annotatedAgent.getAgentClass().getName());
         return builder.toString();
     }
 

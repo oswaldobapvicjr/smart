@@ -37,7 +37,7 @@ public @interface Agent
      * <p>
      * If not specified, the default interval of 1 minute will be considered.
      */
-    String frequency() default "1";
+    String frequency() default "";
 
     /**
      * Declares whether this Agent is started when the server is started.

@@ -11,7 +11,9 @@ import org.junit.Test;
 import net.obvj.junit.utils.TestUtils;
 import net.obvj.smart.agents.Agent.State;
 import net.obvj.smart.agents.dummy.DummyAgent;
+import net.obvj.smart.agents.impl.AnnotatedCronAgent;
 import net.obvj.smart.agents.impl.AnnotatedTimerAgent;
+import net.obvj.smart.agents.test.valid.TestAgentWithNoNameAndTypeCronAndAgentTask;
 import net.obvj.smart.agents.test.valid.TestAgentWithNoNameAndTypeTimerAndAgentTask;
 import net.obvj.smart.conf.AgentConfiguration;
 import net.obvj.smart.util.TimeUnit;
@@ -29,6 +31,7 @@ public class AgentFactoryTest
     private static final String DUMMY_AGENT = "DummyAgent";
     private static final String DUMMY_AGENT_CLASS = "net.obvj.smart.agents.dummy.DummyAgent";
     private static final String TIMER = "timer";
+    private static final String CRON = "cron";
 
     @Test
     public void constuctor_notAllowed() throws ReflectiveOperationException
@@ -39,7 +42,7 @@ public class AgentFactoryTest
     @Test
     public void create_timerAgent30Seconds() throws Exception
     {
-        AgentConfiguration configuration = new AgentConfiguration.Builder(DUMMY_AGENT).type(TIMER)
+        AgentConfiguration configuration = new AgentConfiguration.Builder(TIMER).name(DUMMY_AGENT)
                 .agentClass(DUMMY_AGENT_CLASS).frequency("30 seconds").automaticallyStarted(false)
                 .stopTimeoutInSeconds(5).build();
 
@@ -63,7 +66,7 @@ public class AgentFactoryTest
     @Test
     public void create_timerAgent30SecondsHidden() throws Exception
     {
-        AgentConfiguration configuration = new AgentConfiguration.Builder(DUMMY_AGENT).type(TIMER)
+        AgentConfiguration configuration = new AgentConfiguration.Builder(TIMER).name(DUMMY_AGENT)
                 .agentClass(DUMMY_AGENT_CLASS).frequency("30 seconds").automaticallyStarted(false)
                 .stopTimeoutInSeconds(5).hidden(true).build();
 
@@ -87,7 +90,7 @@ public class AgentFactoryTest
     @Test
     public void create_timerAgentDefaultValues() throws Exception
     {
-        AgentConfiguration configuration = new AgentConfiguration.Builder(DUMMY_AGENT).type(TIMER)
+        AgentConfiguration configuration = new AgentConfiguration.Builder(TIMER).name(DUMMY_AGENT)
                 .agentClass(DUMMY_AGENT_CLASS).build();
 
         TimerAgent timerAgent = (TimerAgent) AgentFactory.create(configuration);
@@ -110,7 +113,7 @@ public class AgentFactoryTest
     @Test(expected = IllegalArgumentException.class)
     public void create_UnknownAgentType_fails() throws Exception
     {
-        AgentConfiguration configuration = new AgentConfiguration.Builder(DUMMY_AGENT).type("unknown")
+        AgentConfiguration configuration = new AgentConfiguration.Builder("unknown").name(DUMMY_AGENT)
                 .agentClass(DUMMY_AGENT_CLASS).build();
 
         AgentFactory.create(configuration);
@@ -121,7 +124,7 @@ public class AgentFactoryTest
     {
         Class<TestAgentWithNoNameAndTypeTimerAndAgentTask> testClass = TestAgentWithNoNameAndTypeTimerAndAgentTask.class;
 
-        AgentConfiguration configuration = new AgentConfiguration.Builder(DUMMY_AGENT).type(TIMER)
+        AgentConfiguration configuration = new AgentConfiguration.Builder(TIMER).name(DUMMY_AGENT)
                 .agentClass(testClass.getName()).frequency("30 seconds").automaticallyStarted(false)
                 .stopTimeoutInSeconds(5).hidden(true).build();
 
@@ -142,9 +145,34 @@ public class AgentFactoryTest
     }
 
     @Test
+    public void create_annotatedCronAgent() throws Exception
+    {
+        Class<TestAgentWithNoNameAndTypeCronAndAgentTask> testClass = TestAgentWithNoNameAndTypeCronAndAgentTask.class;
+
+        AgentConfiguration configuration = new AgentConfiguration.Builder(CRON).name(DUMMY_AGENT)
+                .agentClass(testClass.getName()).frequency("* * * * *").automaticallyStarted(false)
+                .stopTimeoutInSeconds(5).hidden(true).build();
+
+        CronAgent cronAgent = (CronAgent) AgentFactory.create(configuration);
+        assertThat(cronAgent, instanceOf(AnnotatedCronAgent.class));
+
+        assertThat(cronAgent.getName(), is(DUMMY_AGENT));
+        assertThat(cronAgent.getType(), is(CRON));
+        assertThat(cronAgent.getStopTimeoutSeconds(), is(5));
+        assertThat(cronAgent.getConfiguration(), is(configuration));
+        assertThat(cronAgent.isHidden(), is(true));
+
+        assertThat(cronAgent.getCronExpression(), is("* * * * *"));
+
+        assertThat(cronAgent.getState(), is(State.SET));
+        assertThat(cronAgent.isStarted(), is(false));
+    }
+
+    @Test
     public void create_automaticallyStartedAgent() throws Exception
     {
-        AgentConfiguration configuration = new AgentConfiguration.Builder(DUMMY_AGENT).type(TIMER)
+        AgentConfiguration configuration = new AgentConfiguration.Builder(TIMER).name(DUMMY_AGENT)
+
                 .agentClass(DUMMY_AGENT_CLASS).automaticallyStarted(true).build();
 
         TimerAgent agent = (TimerAgent) AgentFactory.create(configuration);

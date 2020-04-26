@@ -38,12 +38,12 @@ import net.obvj.smart.util.ApplicationContextFacade;
 @PrepareForTest({ ApplicationContextFacade.class, Agent.class })
 public class SmartServerSupportTest
 {
-    private static final AgentConfiguration DUMMY_AGENT_CONFIG = new AgentConfiguration.Builder("DummyAgent")
-            .type("timer").agentClass("net.obvj.smart.agents.dummy.DummyAgent").frequency("3 hours")
+    private static final AgentConfiguration DUMMY_AGENT_CONFIG = new AgentConfiguration.Builder("timer")
+            .name("DummyAgent").agentClass("net.obvj.smart.agents.dummy.DummyAgent").frequency("3 hours")
             .automaticallyStarted(false).build();
 
-    private static final AgentConfiguration DUMMY_AGENT_CONFIG_AUTO = new AgentConfiguration.Builder("DummyAgentAuto")
-            .type("timer").agentClass("net.obvj.smart.agents.dummy.DummyAgent").frequency("3 hours")
+    private static final AgentConfiguration DUMMY_AGENT_CONFIG_AUTO = new AgentConfiguration.Builder("timer")
+            .name("DummyAgentAuto").agentClass("net.obvj.smart.agents.dummy.DummyAgent").frequency("3 hours")
             .automaticallyStarted(true).build();
 
     @Mock

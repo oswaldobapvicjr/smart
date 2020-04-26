@@ -5,38 +5,48 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 
+import java.util.Locale;
+import java.util.TimeZone;
 import java.util.concurrent.TimeoutException;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
 import net.obvj.junit.utils.TestUtils;
 import net.obvj.smart.agents.Agent.State;
-import net.obvj.smart.agents.impl.AnnotatedTimerAgent;
+import net.obvj.smart.agents.impl.AnnotatedCronAgent;
 import net.obvj.smart.conf.AgentConfiguration;
-import net.obvj.smart.util.TimeInterval;
 
 /**
- * Unit tests for the {@link TimerAgent} class.
+ * Unit tests for the {@link CronAgent} class.
  *
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
-public class TimerAgentTest
+public class CronAgentTest
 {
-    private TimerAgent agentMock = mock(TimerAgent.class, Mockito.CALLS_REAL_METHODS);
+    private CronAgent agentMock = mock(CronAgent.class, Mockito.CALLS_REAL_METHODS);
 
-    private static final AgentConfiguration DUMMY_AGENT_CONFIG = new AgentConfiguration.Builder("timer")
-            .name("DummyAgent").agentClass("net.obvj.smart.agents.dummy.DummyAgent").frequency("30 seconds")
-            .automaticallyStarted(false).stopTimeoutInSeconds(5).build();
+    private static final AgentConfiguration DUMMY_AGENT_CONFIG = new AgentConfiguration.Builder("cron")
+            .name("DummyAgent")
+            .agentClass("net.obvj.smart.agents.test.valid.TestAgentWithNoNameAndTypeCronAndAgentTask")
+            .frequency("0 0 * * 0").automaticallyStarted(false).stopTimeoutInSeconds(5).build();
+
+    @Before
+    public void setup()
+    {
+        Locale.setDefault(Locale.UK);
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+    }
 
     /**
-     * Tests that a non-timer agent will not be parsed by this class
+     * Tests that a non-cron agent will not be parsed by this class
      */
     @Test(expected = IllegalArgumentException.class)
-    public void testParseNonTimerAgent() throws ReflectiveOperationException
+    public void testParseNonCronAgent() throws ReflectiveOperationException
     {
-        new AnnotatedTimerAgent(new AgentConfiguration.Builder("type_ext").name("DummyAgent")
+        new AnnotatedCronAgent(new AgentConfiguration.Builder("timer").name("DummyAgent")
                 .agentClass("net.obvj.smart.agents.dummy.DummyAgent").build());
     }
 
@@ -47,7 +57,7 @@ public class TimerAgentTest
     public void testStartAgentWithPreviousStateStarted()
     {
         when(agentMock.getState()).thenReturn(State.STARTED);
-        TestUtils.assertException(IllegalStateException.class, TimerAgent.MSG_AGENT_ALREADY_STARTED,
+        TestUtils.assertException(IllegalStateException.class, CronAgent.MSG_AGENT_ALREADY_STARTED,
                 () -> agentMock.start());
     }
 
@@ -62,13 +72,13 @@ public class TimerAgentTest
     }
 
     /**
-     * Tests that no action is taken when stop() is called on a stoppedAgent.
+     * Tests that no action is taken when stop() is called on a stopped agent.
      */
     @Test
     public void testStopAgentWithPreviousStateStopped()
     {
         when(agentMock.isStopped()).thenReturn(true);
-        TestUtils.assertException(IllegalStateException.class, TimerAgent.MSG_AGENT_ALREADY_STOPPED, () ->
+        TestUtils.assertException(IllegalStateException.class, CronAgent.MSG_AGENT_ALREADY_STOPPED, () ->
         {
             try
             {
@@ -89,11 +99,11 @@ public class TimerAgentTest
     {
         when(agentMock.isRunning()).thenReturn(true);
         agentMock.run();
-        verify(agentMock, never()).runTask();
+        verify(agentMock, never()).doRunTask();
     }
 
     /**
-     * Tests that exception is thrown when run(true) is called on a running agent.
+     * Tests that an exception is thrown when run(true) is called on a running agent.
      */
     @Test(expected = IllegalStateException.class)
     public void testRunManuallyAgentWithPreviousStateRunning()
@@ -105,29 +115,28 @@ public class TimerAgentTest
     @Test
     public void testRunAgentWithPreviousStateSet() throws ReflectiveOperationException
     {
-        TimerAgent agent = spy((TimerAgent) AgentFactory.create(DUMMY_AGENT_CONFIG));
+        CronAgent agent = spy((CronAgent) AgentFactory.create(DUMMY_AGENT_CONFIG));
         assertThat("State before run() should be SET", agent.getState(), is(State.SET));
         agent.run();
         verify(agent).runTask();
         assertThat("State after start() should be SET", agent.getState(), is(State.SET));
         assertThat(agent.getLastRunDate(), is(notNullValue()));
-
     }
 
     @Test
     public void testGetAgentStatusStr() throws ReflectiveOperationException
     {
-        TimerAgent agent = (TimerAgent) AgentFactory.create(DUMMY_AGENT_CONFIG);
+        CronAgent agent = (CronAgent) AgentFactory.create(DUMMY_AGENT_CONFIG);
         String statusWithoutQuotes = agent.getStatusString().replace("\"", "");
-        TestUtils.assertStringContains(statusWithoutQuotes, "name:DummyAgent", "type:timer", "status:SET",
-                "startDate:null", "lastRunDate:null", "frequency:30 second(s)");
+        TestUtils.assertStringContains(statusWithoutQuotes, "name:DummyAgent", "type:cron", "status:SET",
+                "startDate:null", "lastRunDate:null", "cronExpression:0 0 * * 0", "cronDescription");
     }
 
     @Test
-    public void testGetFrequency()
+    public void testGetCronExpression()
     {
-        TimerAgent agent = (TimerAgent) AgentFactory.create(DUMMY_AGENT_CONFIG);
-        assertThat(agent.getFrequency(), is(equalTo(TimeInterval.of("30 seconds"))));
+        CronAgent agent = (CronAgent) AgentFactory.create(DUMMY_AGENT_CONFIG);
+        assertThat(agent.getCronExpression(), is(equalTo("0 0 * * 0")));
     }
 
 }

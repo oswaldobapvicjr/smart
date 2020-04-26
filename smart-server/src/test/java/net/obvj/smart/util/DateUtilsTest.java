@@ -3,10 +3,14 @@ package net.obvj.smart.util;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import net.obvj.junit.utils.TestUtils;
@@ -17,10 +21,12 @@ import net.obvj.junit.utils.TestUtils;
  * @author oswaldo.bapvic.jr
  * @since 1.0
  */
-public class DateUtilTest
+public class DateUtilsTest
 {
-    static
+    @Before
+    public void setup()
     {
+        Locale.setDefault(Locale.UK);
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
     }
 
@@ -87,6 +93,16 @@ public class DateUtilTest
     {
         Calendar calendar = null;
         assertThat(DateUtils.formatDate(calendar), is("null"));
+    }
+
+    /**
+     * Test successful ZonedDateTime formatting to common string format
+     */
+    @Test
+    public void testFormatZonedDateTimeWithValidDate()
+    {
+        ZonedDateTime date = ZonedDateTime.of(2019, 6, 12, 18, 15, 1, 123000000, ZoneId.of("UTC"));
+        assertThat(DateUtils.formatDate(date), is("2019-06-12 18:15:01"));
     }
 
     /**

@@ -45,7 +45,7 @@ public class AgentConfigurationTest
         assertThat(configuration.getName(), is(TestAgentWithNoNameAndTypeTimerAndAgentTask.class.getSimpleName()));
         assertThat(configuration.getType(), is(TIMER));
         assertThat(configuration.getAgentClass(), is(TestAgentWithNoNameAndTypeTimerAndAgentTask.class.getCanonicalName()));
-        assertThat(configuration.getFrequency(), is(AgentConfiguration.DEFAULT_FREQUENCY));
+        assertThat(configuration.getFrequency(), is(AgentConfiguration.DEFAULT_FREQUENCY_TIMER));
         assertThat(configuration.getStopTimeoutInSeconds(), is(AgentConfiguration.DEFAULT_STOP_TIMEOUT_IN_SECONDS));
         assertThat(configuration.isAutomaticallyStarted(), is(AgentConfiguration.DEFAULT_AUTOMATICALLY_STARTED));
         assertThat(configuration.isHidden(), is(AgentConfiguration.DEFAULT_HIDDEN));
@@ -60,7 +60,7 @@ public class AgentConfigurationTest
         assertThat(configuration.getName(), is(NAME1));
         assertThat(configuration.getType(), is(TIMER));
         assertThat(configuration.getAgentClass(), is(TestAgentWithCustomNameAndType.class.getCanonicalName()));
-        assertThat(configuration.getFrequency(), is(AgentConfiguration.DEFAULT_FREQUENCY));
+        assertThat(configuration.getFrequency(), is(AgentConfiguration.DEFAULT_FREQUENCY_TIMER));
         assertThat(configuration.getStopTimeoutInSeconds(), is(AgentConfiguration.DEFAULT_STOP_TIMEOUT_IN_SECONDS));
         assertThat(configuration.isAutomaticallyStarted(), is(AgentConfiguration.DEFAULT_AUTOMATICALLY_STARTED));
         assertThat(configuration.isHidden(), is(AgentConfiguration.DEFAULT_HIDDEN));

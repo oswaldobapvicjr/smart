@@ -18,7 +18,12 @@ import net.obvj.smart.util.Exceptions;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AgentConfiguration
 {
-    protected static final String DEFAULT_FREQUENCY = "1";
+    protected static final String TYPE_TIMER = "timer";
+    protected static final String TYPE_CRON = "cron";
+
+    protected static final String DEFAULT_FREQUENCY_TIMER = "1";
+    protected static final String DEFAULT_FREQUENCY_CRON = "* * * * *";
+
     protected static final int DEFAULT_STOP_TIMEOUT_IN_SECONDS = Integer.MAX_VALUE;
     protected static final boolean DEFAULT_AUTOMATICALLY_STARTED = true;
     protected static final boolean DEFAULT_HIDDEN = false;
@@ -33,7 +38,7 @@ public class AgentConfiguration
     private String agentClass;
 
     @XmlElement(name = "frequency")
-    private String frequency = DEFAULT_FREQUENCY;
+    private String frequency = DEFAULT_FREQUENCY_TIMER;
 
     @XmlElement(name = "started")
     private boolean automaticallyStarted = DEFAULT_AUTOMATICALLY_STARTED;
@@ -110,14 +115,14 @@ public class AgentConfiguration
         private Integer stopTimeoutInSeconds = Integer.valueOf(DEFAULT_STOP_TIMEOUT_IN_SECONDS);
         private Boolean hidden = Boolean.valueOf(DEFAULT_HIDDEN);
 
-        public Builder(String name)
-        {
-            this.name = name;
-        }
-
-        public Builder type(String type)
+        public Builder(String type)
         {
             this.type = type;
+        }
+
+        public Builder name(String name)
+        {
+            this.name = name;
             return this;
         }
 
@@ -156,10 +161,25 @@ public class AgentConfiguration
             if (StringUtils.isEmpty(name)) throw new IllegalStateException("name cannot be null");
             if (StringUtils.isEmpty(type)) throw new AgentConfigurationException("type cannot be null");
             if (StringUtils.isEmpty(agentClass)) throw new AgentConfigurationException("agentClass cannot be null");
-            if (StringUtils.isEmpty(frequency)) frequency = DEFAULT_FREQUENCY;
+            if (StringUtils.isEmpty(frequency)) frequency = getDefaultFrequency();
             return new AgentConfiguration(this);
         }
+
+        private String getDefaultFrequency()
+        {
+            if (TYPE_TIMER.equalsIgnoreCase(type))
+            {
+                return DEFAULT_FREQUENCY_TIMER;
+            }
+            if (TYPE_CRON.equalsIgnoreCase(type))
+            {
+                return DEFAULT_FREQUENCY_CRON;
+            }
+            return StringUtils.EMPTY;
+        }
+
     }
+
 
     public static AgentConfiguration fromAnnotatedClass(Class<?> clazz)
     {
@@ -179,7 +199,7 @@ public class AgentConfiguration
         boolean automaticallyStarted = annotation.automaticallyStarted();
         boolean hidden = annotation.hidden();
 
-        Builder builder = new Builder(name).type(type).agentClass(agentClass).frequency(frequency)
+        Builder builder = new Builder(type).name(name).agentClass(agentClass).frequency(frequency)
                 .stopTimeoutInSeconds(stopTimeoutInSeconds).automaticallyStarted(automaticallyStarted).hidden(hidden);
         return builder.build();
     }

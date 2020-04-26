@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import net.obvj.smart.conf.annotation.Agent;
 import net.obvj.smart.conf.annotation.AgentTask;
+import net.obvj.smart.conf.annotation.Type;
 
 /**
  * A dummy agent that executes for 5 seconds for testing purposes
@@ -12,7 +13,7 @@ import net.obvj.smart.conf.annotation.AgentTask;
  * @author oswaldo.bapvic.jr
  * @since 1.0
  */
-@Agent
+@Agent(type = Type.CRON)
 public class DummyAgent
 {
     private static final Logger LOG = Logger.getLogger("smart-server");
@@ -20,18 +21,7 @@ public class DummyAgent
     @AgentTask
     public void runTask()
     {
-        for (int i = 5; i >= 0; i--)
-        {
-            try
-            {
-                LOG.log(Level.INFO, "DummyAgent says {0}", i);
-                Thread.sleep(1000);
-            }
-            catch (InterruptedException e)
-            {
-                Thread.currentThread().interrupt();
-            }
-        }
+        LOG.log(Level.INFO, "DummyAgent says: \"Hello!\"");
     }
 
 }
