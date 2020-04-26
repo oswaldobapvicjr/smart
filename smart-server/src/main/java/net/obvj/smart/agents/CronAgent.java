@@ -2,6 +2,7 @@ package net.obvj.smart.agents;
 
 import java.time.Duration;
 import java.time.ZonedDateTime;
+import java.util.NoSuchElementException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -72,7 +73,10 @@ public abstract class CronAgent extends Agent
     private void scheduleNextExecution()
     {
         ExecutionTime executionTime = ExecutionTime.forCron(cron);
-        Duration timeToNextExecution = executionTime.timeToNextExecution(ZonedDateTime.now()).orElseThrow();
+        Duration timeToNextExecution = executionTime.timeToNextExecution(ZonedDateTime.now())
+                .orElseThrow(() -> new NoSuchElementException(
+                        "No future execution for the Cron expression: \"" + cronExpression + "\""));
+
         schedule.schedule(this, timeToNextExecution.toMillis(), TimeUnit.MILLISECONDS);
 
         ZonedDateTime nextExecutionTime = ZonedDateTime.now().plus(timeToNextExecution);
