@@ -2,7 +2,7 @@ package net.obvj.smart.agents;
 
 import java.time.Duration;
 import java.time.ZonedDateTime;
-import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -40,6 +40,8 @@ public abstract class CronAgent extends Agent
     private ScheduledExecutorService schedule;
     private Cron cron;
 
+    private ZonedDateTime nextExecutionDate;
+
     /**
      * Builds a {@link CronAgent} from the given configuration.
      *
@@ -70,18 +72,26 @@ public abstract class CronAgent extends Agent
         return cronParser.parse(expression);
     }
 
-    private void scheduleNextExecution()
+    protected void scheduleNextExecution()
     {
+        nextExecutionDate = null;
         ExecutionTime executionTime = ExecutionTime.forCron(cron);
-        Duration timeToNextExecution = executionTime.timeToNextExecution(ZonedDateTime.now())
-                .orElseThrow(() -> new NoSuchElementException(
-                        "No future execution for the Cron expression: \"" + cronExpression + "\""));
+        Optional<Duration> optional = executionTime.timeToNextExecution(DateUtils.now());
 
-        schedule.schedule(this, timeToNextExecution.toMillis(), TimeUnit.MILLISECONDS);
+        if (optional.isPresent())
+        {
+            Duration timeToNextExecution = optional.get();
+            schedule.schedule(this, timeToNextExecution.toMillis(), TimeUnit.MILLISECONDS);
 
-        ZonedDateTime nextExecutionTime = ZonedDateTime.now().plus(timeToNextExecution);
-        LOG.log(Level.INFO, "Next execution for {0} will be at: {1}",
-                new Object[] { getName(), DateUtils.formatDate(nextExecutionTime) });
+            nextExecutionDate = DateUtils.now().plus(timeToNextExecution);
+            LOG.log(Level.INFO, "Next execution for {0} will be at: {1}",
+                    new Object[] { getName(), DateUtils.formatDate(nextExecutionDate) });
+        }
+        else
+        {
+            LOG.log(Level.WARNING, "No future execution for the Cron expression: \"{0}\"", cronExpression);
+        }
+
     }
 
     /**
@@ -98,6 +108,7 @@ public abstract class CronAgent extends Agent
     public final void onStop()
     {
         schedule.shutdown();
+        nextExecutionDate = null;
     }
 
     @Override
@@ -118,8 +129,9 @@ public abstract class CronAgent extends Agent
         ToStringBuilder builder = new ToStringBuilder(this, ToStringStyle.JSON_STYLE);
         builder.append("name", getName()).append("type", getType()).append("status", getState())
                 .append("startDate", (DateUtils.formatDate(startDate)))
-                .append("lastRunDate", (DateUtils.formatDate(lastRunDate))).append("cronExpression", cronExpression)
-                .append("cronDescription", cronDescription);
+                .append("lastExecutionDate", (DateUtils.formatDate(lastRunDate)))
+                .append("cronExpression", cronExpression).append("cronDescription", cronDescription)
+                .append("nextExecutionDate", DateUtils.formatDate(nextExecutionDate));
         return builder.build();
     }
 
@@ -131,4 +143,16 @@ public abstract class CronAgent extends Agent
         return cronExpression;
     }
 
+    /**
+     * @return the next execution date
+     */
+    public ZonedDateTime getNextExecutionDate()
+    {
+        return nextExecutionDate;
+    }
+
+    protected ScheduledExecutorService getExecutorService()
+    {
+        return schedule;
+    }
 }

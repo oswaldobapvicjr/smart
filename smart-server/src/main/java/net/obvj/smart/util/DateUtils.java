@@ -24,6 +24,7 @@ public class DateUtils
 
     /**
      * @return current date and time.
+     * @since 2.0
      */
     public static ZonedDateTime now()
     {
@@ -54,10 +55,11 @@ public class DateUtils
      *
      * @param zonedDateTime the object to be formatted
      * @return a formatted string
+     * @since 2.0
      */
     public static String formatDate(ZonedDateTime zonedDateTime)
     {
-        return formatDate(Date.from(zonedDateTime.toInstant()));
+        return zonedDateTime != null ? formatDate(Date.from(zonedDateTime.toInstant())) : "null";
     }
 
     /**
