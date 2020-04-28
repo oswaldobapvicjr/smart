@@ -90,7 +90,7 @@ public class CommandWorkerTest
     public void testHandleLine()
     {
         PowerMockito.mockStatic(DateUtils.class);
-        PowerMockito.when(DateUtils.now()).thenReturn(STR_TEST_DATE);
+        PowerMockito.when(DateUtils.formattedCurrentDate()).thenReturn(STR_TEST_DATE);
 
         StringWriter out = new StringWriter();
         CommandWorker worker = newCommandWorker(null, out);

@@ -240,7 +240,7 @@ public enum Command
         @Override
         public void execute(String[] parameters, PrintWriter out)
         {
-            out.println(DateUtils.now());
+            out.println(DateUtils.formattedCurrentDate());
         }
     },
 

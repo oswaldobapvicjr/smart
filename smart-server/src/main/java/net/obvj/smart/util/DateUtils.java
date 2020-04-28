@@ -23,11 +23,19 @@ public class DateUtils
     }
 
     /**
+     * @return current date and time.
+     */
+    public static ZonedDateTime now()
+    {
+        return ZonedDateTime.now();
+    }
+
+    /**
      * @return current date and time, formatted
      */
-    public static String now()
+    public static String formattedCurrentDate()
     {
-        return formatDate(new Date());
+        return formatDate(now());
     }
 
     /**

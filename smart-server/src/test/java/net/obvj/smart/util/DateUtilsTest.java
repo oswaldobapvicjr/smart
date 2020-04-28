@@ -1,6 +1,6 @@
 package net.obvj.smart.util;
 
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 
 import java.time.ZoneId;
@@ -53,6 +53,12 @@ public class DateUtilsTest
     public void testNoInstancesAllowed() throws Exception
     {
         TestUtils.assertNoInstancesAllowed(DateUtils.class, IllegalStateException.class, "Utility class");
+    }
+
+    @Test
+    public void testNow()
+    {
+        assertThat(DateUtils.now(), isA(ZonedDateTime.class));
     }
 
     /**

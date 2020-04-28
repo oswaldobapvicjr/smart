@@ -221,7 +221,7 @@ public class CommandTest
     @Test
     public void testDate()
     {
-        when(DateUtils.now()).thenReturn("date1");
+        when(DateUtils.formattedCurrentDate()).thenReturn("date1");
         Command.DATE.execute(null, new PrintWriter(out));
         assertOutputEquals("date1");
     }

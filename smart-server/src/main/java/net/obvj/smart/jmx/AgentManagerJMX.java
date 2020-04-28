@@ -61,7 +61,7 @@ public class AgentManagerJMX implements AgentManagerJMXMBean
 
     public String getServerDate()
     {
-        return DateUtils.now();
+        return DateUtils.formattedCurrentDate();
     }
 
     public long getServerUptime()

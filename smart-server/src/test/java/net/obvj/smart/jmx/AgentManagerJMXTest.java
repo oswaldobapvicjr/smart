@@ -129,7 +129,7 @@ public class AgentManagerJMXTest
     @Test
     public void testGetServerDate()
     {
-        when(DateUtils.now()).thenReturn("date1");
+        when(DateUtils.formattedCurrentDate()).thenReturn("date1");
         assertEquals("date1", jmx.getServerDate());
     }
 
