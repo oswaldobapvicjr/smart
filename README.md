@@ -16,16 +16,17 @@ A lightweight runtime engine for Java agents.
 
 ## Agents overview
 
-Any class annotated with **@Agent**, and containing a main method annotated with **@AgentTask**, can be managed by the service, which looks up for such classes by scannning specific packages that are configurable via the `smart.properties` file.
+Any class annotated with **@Agent**, and declaring a main method annotated with **@AgentTask**, can be managed by the service, which looks up for such classes by scanning specific packages that are configurable via the `smart.properties` file.
 
-An agent can be o type **Timer** or **Cron**, both designed to run particular tasks periodically in the JVM. Agents can be started automatically, at server startup, or manuaually, via the management console, which also allows manual execution, status query and shutdown.
+An agent can be o type **Timer** or **Cron**, both designed to run particular tasks periodically in the JVM. Agents can be started automatically, at server startup, or manually, via the management console, which also allows manual execution, status query, and shutdown.
 
 ![Timer agents state machine](resources/state_chart_timer_agents.svg)
 
 ### Timer agents
 
 A Timer agent can be executed periodically, in a fixed run frequency, which must be in seconds, minutes, or hours.
-For example, a Timer agent to be execured every 30 seconds could be configured in either of the following ways:
+
+For example, a Timer agent to be executed every 30 seconds could be configured in either of the following ways:
 
 - **Using annotation**:
 
@@ -48,7 +49,8 @@ For example, a Timer agent to be execured every 30 seconds could be configured i
 
 ### Cron agents
 
-A Cron agent can be executed at specific dates and times, comparable to the Cron Service available in Unix/Linux systems.
+A Cron agent can be executed at specific dates and times, comparable to the Cron Service available in Unix/Linux systems. Although they are more robust in terms of configuration flexibility, the interval between executions cannot be lower than 1 minute.
+
 For example, the following agent is configured to execute every weekday at 2:00 AM:
 
 - **Using annotation**:
