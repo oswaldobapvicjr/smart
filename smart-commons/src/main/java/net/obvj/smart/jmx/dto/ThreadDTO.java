@@ -4,8 +4,8 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * An object for common thread metadata interchange with client applications
- * 
+ * An object for common thread metadata interchange with client applications.
+ *
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
@@ -17,6 +17,13 @@ public class ThreadDTO implements Serializable
     private final String name;
     private final String state;
 
+    /**
+     * Builds this ThreadDTO with all fields set.
+     *
+     * @param id    the thread id to set
+     * @param name  the thread name to set
+     * @param state the thread state to set
+     */
     public ThreadDTO(long id, String name, String state)
     {
         this.id = id;
@@ -24,27 +31,45 @@ public class ThreadDTO implements Serializable
         this.state = state;
     }
 
+    /**
+     * @return the thread ID
+     */
     public long getId()
     {
         return id;
     }
 
+    /**
+     * @return the thread name
+     */
     public String getName()
     {
         return name;
     }
 
+    /**
+     * @return the thread state
+     */
     public String getState()
     {
         return state;
     }
 
+    /**
+     * Returns a hash code value for the object, to support hash tables.
+     *
+     * @return the hash code
+     * @see Object#hashCode()
+     */
     @Override
     public int hashCode()
     {
         return Objects.hash(id, name, state);
     }
 
+    /**
+     * @see Object#equals(Object)
+     */
     @Override
     public boolean equals(Object obj)
     {

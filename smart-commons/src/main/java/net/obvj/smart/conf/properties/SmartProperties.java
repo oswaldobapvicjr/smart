@@ -68,6 +68,9 @@ public class SmartProperties
 
     protected Properties properties = new Properties();
 
+    /**
+     * Builds this Properties container with the properties from {@code smart.properties}
+     */
     public SmartProperties()
     {
         this("smart.properties");
@@ -110,16 +113,45 @@ public class SmartProperties
         }
     }
 
+    /**
+     * Searches for the property with the specified key. If the key is not found in the map
+     * loaded from the properties file, the default value for the key is returned.
+     *
+     * @param key the property key to be fetched
+     * @return the value associated with the key, as string
+     */
     public String getProperty(String key)
     {
         return properties.getProperty(key, defaults.getProperty(key));
     }
 
+    /**
+     * Searches for the property with the specified key and returns the result as an
+     * {@code int}. value.
+     *
+     * If the key is not found in the map loaded from the properties file, the default value
+     * for the key is returned.
+     *
+     * @param key the property key to be fetched
+     * @return the value associated with the key, as {@code int}
+     * @throws NumberFormatException if the value associated with the given key does not
+     *                               contain a parsable integer.
+     */
     public int getIntProperty(String key)
     {
         return Integer.parseInt(getProperty(key));
     }
 
+    /**
+     * Searches for the property with the specified key and returns the result as a
+     * {@code boolean}.
+     *
+     * If the key is not found in the map loaded from the properties file, the default value
+     * for the key is returned.
+     *
+     * @param key the property key to be fetched
+     * @return the value associated with the key, as {@code boolean}
+     */
     public boolean getBooleanProperty(String key)
     {
         return Boolean.parseBoolean(getProperty(key));

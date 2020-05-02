@@ -12,7 +12,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
 /**
- * Utility methods for the management console
+ * Utility methods for the management console.
  *
  * @author oswaldo.bapvic.jr
  * @since 2.0
@@ -28,7 +28,7 @@ public class ConsoleUtils
     }
 
     /**
-     * Read all lines from the custom header file.
+     * Reads all lines from the custom header file.
      *
      * @return the lines from the file as a {@link List}
      */
@@ -39,7 +39,7 @@ public class ConsoleUtils
     }
 
     /**
-     * Read all lines from an path in the class path, decoded as UTF-8.
+     * Reads all lines from an path in the class path, decoded as UTF-8.
      *
      * @param path the absolute path within the class path
      * @return the lines from the file as a {@link List}

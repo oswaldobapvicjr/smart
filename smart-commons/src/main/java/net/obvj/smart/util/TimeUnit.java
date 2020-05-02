@@ -5,8 +5,8 @@ import java.util.Calendar;
 import java.util.List;
 
 /**
- * Supported time units for timer agents maintenance.
- * 
+ * Enumerates the supported time units for Timer agents execution.
+ *
  * @author oswaldo.bapvic.jr
  * @since 1.0
  */
@@ -16,8 +16,7 @@ public enum TimeUnit
             "second(s)"),
     MINUTES(java.util.concurrent.TimeUnit.MINUTES, Calendar.MINUTE, Arrays.asList("minute", "minutes", "m"),
             "minute(s)"),
-    HOURS(java.util.concurrent.TimeUnit.HOURS, Calendar.HOUR_OF_DAY, Arrays.asList("hour", "hours", "h"),
-            "hour(s)");
+    HOURS(java.util.concurrent.TimeUnit.HOURS, Calendar.HOUR_OF_DAY, Arrays.asList("hour", "hours", "h"), "hour(s)");
 
     public static final TimeUnit DEFAULT = TimeUnit.MINUTES;
 
@@ -36,8 +35,17 @@ public enum TimeUnit
     }
 
     /**
-     * @param identifier a string that can be used to retrieve a TimeUnit
-     * @return the TimeUnit identified by the given string
+     * Returns a {@link TimeUnit} that is identifiable by the given string.
+     * <p>
+     * For example, all of the following strings match to {@link TimeUnit#SECONDS}:
+     * <ul>
+     * <li>second, SECOND</li>
+     * <li>seconds, SECONDS</li>
+     * <li>s, S</li>
+     * </ul>
+     *
+     * @param identifier a string that identified a Time Unit
+     * @return a {@link TimeUnit}, always
      * @throws IllegalArgumentException if no time unit matches the given identifier
      */
     public static TimeUnit findByIdentifier(String identifier)
@@ -54,13 +62,22 @@ public enum TimeUnit
     }
 
     /**
-     * @return The {@link Calendar} constant associated with this time unit
+     * Returns the {@link Calendar} constant associated with this Time Unit.
+     *
+     * @return the {@link Calendar} constant
      */
     public int getCalendarConstant()
     {
         return calendarConstant;
     }
 
+    /**
+     * Returns a human-friendly string representation of this {@link TimeInterval}, for
+     * example: {@code "1 MINUTE"}.
+     *
+     * @return the string representation of this object
+     * @see Object#toString()
+     */
     @Override
     public String toString()
     {
@@ -69,7 +86,7 @@ public enum TimeUnit
 
     /**
      * Converts the given time duration to milliseconds.
-     * 
+     *
      * @param amount the time duration to be converted
      * @return the converted amount
      * @since 2.0
@@ -80,9 +97,10 @@ public enum TimeUnit
     }
 
     /**
-     * Converts the given time duration in the given unit to this unit.
-     * 
-     * @param amount the time duration to be converted
+     * Converts the given time duration from a source Time Unit to this Time Unit.
+     *
+     * @param amount         the time duration amount to be converted
+     * @param sourceTimeUnit the time unit of the {@code duration} parameter
      * @return the converted amount
      * @since 2.0
      */

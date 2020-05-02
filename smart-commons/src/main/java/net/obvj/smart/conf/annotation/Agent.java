@@ -6,9 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Identify the annotated class as an Agent.
- * <p>
- * The annotated class is the implementation class of the Agent.
+ * Identifies the annotated class as an Agent.
  *
  * @author oswaldo.bapvic.jr
  * @since 2.0

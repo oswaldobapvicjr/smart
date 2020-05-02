@@ -5,7 +5,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * An object that represents a time interval.
+ * An object that represents a time interval, which consists of a duration and a
+ * {@link TimeUnit}, with advanced text parsing logic.
  *
  * @author oswaldo.bapvic.jr
  * @since 2.0
@@ -18,17 +19,42 @@ public class TimeInterval
     private final int duration;
     private final TimeUnit timeUnit;
 
+    /**
+     * Builds a TimeInterval with a given duration and {@link TimeUnit}.
+     *
+     * @param duration the duration to set
+     * @param timeUnit the {@link TimeUnit} to set
+     */
     public TimeInterval(int duration, TimeUnit timeUnit)
     {
         this.duration = duration;
         this.timeUnit = timeUnit;
     }
 
+    /**
+     * Builds a new TimeInterval with the same attributes from a preset object.
+     *
+     * @param source the source object to be copied
+     */
     public TimeInterval(TimeInterval source)
     {
         this(source.getDuration(), source.getTimeUnit());
     }
 
+    /**
+     * Builds a TimerInterval by parsing the given string.
+     * <p>
+     * For example: all of the following formats are recognized (case ignored):
+     * <ul>
+     * <li>"1 second", or "1s"</li>
+     * <li>"60 SECONDS", or "60s"</li>
+     * <li>"25 minutes", or "25M"</li>
+     * <li>"1 HOUR", or "1h"</li>
+     * </ul>
+     *
+     * @param input the string to be parsed
+     * @return a TimerInteral from the given input
+     */
     public static TimeInterval of(String input)
     {
         int digits = extractFirstDigitGroupFromString(input);
@@ -79,7 +105,7 @@ public class TimeInterval
     }
 
     /**
-     * Returns the duration of this {@link TimeUnit}
+     * Returns the duration of this {@link TimeUnit}.
      *
      * @return the duration
      */
@@ -101,25 +127,41 @@ public class TimeInterval
     /**
      * Returns this time interval's duration, in milliseconds.
      *
-     * @return the interval duratioin, in milliseconds
+     * @return the interval duration, in milliseconds
      */
     public long toMillis()
     {
         return timeUnit.toMillis(duration);
     }
 
+    /**
+     * Returns a human-friendly string representation of this {@link TimeInterval}, for
+     * example: {@code "1 MINUTE"}.
+     *
+     * @return the string representation of this object
+     * @see Object#toString()
+     */
     @Override
     public String toString()
     {
         return new StringBuilder().append(duration).append(" ").append(timeUnit).toString();
     }
 
+    /**
+     * Returns a hash code value for the object, to support hash tables.
+     *
+     * @return the hash code
+     * @see Object#hashCode()
+     */
     @Override
     public int hashCode()
     {
         return Objects.hash(duration, timeUnit);
     }
 
+    /**
+     * @see Object#equals(Object)
+     */
     @Override
     public boolean equals(Object obj)
     {
