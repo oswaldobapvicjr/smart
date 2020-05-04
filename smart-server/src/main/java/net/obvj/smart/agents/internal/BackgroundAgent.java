@@ -17,12 +17,12 @@ import net.obvj.smart.conf.annotation.Type;
 @Agent(type = Type.TIMER, hidden = true)
 public class BackgroundAgent
 {
-    private static final Logger LOG = LoggerFactory.getLogger("smart-server");
+    private Logger log = LoggerFactory.getLogger("smart-server");
 
     @AgentTask
     public void keepAlive()
     {
-        LOG.debug("[BackgroundAgent] Keep alive");
+        log.debug("[BackgroundAgent] Keep alive");
     }
 
 }

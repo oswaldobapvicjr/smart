@@ -6,14 +6,12 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.slf4j.Logger;
 
 import net.obvj.smart.agents.Agent;
 import net.obvj.smart.agents.AgentFactory;
@@ -66,7 +64,7 @@ public class BackgroundAgentTest
     public void testKeepAlive()
     {
         agent.keepAlive();
-        verify(log).log(Level.INFO, "[BackgroundAgent] Keep alive");
+        verify(log).debug("[BackgroundAgent] Keep alive");
     }
 
 }
