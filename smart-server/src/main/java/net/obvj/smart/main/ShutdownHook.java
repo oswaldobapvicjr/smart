@@ -1,40 +1,42 @@
 package net.obvj.smart.main;
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.obvj.smart.agents.Agent;
 
 /**
  * A Runnable object that may be executed before JVM termination for graceful system
  * shutdown. The logic herein is ignored if JVM receives a kill -9 (FORCE) signal.
- * 
+ *
  * @author oswaldo.bapvic.jr
  * @since 1.0
  */
 public class ShutdownHook extends SmartServerSupport implements Runnable
 {
-    private final Logger logger = Logger.getLogger("smart-server");
+    private static final Logger LOG = LoggerFactory.getLogger("smart-server");
 
+    @Override
     public void run()
     {
-        logger.info("Starting shutdown sequence...");
+        LOG.info("Starting shutdown sequence...");
         stopAllAgents();
         closeClassicManagementConsole();
-        logger.info("Shutdown sequence complete.");
+        LOG.info("Shutdown sequence complete.");
     }
 
     private void stopAllAgents()
     {
-        logger.info("Stopping agents...");
+        LOG.info("Stopping agents...");
         for (Agent agent : agentManager.getAgents())
         {
             try
             {
                 agent.stop();
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                logger.severe(agent.getName() + ": " + ex.getMessage());
+                LOG.error("Unable to gracefully stop {} due to an exception.", agent.getName(), exception);
             }
         }
     }

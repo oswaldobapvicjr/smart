@@ -4,13 +4,14 @@ import java.io.IOException;
 import java.net.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import net.obvj.smart.conf.properties.SmartProperties;
+import net.obvj.smart.util.Exceptions;
 
 /**
  * A command-line user interface application for agents management at runtime. This
@@ -22,6 +23,8 @@ import net.obvj.smart.conf.properties.SmartProperties;
 @Component
 public class ManagementConsole implements Runnable
 {
+    private static final Logger LOG = LoggerFactory.getLogger("smart-server");
+
     @Autowired
     private SmartProperties smartProperties;
 
@@ -29,7 +32,6 @@ public class ManagementConsole implements Runnable
     private Thread serverThread;
     private ExecutorService sessionExecutor;
     private ServerSocket server;
-    private final Logger log = Logger.getLogger("smart-server");
 
     public ManagementConsole()
     {
@@ -56,21 +58,21 @@ public class ManagementConsole implements Runnable
             {
                 Socket socket = server.accept();
                 socket.setSoTimeout(getSessionTimeoutSeconds() * 1000);
-                log.info("Connection received from " + socket.getInetAddress().getHostName());
+                LOG.info("Connection received from {}", socket.getInetAddress().getHostName());
                 sessionExecutor.submit(new CommandWorker(socket));
             }
             catch (SocketTimeoutException e)
             {
-                log.info("Connection timeout");
+                LOG.info("Connection timeout");
             }
-            catch (SocketException e)
+            catch (SocketException exception)
             {
                 if (server.isClosed()) return;
-                log.warning(e.getMessage());
+                LOG.warn(exception.getMessage());
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                log.severe(e.getMessage());
+                LOG.error(exception.getMessage());
             }
         }
     }
@@ -85,11 +87,11 @@ public class ManagementConsole implements Runnable
             started = true;
             server = new ServerSocket(getPort(), 0, InetAddress.getByAddress(new byte[] { 127, 0, 0, 1 }));
             serverThread.start();
-            log.info("Management Console listening on port " + server.getLocalPort());
+            LOG.info("Management Console listening on port {}", server.getLocalPort());
         }
-        catch (IOException e)
+        catch (IOException exception)
         {
-            throw new IllegalStateException(String.format("Unable to bind to system port %s", getPort()), e);
+            Exceptions.illegalState(exception, "Unable to bind to system port %s", getPort());
         }
     }
 
@@ -106,9 +108,9 @@ public class ManagementConsole implements Runnable
             {
                 server.close();
             }
-            catch (IOException e)
+            catch (IOException exception)
             {
-                log.log(Level.SEVERE, "Error closing server socket", e);
+                LOG.error("Error closing server socket", exception);
             }
         }
     }

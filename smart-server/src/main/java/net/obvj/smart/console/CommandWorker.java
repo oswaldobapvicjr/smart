@@ -7,8 +7,9 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.obvj.smart.conf.properties.SmartProperties;
 import net.obvj.smart.util.ApplicationContextFacade;
@@ -32,11 +33,11 @@ public class CommandWorker implements Runnable
     protected static final List<String> HINTS = Arrays.asList(" Type 'help' for a list of available commands.",
             " Type 'exit' to quit the console.");
 
+    private static final Logger LOG = LoggerFactory.getLogger("smart-server");
+
     private Socket socket;
     private BufferedReader in;
     private PrintWriter out;
-
-    private final Logger log = Logger.getLogger("smart-server");
 
     public CommandWorker(Socket socket) throws IOException
     {
@@ -73,7 +74,7 @@ public class CommandWorker implements Runnable
 
                 if (!"".equals(commandLine))
                 {
-                    log.log(Level.INFO, "Command received: {0}", commandLine);
+                    LOG.info("Command received: {}", commandLine);
 
                     String[] arguments = commandLine.split(" ");
                     String command = arguments[0];
@@ -88,16 +89,16 @@ public class CommandWorker implements Runnable
         }
         catch (SocketTimeoutException e)
         {
-            log.info(MSG_SESSION_CLOSED_DUE_TO_INACTIVITY);
+            LOG.info(MSG_SESSION_CLOSED_DUE_TO_INACTIVITY);
             sendLine(LINE_SEPARATOR + MSG_SESSION_CLOSED_DUE_TO_INACTIVITY);
         }
-        catch (Exception e)
+        catch (Exception exception)
         {
-            log.severe(e.getClass().getName() + ": " + e.getMessage());
+            LOG.error("{} : {}", exception.getClass().getName(), exception.getMessage(), exception);
         }
         finally
         {
-            log.info(MSG_CLOSING_CONSOLE_SESSION);
+            LOG.info(MSG_CLOSING_CONSOLE_SESSION);
             sendLine(MSG_CLOSING_CONSOLE_SESSION);
             if (socket != null)
             {
@@ -105,9 +106,9 @@ public class CommandWorker implements Runnable
                 {
                     socket.close();
                 }
-                catch (IOException e)
+                catch (IOException exception)
                 {
-                    log.log(Level.SEVERE, "Error closing client socket", e);
+                    LOG.error("Error closing client socket", exception);
                 }
             }
         }
@@ -120,9 +121,9 @@ public class CommandWorker implements Runnable
             Command command = getByNameOrAlias(arguments[0]);
             command.execute(arguments, out);
         }
-        catch (Exception e)
+        catch (Exception exception)
         {
-            out.println(e.getMessage());
+            out.println(exception.getMessage());
         }
     }
 

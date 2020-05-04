@@ -1,7 +1,6 @@
 package net.obvj.smart.main;
 
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 
 import net.obvj.performetrics.runnable.WallClockTimeRunnableOperation;
 import net.obvj.smart.conf.AgentConfigurationException;
@@ -37,7 +36,7 @@ public class Main extends SmartServerSupport
     {
         WallClockTimeRunnableOperation operation = new WallClockTimeRunnableOperation(() -> new Main().start());
         operation.run();
-        LOG.log(Level.INFO, "Server started in {0} milliseconds", operation.elapsedTime(TimeUnit.MILLISECONDS));
+        LOG.info("Server started in {} milliseconds", operation.elapsedTime(TimeUnit.MILLISECONDS));
     }
 
 }

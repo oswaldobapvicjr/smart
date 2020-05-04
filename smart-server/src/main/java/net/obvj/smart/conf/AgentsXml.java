@@ -6,8 +6,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
@@ -17,6 +15,8 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.xml.sax.SAXException;
 
@@ -26,14 +26,14 @@ import net.obvj.smart.util.Exceptions;
 
 /**
  * An object that maintains agent configuration data retrieved from the {@code agents.xml} file
- * 
+ *
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
 @Component
 public class AgentsXml
 {
-    private static final Logger LOG = Logger.getLogger("smart-server");
+    private static final Logger LOG = LoggerFactory.getLogger("smart-server");
 
     private static final String AGENTS_XML = "agents.xml";
     private static final String AGENTS_XSD = "agents.xsd";
@@ -41,12 +41,12 @@ public class AgentsXml
     private SmartConfiguration agents;
 
     private Map<String, AgentConfiguration> agentsByName = new HashMap<>();
-    
+
     public AgentsXml()
     {
         this(AGENTS_XML);
     }
-    
+
     protected AgentsXml(String fileName)
     {
         agents = loadAgentsXmlFile(fileName);
@@ -60,18 +60,17 @@ public class AgentsXml
         {
             if (stream == null)
             {
-                LOG.log(Level.WARNING, "\"{0}\" not found in the class path", fileName);
+                LOG.warn("\"{}\" not found in class path", fileName);
                 return new EmptySmartConfiguration();
             }
 
-            LOG.log(Level.INFO, "{0} found", fileName);
+            LOG.info("{} found", fileName);
             JAXBContext jaxb = JAXBContext.newInstance(SmartConfiguration.class);
             Unmarshaller unmarshaller = jaxb.createUnmarshaller();
             unmarshaller.setSchema(loadSchema());
             xmlAgents = (SmartConfiguration) unmarshaller.unmarshal(stream);
 
-            LOG.log(Level.INFO, "{0} agent candidate(s) found: {1}",
-                    new Object[] { xmlAgents.getAgents().size(), xmlAgents.getAgents() });
+            LOG.info("{} agent candidate(s) found: {}", xmlAgents.getAgents().size(), xmlAgents.getAgents());
         }
         catch (UnmarshalException e)
         {
@@ -88,7 +87,7 @@ public class AgentsXml
     {
         return loadSchemaFile(AGENTS_XSD);
     }
-    
+
     protected static Schema loadSchemaFile(String fileName)
     {
         try
@@ -96,12 +95,12 @@ public class AgentsXml
             SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
             return sf.newSchema(AgentsXml.class.getClassLoader().getResource(fileName));
         }
-        catch (SAXException e)
+        catch (SAXException exception)
         {
-            throw Exceptions.agentConfiguration(e, "Unable to parse schema file: %s", fileName);
+            throw Exceptions.agentConfiguration(exception, "Unable to parse schema file: %s", fileName);
         }
     }
-    
+
     private void loadAgentsMap()
     {
         agents.getAgents().forEach(this::registerAgentConfiguration);
@@ -116,7 +115,7 @@ public class AgentsXml
     {
         return agents != null ? agents.getAgents() : Collections.emptyList();
     }
-    
+
     public AgentConfiguration getAgentConfiguration(String name)
     {
         return agentsByName.get(name);

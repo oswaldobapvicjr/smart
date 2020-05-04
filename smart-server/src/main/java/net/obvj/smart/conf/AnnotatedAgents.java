@@ -1,10 +1,10 @@
 package net.obvj.smart.conf;
 
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +15,7 @@ import net.obvj.smart.util.AnnotationUtils;
 /**
  * A component that holds annotated {@link Agent} objects, loaded from configured base
  * package(s) in class path.
- * 
+ *
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
@@ -24,8 +24,8 @@ public class AnnotatedAgents
 {
     private static final List<String> INTERNAL_AGENTS_PACKAGES = Arrays.asList("net.obvj.smart.agents.internal");
 
-    private final Logger log = Logger.getLogger("smart-server"); 
-    
+    private static final Logger LOG = LoggerFactory.getLogger("smart-server");
+
     private SmartProperties properties;
 
     private Map<String, AgentConfiguration> agentsByClass = new HashMap<>();
@@ -47,12 +47,12 @@ public class AnnotatedAgents
     {
         List<String> searchPackages = getSearchPackages();
 
-        log.log(Level.INFO, "Scanning base packages: {0}", searchPackages);
+        LOG.info("Scanning base packages: {}", searchPackages);
         Set<String> classNames = new HashSet<>();
         searchPackages.forEach(searchPackage -> classNames
                 .addAll(AnnotationUtils.findClassesWithAnnotation(Agent.class, searchPackage)));
-        
-        log.log(Level.INFO, "{0} agent candidate(s) found: {1}", new Object[] { classNames.size(), classNames });
+
+        LOG.info("{} agent candidate(s) found: {}", classNames.size(), classNames);
         return classNames;
     }
 
@@ -73,9 +73,9 @@ public class AnnotatedAgents
         {
             return Class.forName(className);
         }
-        catch (ClassNotFoundException e)
+        catch (ClassNotFoundException exception)
         {
-            throw new AgentConfigurationException(e);
+            throw new AgentConfigurationException(exception);
         }
     }
 

@@ -4,9 +4,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +24,7 @@ import net.obvj.performetrics.Stopwatch;
 @Component
 public class AgentLoader
 {
-    private static final Logger LOG = Logger.getLogger("smart-server");
+    private static final Logger LOG = LoggerFactory.getLogger("smart-server");
 
     private AnnotatedAgents annotatedAgents;
     private AgentsXml xmlAgents;
@@ -56,8 +56,7 @@ public class AgentLoader
         this.agentsByClass = overlayedAgentsByClass;
 
         long elapsedTime = stopwatch.getCounter(Type.WALL_CLOCK_TIME).elapsedTime();
-        LOG.log(Level.INFO, "{0} agents(s) loaded in {1} nanoseconds",
-                new Object[] { agentsByClass.size(), elapsedTime });
+        LOG.info("{} agents(s) loaded in {} nanoseconds", agentsByClass.size(), elapsedTime);
     }
 
     /**

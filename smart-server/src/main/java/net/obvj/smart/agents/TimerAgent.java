@@ -3,7 +3,6 @@ package net.obvj.smart.agents;
 import java.util.Date;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.logging.Level;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -63,8 +62,11 @@ public abstract class TimerAgent extends Agent
         schedule.scheduleAtFixedRate(this, (start.getTime() - System.currentTimeMillis()), interval.toMillis(),
                 java.util.concurrent.TimeUnit.MILLISECONDS);
 
-        LOG.log(Level.INFO, "Agent {0} scheduled to run every {1}. First execution will be at: {2}",
-                new Object[] { getName(), interval, DateUtils.formatDate(start) });
+        if (LOG.isInfoEnabled())
+        {
+            LOG.info("Agent {} scheduled to run every {}. First execution will be at: {}", getName(), interval,
+                    DateUtils.formatDate(start));
+        }
     }
 
     /**

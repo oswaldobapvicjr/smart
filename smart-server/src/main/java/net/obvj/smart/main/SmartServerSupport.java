@@ -1,11 +1,12 @@
 package net.obvj.smart.main;
 
 import java.lang.management.ManagementFactory;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.management.JMException;
 import javax.management.ObjectName;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.obvj.smart.agents.Agent;
 import net.obvj.smart.conf.properties.SmartProperties;
@@ -28,7 +29,7 @@ public class SmartServerSupport
     protected AgentManager agentManager = ApplicationContextFacade.getBean(AgentManager.class);
     protected ManagementConsole managementConsole = ApplicationContextFacade.getBean(ManagementConsole.class);
 
-    protected static final Logger LOG = Logger.getLogger("smart-server");
+    protected static final Logger LOG = LoggerFactory.getLogger("smart-server");
 
     public boolean isClassicConsoleEnabled()
     {
@@ -44,7 +45,7 @@ public class SmartServerSupport
         }
         else
         {
-            LOG.fine("Classic Management Console not enabled");
+            LOG.info("Classic Management Console not enabled");
         }
     }
 
@@ -60,7 +61,7 @@ public class SmartServerSupport
 
     protected void startAutomaticAgents()
     {
-        LOG.log(Level.INFO, "Starting agents...");
+        LOG.info("Starting agents...");
         agentManager.getAgents().stream().filter(Agent::isAutomaticallyStarted).forEach(this::startAgent);
     }
 
@@ -77,7 +78,7 @@ public class SmartServerSupport
 
     protected void registerManagedBean(String objectName)
     {
-        LOG.log(Level.INFO, "Creating and registering Managed Bean {0}", objectName);
+        LOG.info("Creating and registering Managed Bean {}", objectName);
         AgentManagerJMXMBean mBean = new AgentManagerJMX();
 
         try

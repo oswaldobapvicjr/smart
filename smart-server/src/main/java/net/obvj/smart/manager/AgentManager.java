@@ -5,10 +5,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
 import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -32,12 +32,11 @@ import net.obvj.smart.util.Exceptions;
 @Component
 public class AgentManager
 {
-    private static final String MSG_ERROR_LOADING_AGENT = "Error loading agent: %s";
     private static final String MSG_INVALID_AGENT = "Invalid agent: %s";
     private static final String MSG_AGENT_STARTED_PLEASE_STOP_FIRST = "'%s' is started. Please stop the agent before this operation.";
     private static final String SYSTEM_LINE_SEPARATOR = System.getProperty("line.separator");
 
-    private static final Logger LOG = Logger.getLogger("smart-server");
+    private static final Logger LOG = LoggerFactory.getLogger("smart-server");
 
     private AgentLoader agentLoader;
 
@@ -61,8 +60,8 @@ public class AgentManager
         agentCandidates.stream().map(this::createAgent).filter(Optional::isPresent).map(Optional::get)
                 .forEach(this::addAgent);
 
-        LOG.log(Level.INFO, "{0}/{1} agent(s) loaded successfully: {2}",
-                new Object[] { agents.size(), agentCandidates.size(), agents.values() });
+        LOG.info("{}/{} agent(s) loaded successfully: {}",
+                agents.size(), agentCandidates.size(), agents.values());
     }
 
     /**
@@ -78,9 +77,9 @@ public class AgentManager
         {
             return Optional.of(AgentFactory.create(agentConfiguration));
         }
-        catch (Exception e)
+        catch (Exception exception)
         {
-            LOG.log(Level.SEVERE, String.format(MSG_ERROR_LOADING_AGENT, agentConfiguration.getName()), e);
+            LOG.error("Error loading agent: {}", agentConfiguration.getName(), exception);
             return Optional.empty();
         }
     }

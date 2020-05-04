@@ -6,10 +6,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +22,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class SmartProperties
 {
-    private static final Logger LOG = Logger.getLogger("smart-commons");
+    private static final Logger LOG = LoggerFactory.getLogger(SmartProperties.class);
 
     public static final String AGENT_SEARCH_PACKAGES = "agent.search.packages";
     protected static final String AGENT_SEARCH_PACKAGES_DEFAULT = "";
@@ -84,12 +83,12 @@ public class SmartProperties
         }
         catch (NullPointerException e)
         {
-            LOG.log(Level.WARNING, "{0} not found. Using default properties...", fileName);
+            LOG.warn("{} not found. Using default properties...", fileName);
         }
-        catch (IOException e)
+        catch (IOException exception)
         {
-            LOG.log(Level.WARNING, "Unable to read {0}. Using default properties. Error details: {1} ({2})",
-                    new String[] { fileName, e.getClass().getName(), e.getLocalizedMessage() });
+            LOG.warn("Unable to read {}. Using default properties. Error details: {} ({})", fileName,
+                    exception.getClass().getName(), exception.getLocalizedMessage());
         }
     }
 
@@ -103,12 +102,12 @@ public class SmartProperties
      */
     private static Properties readPropertiesFile(String fileName) throws IOException
     {
-        LOG.log(Level.FINE, "Searching for {0} file...", fileName);
+        LOG.debug("Searching for file: {} ...", fileName);
         try (final InputStream stream = SmartProperties.class.getClassLoader().getResourceAsStream(fileName))
         {
             Properties properties = new Properties();
             properties.load(stream);
-            LOG.log(Level.FINE, "{0} loaded successfully", fileName);
+            LOG.debug("{} loaded successfully", fileName);
             return properties;
         }
     }

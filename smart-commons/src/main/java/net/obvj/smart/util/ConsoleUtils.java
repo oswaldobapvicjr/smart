@@ -5,9 +5,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
@@ -19,7 +19,7 @@ import org.springframework.core.io.Resource;
  */
 public class ConsoleUtils
 {
-    private static final Logger LOG = Logger.getLogger("smart-commons");
+    private static final Logger LOG = LoggerFactory.getLogger(ConsoleUtils.class);
     private static final String HEADER_FILE = "header.txt";
 
     private ConsoleUtils()
@@ -34,7 +34,7 @@ public class ConsoleUtils
      */
     public static List<String> readCustomHeaderLines()
     {
-        LOG.fine("Searching custom header file...");
+        LOG.debug("Searching custom header file...");
         return readFileLines(HEADER_FILE);
     }
 
@@ -46,24 +46,24 @@ public class ConsoleUtils
      */
     public static List<String> readFileLines(String path)
     {
-        LOG.log(Level.FINE, "Searching file: {0}", path);
+        LOG.debug("Searching file: {} ...", path);
         try
         {
             Resource resource = new ClassPathResource(path);
             if (resource.exists())
             {
-                LOG.log(Level.FINE, "{0} found", path);
+                LOG.debug("{} found", path);
                 return Files.readAllLines(Paths.get(resource.getURI()));
             }
             else
             {
-                LOG.log(Level.WARNING, "Unable to find {0}", path);
+                LOG.warn("Unable to find {}", path);
             }
         }
-        catch (IOException e)
+        catch (IOException exception)
         {
-            LOG.log(Level.WARNING, "Error reading file: {0} ({1}: {2})",
-                    new String[] { path, e.getClass().getName(), e.getLocalizedMessage() });
+            LOG.warn("Error reading file: {} ({}: {})", path, exception.getClass().getName(),
+                    exception.getLocalizedMessage());
         }
         return Collections.emptyList();
     }

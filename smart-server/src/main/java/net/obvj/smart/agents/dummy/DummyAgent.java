@@ -1,7 +1,7 @@
 package net.obvj.smart.agents.dummy;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.obvj.smart.conf.annotation.Agent;
 import net.obvj.smart.conf.annotation.AgentTask;
@@ -16,12 +16,12 @@ import net.obvj.smart.conf.annotation.Type;
 @Agent(type = Type.CRON)
 public class DummyAgent
 {
-    private static final Logger LOG = Logger.getLogger("smart-server");
+    private static final Logger LOG = LoggerFactory.getLogger("smart-server");
 
     @AgentTask
     public void runTask()
     {
-        LOG.log(Level.INFO, "DummyAgent says: \"Hello!\"");
+        LOG.info("DummyAgent says: \"Hello!\"");
     }
 
 }

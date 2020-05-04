@@ -17,6 +17,7 @@ import net.obvj.smart.util.Exceptions;
  */
 public class AgentFactory
 {
+
     private static final Map<String, Function<AgentConfiguration, Agent>> IMPLEMENTATIONS = new HashMap<>();
 
     static

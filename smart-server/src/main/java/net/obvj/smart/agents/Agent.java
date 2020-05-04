@@ -2,8 +2,9 @@ package net.obvj.smart.agents;
 
 import java.util.Calendar;
 import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.obvj.smart.conf.AgentConfiguration;
 import net.obvj.smart.util.DateUtils;
@@ -22,7 +23,7 @@ public abstract class Agent implements Runnable
         SET, STARTED, RUNNING, STOPPED, ERROR;
     }
 
-    protected static final Logger LOG = Logger.getLogger("smart-server");
+    protected static final Logger LOG = LoggerFactory.getLogger("smart-server");
 
     protected static final String MSG_AGENT_ALREADY_STARTED = "Agent already started";
     protected static final String MSG_AGENT_ALREADY_STOPPED = "Agent already stopped";
@@ -173,7 +174,7 @@ public abstract class Agent implements Runnable
             {
                 throw new IllegalStateException(MSG_AGENT_ALREADY_STARTED);
             }
-            LOG.log(Level.INFO, "Starting agent: {0}", getName());
+            LOG.info("Starting agent: {}", getName());
             onStart();
             setState(State.STARTED);
             startDate = Calendar.getInstance();
@@ -209,9 +210,9 @@ public abstract class Agent implements Runnable
                     LOG.info("Agent task in execution. Waiting for its completion.");
                     Thread.sleep(sleepSeconds * 1000l);
                 }
-                catch (InterruptedException e)
+                catch (InterruptedException exception)
                 {
-                    LOG.log(Level.WARNING, "Thread was interrupted.", e);
+                    LOG.warn("Thread was interrupted.", exception);
                     // Restore interrupted state
                     Thread.currentThread().interrupt();
                 }
@@ -230,8 +231,7 @@ public abstract class Agent implements Runnable
     public abstract void onStop();
 
     /**
-     * The method called to execute the agent task automatically (either by the Executor
-     * Service or the Cron Selector).
+     * The method called by the system to execute the agent task automatically.
      */
     @Override
     public void run()
@@ -248,7 +248,7 @@ public abstract class Agent implements Runnable
             {
                 throw new IllegalStateException(MSG_AGENT_ALREADY_RUNNING);
             }
-            LOG.fine(MSG_AGENT_ALREADY_RUNNING);
+            LOG.info(MSG_AGENT_ALREADY_RUNNING);
         }
         else
         {
@@ -257,19 +257,19 @@ public abstract class Agent implements Runnable
                 State previousState = getState();
                 setState(State.RUNNING);
                 lastRunDate = Calendar.getInstance();
-                LOG.log(Level.FINEST, "Agent task started");
+                LOG.info("Agent task started");
                 try
                 {
                     runTask();
                 }
-                catch (Exception e)
+                catch (Exception exception)
                 {
-                    LOG.log(Level.SEVERE, "Agent task ended with an exception", e);
+                    LOG.error("Agent task ended with an exception", exception);
                 }
                 finally
                 {
                     setState(previousState);
-                    LOG.log(Level.FINEST, "Agent task complete.");
+                    LOG.info("Agent task complete");
                 }
             }
         }
