@@ -1,5 +1,6 @@
 package net.obvj.smart.console.enhanced.commands;
 
+import net.obvj.smart.jmx.AgentManagerJMXMBean;
 import net.obvj.smart.jmx.client.AgentManagerJMXClient;
 import net.obvj.smart.util.ClientApplicationContextFacade;
 import picocli.CommandLine.Command;
@@ -37,7 +38,8 @@ public class StartCommand implements Runnable
     {
         try
         {
-            client.getMBeanProxy().startAgent(agent);
+            AgentManagerJMXMBean mBeanProxy = client.getMBeanProxy();
+            mBeanProxy.startAgent(agent);
             parent.out.println("Success");
         }
         catch (IllegalStateException | IllegalArgumentException e)

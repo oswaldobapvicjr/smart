@@ -5,6 +5,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import net.obvj.smart.agents.dto.AgentDTO;
+import net.obvj.smart.jmx.AgentManagerJMXMBean;
 import net.obvj.smart.jmx.client.AgentManagerJMXClient;
 import net.obvj.smart.util.ClientApplicationContextFacade;
 import picocli.CommandLine.Command;
@@ -14,7 +15,7 @@ import picocli.CommandLine.ParentCommand;
 
 /**
  * A command that lists agents
- * 
+ *
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
@@ -33,13 +34,13 @@ public class AgentsCommand implements Runnable
 
     @Option(names = {"-h", "--help"}, usageHelp = true, description = "Display this help message.")
     boolean usageHelpRequested;
-    
+
     @Option(names = { "-a", "--all" }, description = "List all agents (including hidden ones).")
     private boolean all = false;
 
     @Option(names = { "-t", "--type" }, description = "List agents of a specific type.")
     private String type = "";
-    
+
     @Parameters(paramLabel = "[<name>]", description = "The name(s) to filter (supports wildcard character \"*\").", defaultValue = "")
     private String name = "";
 
@@ -52,7 +53,8 @@ public class AgentsCommand implements Runnable
         parent.out.println("Listing agents...");
         parent.out.flush();
 
-        Collection<AgentDTO> agents = client.getMBeanProxy().getAgentDTOs();
+        AgentManagerJMXMBean mBeanProxy = client.getMBeanProxy();
+        Collection<AgentDTO> agents = mBeanProxy.getAgentDTOs();
         if (!all)
         {
             agents = agents.stream().filter(a -> !a.isHidden()).collect(Collectors.toSet());
@@ -72,6 +74,12 @@ public class AgentsCommand implements Runnable
             parent.out.println("No agent found");
             return;
         }
+
+        printAgents(agents);
+    }
+
+    private void printAgents(Collection<AgentDTO> agents)
+    {
         parent.out.println();
         parent.out.println("Name                                       Type   State");
         parent.out.println("------------------------------------------ ------ -------");
@@ -92,7 +100,7 @@ public class AgentsCommand implements Runnable
     {
         this.all = all;
     }
-    
+
     protected void setName(String name)
     {
         this.name = name;

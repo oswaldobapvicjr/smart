@@ -1,5 +1,6 @@
 package net.obvj.smart.console.enhanced.commands;
 
+import net.obvj.smart.jmx.AgentManagerJMXMBean;
 import net.obvj.smart.jmx.client.AgentManagerJMXClient;
 import net.obvj.smart.util.ClientApplicationContextFacade;
 import picocli.CommandLine.Command;
@@ -37,7 +38,8 @@ public class ResetCommand implements Runnable
     {
         try
         {
-            client.getMBeanProxy().resetAgent(agent);
+            AgentManagerJMXMBean mBeanProxy = client.getMBeanProxy();
+            mBeanProxy.resetAgent(agent);
             parent.out.println("Success");
         }
         catch (IllegalStateException | IllegalArgumentException | ReflectiveOperationException e)

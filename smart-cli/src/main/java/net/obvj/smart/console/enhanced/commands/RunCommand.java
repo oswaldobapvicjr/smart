@@ -1,5 +1,6 @@
 package net.obvj.smart.console.enhanced.commands;
 
+import net.obvj.smart.jmx.AgentManagerJMXMBean;
 import net.obvj.smart.jmx.client.AgentManagerJMXClient;
 import net.obvj.smart.util.ClientApplicationContextFacade;
 import picocli.CommandLine.Command;
@@ -9,7 +10,7 @@ import picocli.CommandLine.ParentCommand;
 
 /**
  * A command that runs a given agent immediately
- * 
+ *
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
@@ -25,10 +26,10 @@ public class RunCommand implements Runnable
 
     @Option(names = {"-h", "--help"}, usageHelp = true, description = "Display this help message.")
     boolean usageHelpRequested;
-    
+
     @Parameters(paramLabel = "<agent>", description = "The agent to be run.", completionCandidates = AgentCompletionCandidates.class)
     private String agent;
-    
+
     @ParentCommand
     private Commands parent;
 
@@ -39,7 +40,10 @@ public class RunCommand implements Runnable
         {
             parent.out.printf("Running %s...%n", agent);
             parent.out.flush();
-            client.getMBeanProxy().runNow(agent);
+
+            AgentManagerJMXMBean mBeanProxy = client.getMBeanProxy();
+            mBeanProxy.runNow(agent);
+
             parent.out.println("Success");
         }
         catch (IllegalStateException | IllegalArgumentException | UnsupportedOperationException e)

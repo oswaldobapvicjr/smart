@@ -2,6 +2,7 @@ package net.obvj.smart.console.enhanced.commands;
 
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 import org.junit.Before;
@@ -18,7 +19,7 @@ import net.obvj.smart.util.ClientApplicationContextFacade;
 
 /**
  * Unit tests for {@link AgentCompletionCandidates}.
- * 
+ *
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
@@ -50,9 +51,18 @@ public class AgentCompletionCandidatesTest
     }
 
     @Test
-    public void testUnableToRetrieveAgentNames()
+    public void testUnableToRetrieveAgentNamesNullProxy()
     {
         PowerMockito.when(agentManagerJMXClient.getMBeanProxy()).thenReturn(null);
+        AgentCompletionCandidates candidates = new AgentCompletionCandidates();
+        System.out.println(candidates);
+        assertTrue(candidates.isEmpty());
+    }
+
+    @Test
+    public void testUnableToRetrieveAgentNamesException()
+    {
+        PowerMockito.when(agentManagerJMXClient.getMBeanProxy()).thenThrow(new RuntimeException("test"));
         AgentCompletionCandidates candidates = new AgentCompletionCandidates();
         System.out.println(candidates);
         assertTrue(candidates.isEmpty());

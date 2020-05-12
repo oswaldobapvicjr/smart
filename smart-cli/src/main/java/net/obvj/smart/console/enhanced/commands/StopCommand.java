@@ -2,6 +2,7 @@ package net.obvj.smart.console.enhanced.commands;
 
 import java.util.concurrent.TimeoutException;
 
+import net.obvj.smart.jmx.AgentManagerJMXMBean;
 import net.obvj.smart.jmx.client.AgentManagerJMXClient;
 import net.obvj.smart.util.ClientApplicationContextFacade;
 import picocli.CommandLine.Command;
@@ -11,7 +12,7 @@ import picocli.CommandLine.ParentCommand;
 
 /**
  * A command that stops a given agent
- * 
+ *
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
@@ -27,10 +28,10 @@ public class StopCommand implements Runnable
 
     @Option(names = {"-h", "--help"}, usageHelp = true, description = "Display this help message.")
     boolean usageHelpRequested;
-    
+
     @Parameters(paramLabel = "<agent>", description = "The agent to be stopped.", completionCandidates = AgentCompletionCandidates.class)
     private String agent;
-    
+
     @ParentCommand
     private Commands parent;
 
@@ -41,7 +42,10 @@ public class StopCommand implements Runnable
         {
             parent.out.printf("Stopping %s...%n", agent);
             parent.out.flush();
-            client.getMBeanProxy().stopAgent(agent);
+
+            AgentManagerJMXMBean mBeanProxy = client.getMBeanProxy();
+            mBeanProxy.stopAgent(agent);
+
             parent.out.println("Success");
         }
         catch (IllegalStateException | IllegalArgumentException | TimeoutException e)

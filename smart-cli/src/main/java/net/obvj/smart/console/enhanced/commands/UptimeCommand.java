@@ -2,6 +2,7 @@ package net.obvj.smart.console.enhanced.commands;
 
 import java.util.concurrent.TimeUnit;
 
+import net.obvj.smart.jmx.AgentManagerJMXMBean;
 import net.obvj.smart.jmx.client.AgentManagerJMXClient;
 import net.obvj.smart.util.ClientApplicationContextFacade;
 import picocli.CommandLine.Command;
@@ -17,7 +18,7 @@ import picocli.CommandLine.ParentCommand;
 @Command(name = "uptime",
          headerHeading = "%n",
          descriptionHeading = "%n@|bold,underline Description|@:%n",
-        description = "Prints total server up-time.",
+         description = "Prints total server up-time.",
          parameterListHeading = "%n@|bold,underline Parameters|@:%n",
          optionListHeading = "%n@|bold,underline Options|@:%n")
 public class UptimeCommand implements Runnable
@@ -38,7 +39,8 @@ public class UptimeCommand implements Runnable
     @Override
     public void run()
     {
-        long serverUptimeMillis = client.getMBeanProxy().getServerUptime();
+        AgentManagerJMXMBean mBeanProxy = client.getMBeanProxy();
+        long serverUptimeMillis = mBeanProxy.getServerUptime();
         parent.out.println(formatOutput(serverUptimeMillis, timeUnit));
     }
 

@@ -1,8 +1,6 @@
 package net.obvj.smart.jmx.client;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.management.JMX;
 import javax.management.MBeanServerConnection;
@@ -12,6 +10,8 @@ import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +28,7 @@ import net.obvj.smart.jmx.AgentManagerJMXMBean;
 @Component
 public class AgentManagerJMXClient
 {
-    private static final Logger LOG = Logger.getLogger("smart-cli");
+    private static final Logger LOG = LoggerFactory.getLogger("smart-cli");
 
     private static final String SERVICE_JMX_RMI_URL = "service:jmx:rmi:///jndi/rmi://:%s/jmxrmi";
 
@@ -41,14 +41,14 @@ public class AgentManagerJMXClient
     {
         try
         {
-            LOG.fine("Connecting to remote management console...");
+            LOG.info("Connecting to remote management console...");
             JMXConnector jmxc = JMXConnectorFactory.connect(new JMXServiceURL(String.format(SERVICE_JMX_RMI_URL, getJMXRemotePort())));
             MBeanServerConnection mbsc = jmxc.getMBeanServerConnection();
             return JMX.newMBeanProxy(mbsc, getAgentManagerJMXBeanObjectName(), AgentManagerJMXMBean.class, true);
         }
         catch (MalformedObjectNameException | IOException e)
         {
-            LOG.log(Level.SEVERE, "Unable to find remote agent manager stub", e);
+            LOG.error("Unable to find remote agent manager stub", e);
             return null;
         }
     }

@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.obvj.smart.jmx.AgentManagerJMXMBean;
 import net.obvj.smart.jmx.client.AgentManagerJMXClient;
 import net.obvj.smart.util.ClientApplicationContextFacade;
 
@@ -18,19 +20,34 @@ import net.obvj.smart.util.ClientApplicationContextFacade;
  */
 public class AgentCompletionCandidates extends ArrayList<String>
 {
+    private static final String MSG_UNABLE_TO_RETRIEVE_NAMES = "Unable to retrieve available agent names";
+
     private static final long serialVersionUID = 3919528430528865666L;
 
-    private static final Logger LOG = Logger.getLogger("smart-cli");
+    private static final Logger LOG = LoggerFactory.getLogger("smart-cli");
 
     public static List<String> getAgentNames()
     {
         try
         {
-            return Arrays.asList(ClientApplicationContextFacade.getBean(AgentManagerJMXClient.class).getMBeanProxy().getAgentNames());
+            AgentManagerJMXClient jmxClient = ClientApplicationContextFacade.getBean(AgentManagerJMXClient.class);
+            AgentManagerJMXMBean agentMBeanProxy = jmxClient.getMBeanProxy();
+            if (agentMBeanProxy != null)
+            {
+                String[] agentNames = agentMBeanProxy.getAgentNames();
+                return Arrays.asList(agentNames);
+            }
+            else
+            {
+                LOG.debug("Unable to retrieve agentMBeanProxy");
+            }
+            LOG.warn(MSG_UNABLE_TO_RETRIEVE_NAMES);
+            return Collections.emptyList();
         }
-        catch (Exception e)
+        catch (Exception exception)
         {
-            LOG.log(Level.WARNING, "Unable to retrieve available agent names");
+            LOG.warn(MSG_UNABLE_TO_RETRIEVE_NAMES);
+            LOG.debug("An exception occurred trying to retrieve agent names", exception);
             return Collections.emptyList();
         }
     }

@@ -1,5 +1,6 @@
 package net.obvj.smart.console.enhanced.commands;
 
+import net.obvj.smart.jmx.AgentManagerJMXMBean;
 import net.obvj.smart.jmx.client.AgentManagerJMXClient;
 import net.obvj.smart.util.ClientApplicationContextFacade;
 import picocli.CommandLine.Command;
@@ -31,7 +32,8 @@ public class DateCommand implements Runnable
     @Override
     public void run()
     {
-        parent.out.println(client.getMBeanProxy().getServerDate());
+        AgentManagerJMXMBean mBeanProxy = client.getMBeanProxy();
+        parent.out.println(mBeanProxy.getServerDate());
     }
 
 }

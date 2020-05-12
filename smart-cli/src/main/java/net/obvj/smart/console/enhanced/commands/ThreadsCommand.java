@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import net.obvj.smart.jmx.AgentManagerJMXMBean;
 import net.obvj.smart.jmx.client.AgentManagerJMXClient;
 import net.obvj.smart.jmx.dto.ThreadDTO;
 import net.obvj.smart.util.ClientApplicationContextFacade;
@@ -14,7 +15,7 @@ import picocli.CommandLine.ParentCommand;
 
 /**
  * A command that prints currently active threads
- * 
+ *
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
@@ -29,13 +30,13 @@ public class ThreadsCommand implements Runnable
     private static final String ID_NAME_STATE_PATTERN = "%-4d %-38s %-13s%n";
 
     private AgentManagerJMXClient client = ClientApplicationContextFacade.getBean(AgentManagerJMXClient.class);
-    
+
     @Option(names = {"-h", "--help"}, usageHelp = true, description = "Display this help message.")
     boolean usageHelpRequested;
 
     @Parameters(paramLabel = "[<name>]", description = "The name(s) to filter (supports wildcard character \"*\").", defaultValue = "")
     private String name = "";
-    
+
     @ParentCommand
     private Commands parent;
 
@@ -45,8 +46,9 @@ public class ThreadsCommand implements Runnable
         parent.out.println("Listing active server threads...");
         parent.out.flush();
 
-        Collection<ThreadDTO> threads = client.getMBeanProxy().getAllThreadsInfo();
-        
+        AgentManagerJMXMBean mBeanProxy = client.getMBeanProxy();
+        Collection<ThreadDTO> threads = mBeanProxy.getAllThreadsInfo();
+
         if (!name.isEmpty())
         {
             String searchRegex = name.toLowerCase().replaceAll("\\*", ".*");
@@ -59,6 +61,11 @@ public class ThreadsCommand implements Runnable
             return;
         }
 
+        printThreads(threads);
+    }
+
+    private void printThreads(Collection<ThreadDTO> threads)
+    {
         parent.out.println();
         parent.out.println("ID   Name                                   State");
         parent.out.println("---- -------------------------------------- -------------");

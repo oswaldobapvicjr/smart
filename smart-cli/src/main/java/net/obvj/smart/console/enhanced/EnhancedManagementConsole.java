@@ -4,10 +4,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import jline.console.ConsoleReader;
 import jline.console.completer.ArgumentCompleter.ArgumentList;
@@ -41,7 +41,7 @@ public class EnhancedManagementConsole implements Runnable
         SINGLE_COMMAND;
     }
 
-    private static final Logger LOG = Logger.getLogger("smart-cli");
+    private static final Logger LOG = LoggerFactory.getLogger("smart-cli");
     private static final String PROMPT = ClientApplicationContextFacade.getBean(SmartProperties.class)
             .getProperty(SmartProperties.CONSOLE_PROMPT) + " ";
 
@@ -103,7 +103,7 @@ public class EnhancedManagementConsole implements Runnable
         }
         catch (IOException e)
         {
-            LOG.log(Level.SEVERE, "Enhanced Management Console service ended unexpectedly", e);
+            LOG.error("Enhanced Management Console service ended unexpectedly", e);
         }
     }
 
