@@ -112,7 +112,7 @@ public class AgentManagerJMXTest
     public void testGetAgentNames()
     {
         String[] names = new String[] { "name1", "name2" };
-        when(manager.getAgentNames()).thenReturn(names);
+        when(manager.getPublicAgentNames()).thenReturn(names);
         assertArrayEquals(names, jmx.getAgentNames());
     }
 

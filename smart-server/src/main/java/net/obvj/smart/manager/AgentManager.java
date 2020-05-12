@@ -190,9 +190,15 @@ public class AgentManager
         return agents.values();
     }
 
-    public String[] getAgentNames()
+    /**
+     * Returns all public (not-hidden) agent names.
+     *
+     * @return an array of public agent names
+     */
+    public String[] getPublicAgentNames()
     {
-        return agents.keySet().toArray(new String[] {});
+        return agents.entrySet().stream().filter(entry -> !entry.getValue().isHidden()).map(Map.Entry::getKey)
+                .toArray(String[]::new);
     }
 
     /**

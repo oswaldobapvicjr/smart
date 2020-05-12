@@ -42,6 +42,7 @@ public class AgentManagerTest
 {
     // Test data
     private static final String DUMMY_AGENT = "DummyAgent";
+    private static final String HIDDEN_AGENT = "HiddenAgent";
     private static final String DUMMY_AGENT_CLASS = "net.obvj.smart.agents.dummy.DummyAgent";
     private static final String AGENT1 = "agent1";
     private static final String UNKNOWN = "Unknown";
@@ -52,6 +53,8 @@ public class AgentManagerTest
 
     private static final AgentConfiguration XML_DUMMY_AGENT = new AgentConfiguration.Builder(TIMER).name(DUMMY_AGENT)
             .agentClass(DUMMY_AGENT_CLASS).frequency("1 hour").build();
+    private static final AgentConfiguration XML_HIDDEN_AGENT = new AgentConfiguration.Builder(TIMER).name(HIDDEN_AGENT)
+            .agentClass(DUMMY_AGENT_CLASS).frequency("1 hour").hidden(true).build();
 
     private static final AgentDTO DUMMY_AGENT_DTO = new AgentDTO(DUMMY_AGENT, TIMER, "SET", false);
 
@@ -59,7 +62,9 @@ public class AgentManagerTest
     private static final List<AgentDTO> ALL_AGENT_DTOS = Arrays.asList(DUMMY_AGENT_DTO);
 
     private Agent dummyAgent;
-    private Agent[] allAgents;
+    private Agent hiddenAgent;
+
+    private Agent[] allPublicAgents;
 
     @Mock
     private AgentLoader agentLoader;
@@ -72,7 +77,8 @@ public class AgentManagerTest
         MockitoAnnotations.initMocks(this);
 
         dummyAgent = AgentFactory.create(XML_DUMMY_AGENT);
-        allAgents = new Agent[] { dummyAgent };
+        hiddenAgent = AgentFactory.create(XML_HIDDEN_AGENT);
+        allPublicAgents = new Agent[] { dummyAgent };
     }
 
     protected void prepareAgentManager(Agent... agents)
@@ -84,7 +90,16 @@ public class AgentManagerTest
     public void testGetAgentNamesWithOneAgent()
     {
         prepareAgentManager(dummyAgent);
-        String[] agentNames = manager.getAgentNames();
+        String[] agentNames = manager.getPublicAgentNames();
+        assertEquals(1, agentNames.length);
+        assertEquals(dummyAgent.getName(), agentNames[0]);
+    }
+
+    @Test
+    public void testGetAgentNamesWithAPublicAgentAndAHiddenOne()
+    {
+        prepareAgentManager(dummyAgent, hiddenAgent);
+        String[] agentNames = manager.getPublicAgentNames();
         assertEquals(1, agentNames.length);
         assertEquals(dummyAgent.getName(), agentNames[0]);
     }
@@ -92,7 +107,7 @@ public class AgentManagerTest
     @Test
     public void testGetAgents()
     {
-        prepareAgentManager(allAgents);
+        prepareAgentManager(allPublicAgents);
         Collection<Agent> agents = manager.getAgents();
         assertEquals(1, agents.size());
         List<String> managerNames = agents.stream().map(Agent::getName).collect(Collectors.toList());
@@ -102,7 +117,7 @@ public class AgentManagerTest
     @Test
     public void testFindAgentByName()
     {
-        prepareAgentManager(allAgents);
+        prepareAgentManager(allPublicAgents);
         assertEquals(dummyAgent, manager.findAgentByName(DUMMY_AGENT));
     }
 
@@ -126,7 +141,7 @@ public class AgentManagerTest
     @Test
     public void testRemoveAgent()
     {
-        prepareAgentManager(allAgents);
+        prepareAgentManager(allPublicAgents);
         manager.removeAgent(DUMMY_AGENT);
         assertEquals(0, manager.getAgents().size());
         assertFalse(manager.getAgents().contains(dummyAgent));
@@ -149,7 +164,7 @@ public class AgentManagerTest
     @Test
     public void testGetAgentDTOs()
     {
-        prepareAgentManager(allAgents);
+        prepareAgentManager(allPublicAgents);
         Collection<AgentDTO> dtos = manager.getAgentDTOs();
         assertEquals(1, dtos.size());
         assertTrue(dtos.containsAll(ALL_AGENT_DTOS));

@@ -36,7 +36,7 @@ public class AgentManagerJMX implements AgentManagerJMXMBean
 
     public String[] getAgentNames()
     {
-        return agentManager.getAgentNames();
+        return agentManager.getPublicAgentNames();
     }
 
     public Collection<AgentDTO> getAgentDTOs()
