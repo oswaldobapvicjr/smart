@@ -28,7 +28,7 @@ import net.obvj.smart.jmx.AgentManagerJMXMBean;
 @Component
 public class AgentManagerJMXClient
 {
-    private static final Logger LOG = LoggerFactory.getLogger("smart-cli");
+    private static final Logger LOG = LoggerFactory.getLogger(AgentManagerJMXClient.class);
 
     private static final String SERVICE_JMX_RMI_URL = "service:jmx:rmi:///jndi/rmi://:%s/jmxrmi";
 
@@ -41,10 +41,15 @@ public class AgentManagerJMXClient
     {
         try
         {
-            LOG.info("Connecting to remote management console...");
+            LOG.info("Connecting to the S.M.A.R.T. server...");
+
             JMXConnector jmxc = JMXConnectorFactory.connect(new JMXServiceURL(String.format(SERVICE_JMX_RMI_URL, getJMXRemotePort())));
             MBeanServerConnection mbsc = jmxc.getMBeanServerConnection();
-            return JMX.newMBeanProxy(mbsc, getAgentManagerJMXBeanObjectName(), AgentManagerJMXMBean.class, true);
+            ObjectName agentManagerJMXBeanObjectName = getAgentManagerJMXBeanObjectName();
+            AgentManagerJMXMBean newMBeanProxy = JMX.newMBeanProxy(mbsc, agentManagerJMXBeanObjectName, AgentManagerJMXMBean.class, true);
+
+            LOG.info("Connected");
+            return newMBeanProxy;
         }
         catch (MalformedObjectNameException | IOException e)
         {

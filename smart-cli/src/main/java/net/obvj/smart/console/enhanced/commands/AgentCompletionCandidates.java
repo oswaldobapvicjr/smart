@@ -24,7 +24,7 @@ public class AgentCompletionCandidates extends ArrayList<String>
 
     private static final long serialVersionUID = 3919528430528865666L;
 
-    private static final Logger LOG = LoggerFactory.getLogger("smart-cli");
+    private static final Logger LOG = LoggerFactory.getLogger(AgentCompletionCandidates.class);
 
     public static List<String> getAgentNames()
     {

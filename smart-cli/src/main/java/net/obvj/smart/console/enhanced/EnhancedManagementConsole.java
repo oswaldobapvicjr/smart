@@ -41,7 +41,7 @@ public class EnhancedManagementConsole implements Runnable
         SINGLE_COMMAND;
     }
 
-    private static final Logger LOG = LoggerFactory.getLogger("smart-cli");
+    private static final Logger LOG = LoggerFactory.getLogger(EnhancedManagementConsole.class);
     private static final String PROMPT = ClientApplicationContextFacade.getBean(SmartProperties.class)
             .getProperty(SmartProperties.CONSOLE_PROMPT) + " ";
 
