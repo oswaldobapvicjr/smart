@@ -2,7 +2,6 @@ package net.obvj.smart.console.enhanced.commands;
 
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
 import java.util.Arrays;
 
 import org.junit.Before;
@@ -10,6 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -25,6 +25,7 @@ import net.obvj.smart.util.ClientApplicationContextFacade;
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(ClientApplicationContextFacade.class)
+@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.parsers.*", "org.xml.*" })
 public class AgentCompletionCandidatesTest
 {
     private static final String[] ALL_AGENTS = new String[] { "agent1", "agent2" };

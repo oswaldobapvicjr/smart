@@ -17,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -30,6 +31,7 @@ import net.obvj.smart.util.ConsoleUtils;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ ConsoleUtils.class, ClientApplicationContextFacade.class})
+@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.parsers.*", "org.xml.*" })
 public class EnhancedManagementConsoleTest
 {
     @Mock
@@ -40,12 +42,12 @@ public class EnhancedManagementConsoleTest
     private SmartProperties smartProperties;
     @Mock
     private ConsoleReader reader;
-    
+
     @InjectMocks
     private EnhancedManagementConsole console;
-    
+
     private StringWriter out = new StringWriter();
-    
+
     @Before
     public void setup()
     {
@@ -57,7 +59,7 @@ public class EnhancedManagementConsoleTest
         PowerMockito.when(ClientApplicationContextFacade.getBean(AgentManagerJMXClient.class)).thenReturn(agentManagerJMXClient);
         PowerMockito.when(agentManagerJMXClient.getMBeanProxy()).thenReturn(agentManagerJMXBean);
         PowerMockito.when(agentManagerJMXBean.getAgentNames()).thenReturn(new String[] { "agent1", "agent2" });
-        
+
         Mockito.when(reader.getOutput()).thenReturn(out);
     }
 
@@ -118,7 +120,7 @@ public class EnhancedManagementConsoleTest
         console.handleCommandLine("start AgentName");
         Mockito.verify(agentManagerJMXBean, Mockito.times(1)).startAgent("AgentName");
     }
-    
+
     @Test
     public void testHandleHelpCommandLine() throws IOException
     {
@@ -140,7 +142,7 @@ public class EnhancedManagementConsoleTest
         console.run();
         Mockito.verifyZeroInteractions(agentManagerJMXBean);
     }
-    
+
     @Test
     public void testRunOnInteractiveModeWithQuitCommand() throws IOException
     {

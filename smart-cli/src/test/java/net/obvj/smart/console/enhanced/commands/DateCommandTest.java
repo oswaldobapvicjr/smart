@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import net.obvj.smart.jmx.AgentManagerJMXMBean;
@@ -20,11 +21,12 @@ import net.obvj.smart.jmx.client.AgentManagerJMXClient;
 
 /**
  * Unit tests for the {@link DateCommand} class.
- * 
+ *
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
 @RunWith(PowerMockRunner.class)
+@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.parsers.*", "org.xml.*" })
 public class DateCommandTest
 {
     // Test data

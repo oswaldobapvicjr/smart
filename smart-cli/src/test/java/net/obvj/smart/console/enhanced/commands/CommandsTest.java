@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -27,6 +28,7 @@ import net.obvj.smart.jmx.client.AgentManagerJMXClient;
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(AgentManagerJMXClient.class)
+@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.parsers.*", "org.xml.*" })
 public class CommandsTest
 {
     @Mock
