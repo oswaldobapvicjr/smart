@@ -17,13 +17,12 @@ import net.obvj.smart.util.DateUtils;
  */
 public abstract class Agent implements Runnable
 {
-
     public enum State
     {
         SET, STARTED, RUNNING, STOPPED, ERROR;
     }
 
-    protected static final Logger LOG = LoggerFactory.getLogger("smart-server");
+    private static final Logger LOG = LoggerFactory.getLogger(Agent.class);
 
     protected static final String MSG_AGENT_ALREADY_STARTED = "Agent already started";
     protected static final String MSG_AGENT_ALREADY_STOPPED = "Agent already stopped";
@@ -174,7 +173,6 @@ public abstract class Agent implements Runnable
             {
                 throw new IllegalStateException(MSG_AGENT_ALREADY_STARTED);
             }
-            LOG.info("Starting agent: {}", getName());
             onStart();
             setState(State.STARTED);
             startDate = Calendar.getInstance();

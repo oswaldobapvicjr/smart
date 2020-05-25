@@ -29,7 +29,7 @@ public class SmartServerSupport
     protected AgentManager agentManager = ApplicationContextFacade.getBean(AgentManager.class);
     protected ManagementConsole managementConsole = ApplicationContextFacade.getBean(ManagementConsole.class);
 
-    protected static final Logger LOG = LoggerFactory.getLogger("smart-server");
+    protected static final Logger LOG = LoggerFactory.getLogger(SmartServerSupport.class);
 
     public boolean isClassicConsoleEnabled()
     {

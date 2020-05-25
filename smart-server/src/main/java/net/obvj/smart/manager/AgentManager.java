@@ -36,7 +36,7 @@ public class AgentManager
     private static final String MSG_AGENT_STARTED_PLEASE_STOP_FIRST = "'%s' is started. Please stop the agent before this operation.";
     private static final String SYSTEM_LINE_SEPARATOR = System.getProperty("line.separator");
 
-    private static final Logger LOG = LoggerFactory.getLogger("smart-server");
+    private static final Logger LOG = LoggerFactory.getLogger(AgentManager.class);
 
     private AgentLoader agentLoader;
 

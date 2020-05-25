@@ -6,6 +6,8 @@ import java.util.concurrent.ScheduledExecutorService;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.obvj.smart.conf.AgentConfiguration;
 import net.obvj.smart.util.DateUtils;
@@ -23,6 +25,8 @@ import net.obvj.smart.util.TimeUnit;
 public abstract class TimerAgent extends Agent
 {
     public static final String TYPE = "timer";
+
+    private static final Logger LOG = LoggerFactory.getLogger(TimerAgent.class);
 
     private TimeInterval interval;
 
@@ -58,14 +62,16 @@ public abstract class TimerAgent extends Agent
     @Override
     public final void onStart()
     {
+        LOG.info("Starting agent: {}", getName());
+        LOG.info("Agent {} scheduled to run every {}.", getName(), interval);
+
         Date start = DateUtils.getExactStartDateEvery(interval.getDuration(), interval.getTimeUnit());
         schedule.scheduleAtFixedRate(this, (start.getTime() - System.currentTimeMillis()), interval.toMillis(),
                 java.util.concurrent.TimeUnit.MILLISECONDS);
 
         if (LOG.isInfoEnabled())
         {
-            LOG.info("Agent {} scheduled to run every {}. First execution will be at: {}", getName(), interval,
-                    DateUtils.formatDate(start));
+            LOG.info("First execution of {} will be at: {}", getName(), DateUtils.formatDate(start));
         }
     }
 

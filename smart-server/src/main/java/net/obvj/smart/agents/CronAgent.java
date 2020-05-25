@@ -9,6 +9,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.cronutils.descriptor.CronDescriptor;
 import com.cronutils.model.Cron;
@@ -30,8 +32,9 @@ import net.obvj.smart.util.DateUtils;
  */
 public abstract class CronAgent extends Agent
 {
-
     public static final String TYPE = "cron";
+
+    private static final Logger LOG = LoggerFactory.getLogger(CronAgent.class);
 
     private String cronExpression;
     private String cronDescription;
@@ -74,7 +77,17 @@ public abstract class CronAgent extends Agent
         return cronParser.parse(expression);
     }
 
+    protected void scheduleFirstExecution()
+    {
+        scheduleNextExecution(true);
+    }
+
     protected void scheduleNextExecution()
+    {
+        scheduleNextExecution(false);
+    }
+
+    private void scheduleNextExecution(boolean firstExection)
     {
         nextExecutionDate = null;
         ExecutionTime executionTime = ExecutionTime.forCron(cron);
@@ -88,7 +101,8 @@ public abstract class CronAgent extends Agent
             nextExecutionDate = DateUtils.now().plus(timeToNextExecution);
             if (LOG.isInfoEnabled())
             {
-                LOG.info("Next execution for {} will be at: {}", getName(), DateUtils.formatDate(nextExecutionDate));
+                LOG.info("{} execution of {} will be at: {}", firstExection ? "First" : "Next", getName(),
+                        DateUtils.formatDate(nextExecutionDate));
             }
         }
         else
@@ -104,8 +118,9 @@ public abstract class CronAgent extends Agent
     @Override
     public final void onStart()
     {
+        LOG.info("Starting agent: {}", getName());
         LOG.info("Agent {} scheduled to run {}.", getName(), cronDescription);
-        scheduleNextExecution();
+        scheduleFirstExecution();
     }
 
     @Override

@@ -16,7 +16,7 @@ import net.obvj.smart.conf.annotation.Type;
 @Agent(type = Type.CRON)
 public class DummyAgent
 {
-    private static final Logger LOG = LoggerFactory.getLogger("smart-server");
+    private static final Logger LOG = LoggerFactory.getLogger(DummyAgent.class);
 
     @AgentTask
     public void runTask()

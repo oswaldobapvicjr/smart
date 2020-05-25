@@ -33,7 +33,7 @@ import net.obvj.smart.util.Exceptions;
 @Component
 public class AgentsXml
 {
-    private static final Logger LOG = LoggerFactory.getLogger("smart-server");
+    private static final Logger LOG = LoggerFactory.getLogger(AgentsXml.class);
 
     private static final String AGENTS_XML = "agents.xml";
     private static final String AGENTS_XSD = "agents.xsd";

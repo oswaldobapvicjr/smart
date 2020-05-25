@@ -14,7 +14,7 @@ import net.obvj.smart.agents.Agent;
  */
 public class ShutdownHook extends SmartServerSupport implements Runnable
 {
-    private static final Logger LOG = LoggerFactory.getLogger("smart-server");
+    private static final Logger LOG = LoggerFactory.getLogger(ShutdownHook.class);
 
     @Override
     public void run()

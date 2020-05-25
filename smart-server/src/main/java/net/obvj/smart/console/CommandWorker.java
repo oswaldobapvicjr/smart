@@ -33,7 +33,7 @@ public class CommandWorker implements Runnable
     protected static final List<String> HINTS = Arrays.asList(" Type 'help' for a list of available commands.",
             " Type 'exit' to quit the console.");
 
-    private static final Logger LOG = LoggerFactory.getLogger("smart-server");
+    private static final Logger LOG = LoggerFactory.getLogger(CommandWorker.class);
 
     private Socket socket;
     private BufferedReader in;

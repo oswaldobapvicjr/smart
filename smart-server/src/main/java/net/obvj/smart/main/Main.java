@@ -1,8 +1,7 @@
 package net.obvj.smart.main;
 
-import java.util.concurrent.TimeUnit;
-
-import net.obvj.performetrics.runnable.WallClockTimeRunnableOperation;
+import net.obvj.performetrics.Counter.Type;
+import net.obvj.performetrics.monitors.MonitoredRunnable;
 import net.obvj.smart.conf.AgentConfigurationException;
 import net.obvj.smart.jmx.JMXException;
 
@@ -34,9 +33,9 @@ public class Main extends SmartServerSupport
 
     public static void main(String[] args)
     {
-        WallClockTimeRunnableOperation operation = new WallClockTimeRunnableOperation(() -> new Main().start());
+        MonitoredRunnable operation = new MonitoredRunnable(() -> new Main().start());
         operation.run();
-        LOG.info("Server started in {} milliseconds", operation.elapsedTime(TimeUnit.MILLISECONDS));
+        LOG.info("Server started in {}", operation.getCounter(Type.WALL_CLOCK_TIME).elapsedTime());
     }
 
 }

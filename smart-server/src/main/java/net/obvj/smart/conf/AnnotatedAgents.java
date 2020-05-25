@@ -24,7 +24,7 @@ public class AnnotatedAgents
 {
     private static final List<String> INTERNAL_AGENTS_PACKAGES = Arrays.asList("net.obvj.smart.agents.internal");
 
-    private static final Logger LOG = LoggerFactory.getLogger("smart-server");
+    private static final Logger LOG = LoggerFactory.getLogger(AnnotatedAgents.class);
 
     private SmartProperties properties;
 

@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +25,7 @@ import net.obvj.performetrics.Stopwatch;
 @Component
 public class AgentLoader
 {
-    private static final Logger LOG = LoggerFactory.getLogger("smart-server");
+    private static final Logger LOG = LoggerFactory.getLogger(AgentLoader.class);
 
     private AnnotatedAgents annotatedAgents;
     private AgentsXml xmlAgents;
@@ -55,8 +56,8 @@ public class AgentLoader
 
         this.agentsByClass = overlayedAgentsByClass;
 
-        long elapsedTime = stopwatch.getCounter(Type.WALL_CLOCK_TIME).elapsedTime();
-        LOG.info("{} agents(s) loaded in {} nanoseconds", agentsByClass.size(), elapsedTime);
+        double elapsedTime = stopwatch.getCounter(Type.WALL_CLOCK_TIME).elapsedTime(TimeUnit.MILLISECONDS);
+        LOG.info("{} agent(s) loaded in {} millisecond(s)", agentsByClass.size(), elapsedTime);
     }
 
     /**

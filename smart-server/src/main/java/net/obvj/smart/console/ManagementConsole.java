@@ -23,7 +23,7 @@ import net.obvj.smart.util.Exceptions;
 @Component
 public class ManagementConsole implements Runnable
 {
-    private static final Logger LOG = LoggerFactory.getLogger("smart-server");
+    private static final Logger LOG = LoggerFactory.getLogger(ManagementConsole.class);
 
     @Autowired
     private SmartProperties smartProperties;
@@ -87,7 +87,7 @@ public class ManagementConsole implements Runnable
             started = true;
             server = new ServerSocket(getPort(), 0, InetAddress.getByAddress(new byte[] { 127, 0, 0, 1 }));
             serverThread.start();
-            LOG.info("Management Console listening on port {}", server.getLocalPort());
+            LOG.info("Management Console listening to port {}", server.getLocalPort());
         }
         catch (IOException exception)
         {

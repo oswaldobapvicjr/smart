@@ -6,10 +6,11 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Predicate;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.obvj.smart.agents.dto.AgentDTO;
 import net.obvj.smart.jmx.dto.ThreadDTO;
@@ -111,7 +112,7 @@ public enum Command
                 catch (IllegalArgumentException | IllegalStateException e)
                 {
                     String warningMessage = e.getClass().getName() + ": " + e.getMessage();
-                    log.warning(warningMessage);
+                    LOG.warn(warningMessage);
                     out.println(warningMessage);
                 }
             }
@@ -132,7 +133,7 @@ public enum Command
                 String agent = parameters[1];
                 String message = String.format("Running %s...", agent);
                 out.println(message);
-                log.info(message);
+                LOG.info(message);
                 try
                 {
                     ApplicationContextFacade.getBean(AgentManager.class).runNow(agent);
@@ -141,7 +142,7 @@ public enum Command
                 catch (IllegalArgumentException | IllegalStateException | UnsupportedOperationException e)
                 {
                     String warningMessage = e.getClass().getName() + ": " + e.getMessage();
-                    log.warning(warningMessage);
+                    LOG.warn(warningMessage);
                     out.println(warningMessage);
                 }
             }
@@ -162,7 +163,7 @@ public enum Command
                 String agent = parameters[1];
                 String message = String.format("Stopping %s...", agent);
                 out.println(message);
-                log.info(message);
+                LOG.info(message);
                 try
                 {
                     ApplicationContextFacade.getBean(AgentManager.class).stopAgent(agent);
@@ -170,7 +171,7 @@ public enum Command
                 }
                 catch (IllegalArgumentException | IllegalStateException | TimeoutException e)
                 {
-                    log.warning(e.getMessage());
+                    LOG.warn(e.getMessage());
                     out.println(e.getMessage());
                 }
             }
@@ -195,7 +196,7 @@ public enum Command
                 }
                 catch (IllegalArgumentException e)
                 {
-                    log.warning(e.getMessage());
+                    LOG.warn(e.getMessage());
                     out.println(e.getMessage());
                 }
             }
@@ -216,7 +217,7 @@ public enum Command
                 String agent = parameters[1];
                 String message = String.format("Resetting %s...", agent);
                 out.println(message);
-                log.info(message);
+                LOG.info(message);
                 try
                 {
                     ApplicationContextFacade.getBean(AgentManager.class).resetAgent(agent);
@@ -224,7 +225,7 @@ public enum Command
                 }
                 catch (IllegalArgumentException | IllegalStateException | ReflectiveOperationException e)
                 {
-                    log.warning(e.getMessage());
+                    LOG.warn(e.getMessage());
                     out.println(e.getMessage());
                 }
             }
@@ -271,7 +272,7 @@ public enum Command
     };
 
     protected static final String MISSING_PARAMETER_AGENT_NAME = "Missing parameter: <agent-name>";
-    private static final Logger log = Logger.getLogger("smart-server");
+    private static final Logger LOG = LoggerFactory.getLogger(Command.class);
 
     private final String name;
     private final String alias;
