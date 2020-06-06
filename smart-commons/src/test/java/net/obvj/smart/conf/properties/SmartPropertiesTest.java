@@ -8,8 +8,6 @@ import java.util.Collections;
 
 import org.junit.Test;
 
-import net.obvj.smart.conf.properties.SmartProperties;
-
 /**
  * Unit tests for the {@link SmartProperties} class.
  * 

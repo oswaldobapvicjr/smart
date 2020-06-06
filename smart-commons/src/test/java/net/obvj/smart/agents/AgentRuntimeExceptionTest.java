@@ -4,8 +4,6 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import net.obvj.smart.agents.AgentRuntimeException;
-
 /**
  * Unit test for the {@link AgentRuntimeException} class.
  * 

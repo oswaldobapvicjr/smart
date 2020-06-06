@@ -8,8 +8,6 @@ import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import net.obvj.smart.agents.AgentThreadFactory;
-
 /**
  * Unit test methods for the {@link AgentThreadFactory} class.
  * 

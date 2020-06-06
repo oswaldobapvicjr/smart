@@ -11,8 +11,6 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import net.obvj.smart.conf.properties.SmartProperties;
-
 /**
  * Unit tests for the {@link SmartProperties} class.
  * 
