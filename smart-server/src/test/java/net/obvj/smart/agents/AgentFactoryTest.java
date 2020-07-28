@@ -1,14 +1,14 @@
 package net.obvj.smart.agents;
 
+import static net.obvj.junit.utils.matchers.InstantiationNotAllowedMatcher.instantiationNotAllowed;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import net.obvj.junit.utils.TestUtils;
 import net.obvj.smart.agents.Agent.State;
 import net.obvj.smart.agents.dummy.DummyAgent;
 import net.obvj.smart.agents.impl.AnnotatedCronAgent;
@@ -34,9 +34,9 @@ public class AgentFactoryTest
     private static final String CRON = "cron";
 
     @Test
-    public void constuctor_notAllowed() throws ReflectiveOperationException
+    public void constuctor_notAllowed()
     {
-        TestUtils.assertNoInstancesAllowed(AgentFactory.class, IllegalStateException.class);
+        assertThat(AgentFactory.class, instantiationNotAllowed());
     }
 
     @Test

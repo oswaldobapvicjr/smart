@@ -1,5 +1,7 @@
 package net.obvj.smart.util;
 
+import static net.obvj.junit.utils.matchers.InstantiationNotAllowedMatcher.instantiationNotAllowed;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -9,7 +11,6 @@ import java.util.Set;
 
 import org.junit.Test;
 
-import net.obvj.junit.utils.TestUtils;
 import net.obvj.smart.agents.test.invalid.*;
 import net.obvj.smart.agents.test.valid.DummyAgent;
 import net.obvj.smart.agents.test.valid.TestAgentWithNoNameAndTypeTimerAndAgentTask;
@@ -37,16 +38,10 @@ public class AnnotationUtilsTest
 
     private static final List<String> UNEXPECTED_AGENT_CLASS_NAMES = Arrays.asList(TestClassNotAgent.class.getName());
 
-    /**
-     * Tests that no instances of this utility class are created
-     *
-     * @throws Exception in case of error getting constructor metadata or instantiating the
-     *                   private constructor via Reflection
-     */
     @Test
-    public void testNoInstancesAllowed() throws Exception
+    public void testNoInstancesAllowed()
     {
-        TestUtils.assertNoInstancesAllowed(AnnotationUtils.class, IllegalStateException.class, "Utility class");
+        assertThat(AnnotationUtils.class, instantiationNotAllowed());
     }
 
     @Test

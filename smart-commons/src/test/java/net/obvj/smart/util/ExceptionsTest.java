@@ -1,7 +1,8 @@
 package net.obvj.smart.util;
 
 import static net.obvj.junit.utils.TestUtils.assertException;
-import static net.obvj.junit.utils.TestUtils.assertNoInstancesAllowed;
+import static net.obvj.junit.utils.matchers.InstantiationNotAllowedMatcher.instantiationNotAllowed;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.FileNotFoundException;
 
@@ -25,9 +26,9 @@ public class ExceptionsTest
     private static String EXPECTED_MSG = "arg1=abc,arg2=123";
 
     @Test
-    public void testNoInstances() throws Exception
+    public void testNoInstances()
     {
-        assertNoInstancesAllowed(Exceptions.class, IllegalStateException.class, "Utility class");
+        assertThat(Exceptions.class, instantiationNotAllowed());
     }
 
     @Test

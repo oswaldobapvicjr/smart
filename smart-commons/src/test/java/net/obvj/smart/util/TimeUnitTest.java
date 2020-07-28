@@ -1,7 +1,7 @@
 package net.obvj.smart.util;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.Calendar;
 
@@ -9,7 +9,7 @@ import org.junit.Test;
 
 /**
  * Unit tests for the {@link TimeUnit} class.
- * 
+ *
  * @author oswaldo.bapvic.jr
  * @since 1.0
  */
@@ -93,7 +93,7 @@ public class TimeUnitTest
         assertThat(TimeUnit.MINUTES.toMillis(1), is(60000l));
         assertThat(TimeUnit.HOURS.toMillis(1), is(3600000l));
     }
-    
+
     /**
      * Test time unit conversion, based on another source time unit
      */

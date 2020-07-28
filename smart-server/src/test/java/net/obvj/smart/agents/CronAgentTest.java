@@ -1,7 +1,12 @@
 package net.obvj.smart.agents;
 
+import static net.obvj.junit.utils.matchers.ExceptionMatcher.throwsException;
+import static net.obvj.junit.utils.matchers.StringMatcher.containsAll;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 
@@ -19,7 +24,6 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import net.obvj.junit.utils.TestUtils;
 import net.obvj.smart.agents.Agent.State;
 import net.obvj.smart.agents.impl.AnnotatedCronAgent;
 import net.obvj.smart.conf.AgentConfiguration;
@@ -152,8 +156,8 @@ public class CronAgentTest
     public void testStartAgentWithPreviousStateStarted()
     {
         when(agentMock.getState()).thenReturn(State.STARTED);
-        TestUtils.assertException(IllegalStateException.class, CronAgent.MSG_AGENT_ALREADY_STARTED,
-                () -> agentMock.start());
+        assertThat(() -> agentMock.start(), throwsException(IllegalStateException.class)
+                .withMessageContaining(CronAgent.MSG_AGENT_ALREADY_STARTED));
     }
 
     /**
@@ -163,7 +167,7 @@ public class CronAgentTest
     public void testStartAgentWithPreviousStateStopped()
     {
         when(agentMock.getState()).thenReturn(State.STOPPED);
-        TestUtils.assertException(IllegalStateException.class, () -> agentMock.start());
+        assertThat(() -> agentMock.start(), throwsException(IllegalStateException.class));
     }
 
     /**
@@ -173,7 +177,7 @@ public class CronAgentTest
     public void testStopAgentWithPreviousStateStopped()
     {
         when(agentMock.isStopped()).thenReturn(true);
-        TestUtils.assertException(IllegalStateException.class, CronAgent.MSG_AGENT_ALREADY_STOPPED, () ->
+        assertThat(() ->
         {
             try
             {
@@ -183,7 +187,7 @@ public class CronAgentTest
             {
                 fail("timeout");
             }
-        });
+        }, throwsException(IllegalStateException.class).withMessageContaining(CronAgent.MSG_AGENT_ALREADY_STOPPED));
     }
 
     /**
@@ -223,9 +227,9 @@ public class CronAgentTest
     {
         CronAgent agent = (CronAgent) AgentFactory.create(DUMMY_AGENT_CONFIG);
         String statusWithoutQuotes = agent.getStatusString().replace("\"", "");
-        TestUtils.assertStringContains(statusWithoutQuotes, "name:DummyAgent", "type:cron", "status:SET",
+        assertThat(statusWithoutQuotes, containsAll("name:DummyAgent", "type:cron", "status:SET",
                 "startDate:null", "lastExecutionDate:null", "cronExpression:0 0 * * 0", "cronDescription",
-                "nextExecutionDate");
+                "nextExecutionDate"));
     }
 
     @Test

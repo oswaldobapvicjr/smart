@@ -1,7 +1,7 @@
 package net.obvj.smart.agents;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,7 +10,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 /**
  * Unit test methods for the {@link AgentThreadFactory} class.
- * 
+ *
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */

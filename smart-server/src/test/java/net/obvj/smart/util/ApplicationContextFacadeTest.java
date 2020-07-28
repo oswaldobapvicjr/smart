@@ -1,10 +1,11 @@
 package net.obvj.smart.util;
 
+import static net.obvj.junit.utils.matchers.InstantiationNotAllowedMatcher.instantiationNotAllowed;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
-import net.obvj.junit.utils.TestUtils;
 import net.obvj.smart.manager.AgentManager;
 
 /**
@@ -15,16 +16,10 @@ import net.obvj.smart.manager.AgentManager;
  */
 public class ApplicationContextFacadeTest
 {
-    /**
-     * Tests that no instances of this utility class are created
-     *
-     * @throws Exception in case of error getting constructor metadata or instantiating the
-     *                   private constructor via Reflection
-     */
     @Test
-    public void testNoInstancesAllowed() throws Exception
+    public void testNoInstancesAllowed()
     {
-        TestUtils.assertNoInstancesAllowed(ApplicationContextFacade.class, IllegalStateException.class, "Utility class");
+        assertThat(ApplicationContextFacade.class, instantiationNotAllowed());
     }
 
     @Test

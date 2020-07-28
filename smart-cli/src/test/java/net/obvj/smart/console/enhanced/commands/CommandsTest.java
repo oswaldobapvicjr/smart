@@ -1,5 +1,7 @@
 package net.obvj.smart.console.enhanced.commands;
 
+import static net.obvj.junit.utils.matchers.StringMatcher.containsAll;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
@@ -17,8 +19,6 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import jline.console.ConsoleReader;
-import net.obvj.junit.utils.TestUtils;
-import net.obvj.smart.jmx.client.AgentManagerJMXClient;
 
 /**
  * Unit tests for the {@link Commands} class
@@ -27,7 +27,7 @@ import net.obvj.smart.jmx.client.AgentManagerJMXClient;
  * @since 2.0
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(AgentManagerJMXClient.class)
+@PrepareForTest(AgentCompletionCandidates.class)
 @PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.parsers.*", "org.xml.*" })
 public class CommandsTest
 {
@@ -39,7 +39,7 @@ public class CommandsTest
     @Before
     public void setup()
     {
-        mockStatic(AgentManagerJMXClient.class);
+        mockStatic(AgentCompletionCandidates.class);
     }
 
     @Test
@@ -54,8 +54,8 @@ public class CommandsTest
     {
         StringWriter sw = new StringWriter();
         new Commands(new PrintWriter(sw)).run();
-        TestUtils.assertStringContains(sw.toString(), "Available commands:", "agents", "clear", "date", "status",
-                "start", "stop", "reset", "run", "threads", "uptime", "Press <Ctrl> + D to exit");
+        assertThat(sw.toString(), containsAll("Available commands:", "agents", "clear", "date", "status", "start",
+                "stop", "reset", "run", "threads", "uptime", "Press <Ctrl> + D to exit"));
     }
 
 }

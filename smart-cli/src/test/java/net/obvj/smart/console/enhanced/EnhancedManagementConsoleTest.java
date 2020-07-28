@@ -11,11 +11,7 @@ import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatchers;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -24,13 +20,14 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import jline.console.ConsoleReader;
 import net.obvj.smart.conf.properties.SmartProperties;
 import net.obvj.smart.console.enhanced.EnhancedManagementConsole.Mode;
+import net.obvj.smart.console.enhanced.commands.AgentCompletionCandidates;
 import net.obvj.smart.jmx.AgentManagerJMXMBean;
 import net.obvj.smart.jmx.client.AgentManagerJMXClient;
 import net.obvj.smart.util.ClientApplicationContextFacade;
 import net.obvj.smart.util.ConsoleUtils;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ ConsoleUtils.class, ClientApplicationContextFacade.class})
+@PrepareForTest({ ConsoleUtils.class, ClientApplicationContextFacade.class, AgentCompletionCandidates.class })
 @PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.parsers.*", "org.xml.*" })
 public class EnhancedManagementConsoleTest
 {
@@ -54,6 +51,7 @@ public class EnhancedManagementConsoleTest
         MockitoAnnotations.initMocks(this);
         PowerMockito.mockStatic(ConsoleUtils.class);
         PowerMockito.mockStatic(ClientApplicationContextFacade.class);
+        PowerMockito.mockStatic(AgentCompletionCandidates.class);
 
         PowerMockito.when(ClientApplicationContextFacade.getBean(SmartProperties.class)).thenReturn(smartProperties);
         PowerMockito.when(ClientApplicationContextFacade.getBean(AgentManagerJMXClient.class)).thenReturn(agentManagerJMXClient);

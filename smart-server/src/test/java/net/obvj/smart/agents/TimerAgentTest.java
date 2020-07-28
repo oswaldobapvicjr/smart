@@ -1,7 +1,11 @@
 package net.obvj.smart.agents;
 
-import static org.hamcrest.Matchers.*;
+import static net.obvj.junit.utils.matchers.ExceptionMatcher.throwsException;
+import static net.obvj.junit.utils.matchers.StringMatcher.containsAll;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 
@@ -10,7 +14,6 @@ import java.util.concurrent.TimeoutException;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import net.obvj.junit.utils.TestUtils;
 import net.obvj.smart.agents.Agent.State;
 import net.obvj.smart.agents.impl.AnnotatedTimerAgent;
 import net.obvj.smart.conf.AgentConfiguration;
@@ -47,8 +50,8 @@ public class TimerAgentTest
     public void testStartAgentWithPreviousStateStarted()
     {
         when(agentMock.getState()).thenReturn(State.STARTED);
-        TestUtils.assertException(IllegalStateException.class, TimerAgent.MSG_AGENT_ALREADY_STARTED,
-                () -> agentMock.start());
+        assertThat(() -> agentMock.start(), throwsException(IllegalStateException.class)
+                .withMessageContaining(TimerAgent.MSG_AGENT_ALREADY_STARTED));
     }
 
     /**
@@ -58,7 +61,7 @@ public class TimerAgentTest
     public void testStartAgentWithPreviousStateStopped()
     {
         when(agentMock.getState()).thenReturn(State.STOPPED);
-        TestUtils.assertException(IllegalStateException.class, () -> agentMock.start());
+        assertThat(() -> agentMock.start(), throwsException(IllegalStateException.class));
     }
 
     /**
@@ -68,7 +71,7 @@ public class TimerAgentTest
     public void testStopAgentWithPreviousStateStopped()
     {
         when(agentMock.isStopped()).thenReturn(true);
-        TestUtils.assertException(IllegalStateException.class, TimerAgent.MSG_AGENT_ALREADY_STOPPED, () ->
+        assertThat(() ->
         {
             try
             {
@@ -78,7 +81,7 @@ public class TimerAgentTest
             {
                 fail("timeout");
             }
-        });
+        }, throwsException(IllegalStateException.class).withMessageContaining(TimerAgent.MSG_AGENT_ALREADY_STOPPED));
     }
 
     /**
@@ -119,8 +122,8 @@ public class TimerAgentTest
     {
         TimerAgent agent = (TimerAgent) AgentFactory.create(DUMMY_AGENT_CONFIG);
         String statusWithoutQuotes = agent.getStatusString().replace("\"", "");
-        TestUtils.assertStringContains(statusWithoutQuotes, "name:DummyAgent", "type:timer", "status:SET",
-                "startDate:null", "lastRunDate:null", "frequency:30 second(s)");
+        assertThat(statusWithoutQuotes, containsAll("name:DummyAgent", "type:timer", "status:SET",
+                "startDate:null", "lastRunDate:null", "frequency:30 second(s)"));
     }
 
     @Test

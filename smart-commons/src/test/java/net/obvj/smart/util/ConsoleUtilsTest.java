@@ -1,12 +1,14 @@
 package net.obvj.smart.util;
 
-import static org.junit.Assert.assertEquals;
+import static net.obvj.junit.utils.matchers.InstantiationNotAllowedMatcher.instantiationNotAllowed;
+import static net.obvj.junit.utils.matchers.StringMatcher.containsAll;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.Collections;
 
 import org.junit.Test;
-
-import net.obvj.junit.utils.TestUtils;
 
 /**
  * Unit tests for the {@link ConsoleUtils} class.
@@ -15,28 +17,23 @@ import net.obvj.junit.utils.TestUtils;
  */
 public class ConsoleUtilsTest
 {
-    /**
-     * Tests that no instances of this utility class are created
-     *
-     * @throws Exception in case of error getting constructor metadata or instantiating the
-     *                   private constructor via Reflection
-     */
+
     @Test
-    public void testNoInstancesAllowed() throws Exception
+    public void testNoInstancesAllowed()
     {
-        TestUtils.assertNoInstancesAllowed(ConsoleUtils.class, IllegalStateException.class, "Utility class");
+        assertThat(ConsoleUtils.class, instantiationNotAllowed());
     }
 
     @Test
     public void testReadFileFromClasspathReturnsContent()
     {
-        TestUtils.assertStringContains(ConsoleUtils.readCustomHeaderLines().toString(), "S.M.A.R.T. Console");
+        assertThat(ConsoleUtils.readCustomHeaderLines().toString(), containsAll("S.M.A.R.T. Console"));
     }
 
     @Test
     public void testReadFileListWithFileNotFound()
     {
-        assertEquals(Collections.emptyList(), ConsoleUtils.readFileLines("invalidFile.if"));
+        assertThat(ConsoleUtils.readFileLines("invalidFile.if"), is(equalTo(Collections.emptyList())));
     }
 
 }
