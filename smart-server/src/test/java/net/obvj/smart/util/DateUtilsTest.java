@@ -1,7 +1,9 @@
 package net.obvj.smart.util;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.assertThat;
+import static net.obvj.junit.utils.matchers.InstantiationNotAllowedMatcher.instantiationNotAllowed;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.isA;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -12,8 +14,6 @@ import java.util.TimeZone;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import net.obvj.junit.utils.TestUtils;
 
 /**
  * Unit tests for the {@link DateUtils} class.
@@ -43,16 +43,10 @@ public class DateUtilsTest
         return calendar;
     }
 
-    /**
-     * Tests that no instances of this utility class are created
-     *
-     * @throws Exception in case of error getting constructor metadata or instantiating the
-     *                   private constructor via Reflection
-     */
     @Test
-    public void testNoInstancesAllowed() throws Exception
+    public void testNoInstancesAllowed()
     {
-        TestUtils.assertNoInstancesAllowed(DateUtils.class, IllegalStateException.class, "Utility class");
+        assertThat(DateUtils.class, instantiationNotAllowed());
     }
 
     @Test

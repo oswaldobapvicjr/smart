@@ -1,7 +1,8 @@
 package net.obvj.smart.util;
 
-import static net.obvj.junit.utils.TestUtils.assertStringContains;
-import static net.obvj.junit.utils.TestUtils.assertNoInstancesAllowed;
+import static net.obvj.junit.utils.matchers.InstantiationNotAllowedMatcher.instantiationNotAllowed;
+import static net.obvj.junit.utils.matchers.StringMatcher.containsAll;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.when;
@@ -49,25 +50,19 @@ public class SystemUtilsTest
         assertTrue(SystemUtils.getSystemTheadsDTOs(ALL_THREADS).containsAll(ALL_DTOS));
     }
 
-    /**
-     * Tests that no instances of this utility class are created
-     *
-     * @throws Exception in case of error getting constructor metadata or instantiating the
-     *                   private constructor via Reflection
-     */
     @Test
-    public void testNoInstancesAllowed() throws Exception
+    public void testNoInstancesAllowed()
     {
-        assertNoInstancesAllowed(SystemUtils.class, IllegalStateException.class, "Utility class");
+        assertThat(SystemUtils.class, instantiationNotAllowed());
     }
 
     @Test
     public void testGetJavaVersion()
     {
-        assertStringContains(SystemUtils.getJavaVersion(), org.apache.commons.lang3.SystemUtils.JAVA_RUNTIME_NAME,
+        assertThat(SystemUtils.getJavaVersion(), containsAll(org.apache.commons.lang3.SystemUtils.JAVA_RUNTIME_NAME,
                 org.apache.commons.lang3.SystemUtils.JAVA_RUNTIME_VERSION,
                 org.apache.commons.lang3.SystemUtils.JAVA_VM_NAME, org.apache.commons.lang3.SystemUtils.JAVA_VM_VERSION,
-                org.apache.commons.lang3.SystemUtils.JAVA_VM_VENDOR);
+                org.apache.commons.lang3.SystemUtils.JAVA_VM_VENDOR));
     }
 
 }

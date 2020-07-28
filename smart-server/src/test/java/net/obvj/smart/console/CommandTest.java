@@ -1,5 +1,9 @@
 package net.obvj.smart.console;
 
+import static net.obvj.junit.utils.matchers.StringMatcher.containsAll;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -54,16 +58,12 @@ public class CommandTest
 
     private void assertOutputEquals(String expectedString)
     {
-        assertEquals(expectedString, out.toString().trim());
+        assertThat(out.toString().trim(), is(equalTo(expectedString)));
     }
 
     private void assertOutputContains(String... expectedStrings)
     {
-        String strOut = out.toString().trim();
-        Arrays.stream(expectedStrings)
-                .forEach(expectedString -> assertTrue(
-                        String.format("Expected string '%s' was not found", expectedString),
-                        strOut.contains(expectedString)));
+        assertThat(out.toString(), containsAll(expectedStrings));
     }
 
     @Test

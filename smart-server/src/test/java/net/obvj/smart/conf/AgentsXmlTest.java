@@ -1,6 +1,7 @@
 package net.obvj.smart.conf;
 
-import static net.obvj.junit.utils.TestUtils.assertException;
+import static net.obvj.junit.utils.matchers.ExceptionMatcher.throwsException;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Collections;
@@ -8,7 +9,7 @@ import java.util.Collections;
 import javax.xml.bind.UnmarshalException;
 
 import org.junit.Test;
-import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 import net.obvj.smart.conf.xml.SmartConfiguration;
 
@@ -79,36 +80,41 @@ public class AgentsXmlTest
     @Test
     public void testLoadTimerAgentWithoutName()
     {
-        assertException(AgentConfigurationException.class, "Invalid agents file", UnmarshalException.class,
-                () -> AgentsXml.loadAgentsXmlFile("testAgents/timerAgentWithoutName.xml"));
+        assertThat(() -> AgentsXml.loadAgentsXmlFile("testAgents/timerAgentWithoutName.xml"),
+                throwsException(AgentConfigurationException.class).withMessageContaining("Invalid agents file")
+                        .withCause(UnmarshalException.class));
     }
 
     @Test
     public void testLoadAgentWithoutType()
     {
-        assertException(AgentConfigurationException.class, "Invalid agents file", UnmarshalException.class,
-                () -> AgentsXml.loadAgentsXmlFile("testAgents/agentWithoutType.xml"));
+        assertThat(() -> AgentsXml.loadAgentsXmlFile("testAgents/agentWithoutType.xml"),
+                throwsException(AgentConfigurationException.class).withMessageContaining("Invalid agents file")
+                        .withCause(UnmarshalException.class));
     }
 
     @Test
     public void testLoadTimerAgentWithoutClass()
     {
-        assertException(AgentConfigurationException.class, "Invalid agents file", UnmarshalException.class,
-                () -> AgentsXml.loadAgentsXmlFile("testAgents/timerAgentWithoutClass.xml"));
+        assertThat(() -> AgentsXml.loadAgentsXmlFile("testAgents/timerAgentWithoutClass.xml"),
+                throwsException(AgentConfigurationException.class).withMessageContaining("Invalid agents file")
+                        .withCause(UnmarshalException.class));
     }
 
     @Test
     public void testLoadTimerAgentWithInvalidName()
     {
-        assertException(AgentConfigurationException.class, "Invalid agents file", UnmarshalException.class,
-                () -> AgentsXml.loadAgentsXmlFile("testAgents/timerAgentWithInvalidName.xml"));
+        assertThat(() -> AgentsXml.loadAgentsXmlFile("testAgents/timerAgentWithInvalidName.xml"),
+                throwsException(AgentConfigurationException.class).withMessageContaining("Invalid agents file")
+                        .withCause(UnmarshalException.class));
     }
 
     @Test
     public void testLoadAgentWithInvalidType()
     {
-        assertException(AgentConfigurationException.class, "Invalid agents file", UnmarshalException.class,
-                () -> AgentsXml.loadAgentsXmlFile("testAgents/agentWithInvalidType.xml"));
+        assertThat(() -> AgentsXml.loadAgentsXmlFile("testAgents/agentWithInvalidType.xml"),
+                throwsException(AgentConfigurationException.class).withMessageContaining("Invalid agents file")
+                        .withCause(UnmarshalException.class));
     }
 
     @Test
@@ -134,7 +140,7 @@ public class AgentsXmlTest
     @Test
     public void testLoadSchemaFileWithInvalidFile()
     {
-        assertException(AgentConfigurationException.class, null, SAXException.class,
-                () -> AgentsXml.loadSchemaFile("testAgents/invalidSchema.xsd"));
+        assertThat(() -> AgentsXml.loadSchemaFile("testAgents/invalidSchema.xsd"),
+                throwsException(AgentConfigurationException.class).withCause(SAXParseException.class));
     }
 }

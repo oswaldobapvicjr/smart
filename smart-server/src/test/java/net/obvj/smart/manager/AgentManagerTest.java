@@ -1,5 +1,7 @@
 package net.obvj.smart.manager;
 
+import static net.obvj.junit.utils.matchers.StringMatcher.containsAll;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -23,7 +25,6 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import net.obvj.junit.utils.TestUtils;
 import net.obvj.smart.agents.Agent;
 import net.obvj.smart.agents.Agent.State;
 import net.obvj.smart.agents.AgentFactory;
@@ -179,8 +180,7 @@ public class AgentManagerTest
         when(agent.getName()).thenReturn(AGENT1);
         when(agent.getStatusString()).thenReturn("{\"statusStr\":\"statusStr1\"}");
         prepareAgentManager(agent);
-        String agentStatusStrWithoutSpaces = manager.getAgentStatusStr(AGENT1).replace(" ", "");
-        TestUtils.assertStringContains(agentStatusStrWithoutSpaces, "\"statusStr\":\"statusStr1\"");
+        assertThat(manager.getAgentStatusStr(AGENT1), containsAll("\"statusStr\"", "\"statusStr1\""));
     }
 
     @Test
