@@ -131,13 +131,10 @@ public abstract class CronAgent extends Agent
     }
 
     @Override
-    public final void runTask()
+    public final void afterRun()
     {
-        doRunTask();
         scheduleNextExecution();
     }
-
-    protected abstract void doRunTask();
 
     /**
      * @return A string with current agent status in JSON format

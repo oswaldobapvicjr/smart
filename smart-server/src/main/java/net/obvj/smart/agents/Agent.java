@@ -6,6 +6,8 @@ import java.util.concurrent.TimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.obvj.performetrics.Counter;
+import net.obvj.performetrics.Stopwatch;
 import net.obvj.smart.conf.AgentConfiguration;
 import net.obvj.smart.util.DateUtils;
 
@@ -255,10 +257,13 @@ public abstract class Agent implements Runnable
                 State previousState = getState();
                 setState(State.RUNNING);
                 lastRunDate = Calendar.getInstance();
-                LOG.info("Agent task started");
+                LOG.info("Running agent...");
+                Stopwatch stopwatch = Stopwatch.createStarted(Counter.Type.WALL_CLOCK_TIME);
                 try
                 {
                     runTask();
+                    LOG.info("Agent task finished in {}", stopwatch.elapsedTime(Counter.Type.WALL_CLOCK_TIME));
+                    afterRun();
                 }
                 catch (Exception exception)
                 {
@@ -267,7 +272,6 @@ public abstract class Agent implements Runnable
                 finally
                 {
                     setState(previousState);
-                    LOG.info("Agent task complete");
                 }
             }
         }
@@ -278,6 +282,11 @@ public abstract class Agent implements Runnable
      * Its functionality will be available via the run() method.
      */
     protected abstract void runTask();
+
+    /**
+     * An event to be fired after agent task run.
+     */
+    protected abstract void afterRun();
 
     /**
      * @return This agent's stop timeout in seconds, as in {@link AgentConfiguration}. If a
