@@ -56,7 +56,7 @@ public class AgentLoader
 
         this.agentsByClass = overlayedAgentsByClass;
 
-        double elapsedTime = stopwatch.getCounter(Type.WALL_CLOCK_TIME).elapsedTime(TimeUnit.MILLISECONDS);
+        double elapsedTime = stopwatch.elapsedTime(Type.WALL_CLOCK_TIME, TimeUnit.MILLISECONDS);
         LOG.info("{} agent(s) loaded in {} millisecond(s)", agentsByClass.size(), elapsedTime);
     }
 

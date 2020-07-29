@@ -198,7 +198,7 @@ public class CronAgentTest
     {
         when(agentMock.isRunning()).thenReturn(true);
         agentMock.run();
-        verify(agentMock, never()).doRunTask();
+        verify(agentMock, never()).runTask();
     }
 
     /**

@@ -24,7 +24,7 @@ public class AnnotatedCronAgent extends CronAgent
      * Executes the method annotated with {@code AgentTask} in the annotated agent instance.
      */
     @Override
-    protected void doRunTask()
+    protected void runTask()
     {
         annotatedAgent.runAgentTask();
     }

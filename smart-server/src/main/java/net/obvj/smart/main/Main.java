@@ -35,7 +35,7 @@ public class Main extends SmartServerSupport
     {
         MonitoredRunnable operation = new MonitoredRunnable(() -> new Main().start());
         operation.run();
-        LOG.info("Server started in {}", operation.getCounter(Type.WALL_CLOCK_TIME).elapsedTime());
+        LOG.info("Server started in {}", operation.elapsedTime(Type.WALL_CLOCK_TIME));
     }
 
 }

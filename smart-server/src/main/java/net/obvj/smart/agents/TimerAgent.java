@@ -85,6 +85,12 @@ public abstract class TimerAgent extends Agent
         schedule.shutdown();
     }
 
+    @Override
+    public void afterRun()
+    {
+        // Nothing required after task
+    }
+
     /**
      * @return A string with current agent status in JSON format
      */
