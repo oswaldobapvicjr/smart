@@ -9,7 +9,7 @@ import java.util.Collections;
 import javax.xml.bind.UnmarshalException;
 
 import org.junit.Test;
-import org.xml.sax.SAXParseException;
+import org.xml.sax.SAXException;
 
 import net.obvj.smart.conf.xml.SmartConfiguration;
 
@@ -141,6 +141,6 @@ public class AgentsXmlTest
     public void testLoadSchemaFileWithInvalidFile()
     {
         assertThat(() -> AgentsXml.loadSchemaFile("testAgents/invalidSchema.xsd"),
-                throwsException(AgentConfigurationException.class).withCause(SAXParseException.class));
+                throwsException(AgentConfigurationException.class).withCause(SAXException.class));
     }
 }

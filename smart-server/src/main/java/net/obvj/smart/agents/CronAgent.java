@@ -145,7 +145,9 @@ public abstract class CronAgent extends Agent
         ToStringBuilder builder = new ToStringBuilder(this, ToStringStyle.JSON_STYLE);
         builder.append("name", getName()).append("type", getType()).append("status", getState())
                 .append("startDate", (DateUtils.formatDate(startDate)))
-                .append("lastExecutionDate", (DateUtils.formatDate(lastRunDate)))
+                .append("lastExecutionStartDate", (DateUtils.formatDate(lastExecutionDate)))
+                .append("lastExecutionDuration", formatLastExecutionDuration())
+                .append("averageExecutionDuration", formatAverageExecutionDuration())
                 .append("cronExpression", cronExpression).append("cronDescription", cronDescription)
                 .append("nextExecutionDate", DateUtils.formatDate(nextExecutionDate));
         return builder.build();
