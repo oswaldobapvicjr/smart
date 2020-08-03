@@ -45,6 +45,8 @@ public enum Command
                 out.println("No agent found");
                 return;
             }
+            out.print(agents.size());
+            out.println(" agent(s) found");
             out.println("");
             out.println("Name                                       Type   State");
             out.println("------------------------------------------ ------ -------");
@@ -75,6 +77,8 @@ public enum Command
                 return;
             }
 
+            out.print(threads.size());
+            out.println(" thread(s) found");
             out.println("");
             out.println("ID   Name                                   State");
             out.println("---- -------------------------------------- -------------");

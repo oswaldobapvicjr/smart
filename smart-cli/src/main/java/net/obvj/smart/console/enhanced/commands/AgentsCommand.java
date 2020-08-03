@@ -80,6 +80,9 @@ public class AgentsCommand implements Runnable
 
     private void printAgents(Collection<AgentDTO> agents)
     {
+        parent.out.print(agents.size());
+        parent.out.println(" agent(s) found");
+
         parent.out.println();
         parent.out.println("Name                                       Type   State");
         parent.out.println("------------------------------------------ ------ -------");

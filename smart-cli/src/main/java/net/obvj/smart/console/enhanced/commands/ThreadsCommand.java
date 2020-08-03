@@ -66,6 +66,9 @@ public class ThreadsCommand implements Runnable
 
     private void printThreads(Collection<ThreadDTO> threads)
     {
+        parent.out.print(threads.size());
+        parent.out.println(" thread(s) found");
+
         parent.out.println();
         parent.out.println("ID   Name                                   State");
         parent.out.println("---- -------------------------------------- -------------");
