@@ -1,15 +1,22 @@
 package net.obvj.smart.agents;
 
+import java.math.BigDecimal;
 import java.util.Calendar;
+import java.util.Queue;
 import java.util.concurrent.TimeoutException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.EvictingQueue;
+
 import net.obvj.performetrics.Counter;
 import net.obvj.performetrics.Stopwatch;
+import net.obvj.performetrics.util.Duration;
+import net.obvj.performetrics.util.Duration.FormatStyle;
 import net.obvj.smart.conf.AgentConfiguration;
 import net.obvj.smart.util.DateUtils;
+import net.obvj.smart.util.StatisticsUtils;
 
 /**
  * A common interface for all managed agents
@@ -30,6 +37,8 @@ public abstract class Agent implements Runnable
     protected static final String MSG_AGENT_ALREADY_STOPPED = "Agent already stopped";
     protected static final String MSG_AGENT_ALREADY_RUNNING = "Agent task already in execution";
 
+    private static final int EXECUTION_DURATION_HISTORY_SIZE = 1440;
+
     private final AgentConfiguration configuration;
 
     private State currentState;
@@ -41,7 +50,14 @@ public abstract class Agent implements Runnable
     /*
      * Stores the date & time when this agent task was last executed
      */
-    protected Calendar lastRunDate;
+    protected Calendar lastExecutionDate;
+
+    protected Duration lastExecutionDuration;
+
+    /**
+     * A history of most recent execution durations, in seconds.
+     */
+    private Queue<BigDecimal> executionDurationHistory = EvictingQueue.create(EXECUTION_DURATION_HISTORY_SIZE);
 
     /*
      * This object is used to control access to the task execution independently of other
@@ -152,7 +168,7 @@ public abstract class Agent implements Runnable
      */
     public Calendar getLastRunDate()
     {
-        return DateUtils.getClonedDate(lastRunDate);
+        return DateUtils.getClonedDate(lastExecutionDate);
     }
 
     /**
@@ -256,13 +272,14 @@ public abstract class Agent implements Runnable
             {
                 State previousState = getState();
                 setState(State.RUNNING);
-                lastRunDate = Calendar.getInstance();
+                lastExecutionDate = Calendar.getInstance();
                 LOG.info("Running agent...");
                 Stopwatch stopwatch = Stopwatch.createStarted(Counter.Type.WALL_CLOCK_TIME);
                 try
                 {
                     runTask();
-                    LOG.info("Agent task finished in {}", stopwatch.elapsedTime(Counter.Type.WALL_CLOCK_TIME));
+                    updateStatistics(stopwatch);
+                    LOG.info("Agent task finished in {}", lastExecutionDuration);
                     afterRun();
                 }
                 catch (Exception exception)
@@ -275,6 +292,34 @@ public abstract class Agent implements Runnable
                 }
             }
         }
+    }
+
+    private void updateStatistics(Stopwatch stopwatch)
+    {
+        lastExecutionDuration = stopwatch.elapsedTime(Counter.Type.WALL_CLOCK_TIME);
+        executionDurationHistory.offer(BigDecimal.valueOf(lastExecutionDuration.toSeconds()).setScale(9));
+    }
+
+    /**
+     * Calculates and formats the average of last execution durations. Returns {@code "null"}
+     * if no execution is available in the local history.
+     *
+     * @return a string containing the average of execution durations, or {@code "null"}
+     */
+    protected String formatAverageExecutionDuration()
+    {
+        BigDecimal average = StatisticsUtils.average(executionDurationHistory);
+        return average != null ? average + " second(s)" : "null";
+    }
+
+    /**
+     * Formats the last execution duration for reporting.
+     *
+     * @return the formatted duration, or {@code "null"}
+     */
+    protected Object formatLastExecutionDuration()
+    {
+        return lastExecutionDuration != null ? lastExecutionDuration.toString(FormatStyle.SHORT) : "null";
     }
 
     /**

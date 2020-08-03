@@ -123,7 +123,8 @@ public class TimerAgentTest
         TimerAgent agent = (TimerAgent) AgentFactory.create(DUMMY_AGENT_CONFIG);
         String statusWithoutQuotes = agent.getStatusString().replace("\"", "");
         assertThat(statusWithoutQuotes, containsAll("name:DummyAgent", "type:timer", "status:SET",
-                "startDate:null", "lastRunDate:null", "frequency:30 second(s)"));
+                "startDate:null", "lastExecutionStartDate:null", "frequency:30 second(s)", "lastExecutionDuration:null",
+                "averageExecutionDuration:0 second(s)"));
     }
 
     @Test

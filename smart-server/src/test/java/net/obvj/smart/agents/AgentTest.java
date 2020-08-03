@@ -86,7 +86,7 @@ public class AgentTest
     public void testLastRunDate()
     {
         Calendar now = Calendar.getInstance();
-        agent.lastRunDate = now;
+        agent.lastExecutionDate = now;
         Calendar lastRunDate = agent.getLastRunDate();
         assertNotSame(now, lastRunDate);
         assertThat(lastRunDate.getTime(), is(now.getTime()));
@@ -95,7 +95,7 @@ public class AgentTest
     @Test
     public void testLastRunDateNull()
     {
-        agent.lastRunDate = null;
+        agent.lastExecutionDate = null;
         Calendar lastRunDate = agent.getLastRunDate();
         assertNull(lastRunDate);
     }

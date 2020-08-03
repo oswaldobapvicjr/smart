@@ -228,8 +228,8 @@ public class CronAgentTest
         CronAgent agent = (CronAgent) AgentFactory.create(DUMMY_AGENT_CONFIG);
         String statusWithoutQuotes = agent.getStatusString().replace("\"", "");
         assertThat(statusWithoutQuotes, containsAll("name:DummyAgent", "type:cron", "status:SET",
-                "startDate:null", "lastExecutionDate:null", "cronExpression:0 0 * * 0", "cronDescription",
-                "nextExecutionDate"));
+                "startDate:null", "lastExecutionStartDate:null", "cronExpression:0 0 * * 0", "cronDescription",
+                "nextExecutionDate", "lastExecutionDuration:null", "averageExecutionDuration:0 second(s)"));
     }
 
     @Test
