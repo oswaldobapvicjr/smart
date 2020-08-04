@@ -132,6 +132,7 @@ public class CommandTest
     @Test
     public void testRunAgent()
     {
+        when(manager.getAgentStatusStr(AGENT1)).thenReturn("{\"lastExecutionDuration\":\"5 second(s)\"}");
         Command.RUN.execute(new String[] { "run", AGENT1 }, new PrintWriter(out));
         verify(manager).runNow(AGENT1);
     }

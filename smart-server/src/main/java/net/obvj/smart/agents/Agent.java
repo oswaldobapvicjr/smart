@@ -259,7 +259,7 @@ public abstract class Agent implements Runnable
 
     public void run(boolean manualFlag)
     {
-        if (isStopRequested() && !manualFlag) return;
+        if (stopRequested && !manualFlag) return;
         if (isRunning())
         {
             if (manualFlag)
@@ -272,7 +272,6 @@ public abstract class Agent implements Runnable
         {
             synchronized (runLock)
             {
-                State previousState = getState();
                 setState(State.RUNNING);
                 lastExecutionDate = Calendar.getInstance();
                 LOG.info("Running agent...");
