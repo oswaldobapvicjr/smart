@@ -87,29 +87,31 @@ public abstract class CronAgent extends Agent
         scheduleNextExecution(false);
     }
 
-    private void scheduleNextExecution(boolean firstExection)
+    private synchronized void scheduleNextExecution(boolean firstExecution)
     {
         nextExecutionDate = null;
-        ExecutionTime executionTime = ExecutionTime.forCron(cron);
-        Optional<Duration> optional = executionTime.timeToNextExecution(DateUtils.now());
-
-        if (optional.isPresent())
+        if (firstExecution || (isStarted() && !isStopRequested()))
         {
-            Duration timeToNextExecution = optional.get();
-            schedule.schedule(this, timeToNextExecution.toMillis(), TimeUnit.MILLISECONDS);
+            ExecutionTime executionTime = ExecutionTime.forCron(cron);
+            Optional<Duration> optional = executionTime.timeToNextExecution(DateUtils.now());
 
-            nextExecutionDate = DateUtils.now().plus(timeToNextExecution);
-            if (LOG.isInfoEnabled())
+            if (optional.isPresent())
             {
-                LOG.info("{} execution of {} will be at: {}", firstExection ? "First" : "Next", getName(),
-                        DateUtils.formatDate(nextExecutionDate));
+                Duration timeToNextExecution = optional.get();
+                schedule.schedule(this, timeToNextExecution.toMillis(), TimeUnit.MILLISECONDS);
+
+                nextExecutionDate = DateUtils.now().plus(timeToNextExecution);
+                if (LOG.isInfoEnabled())
+                {
+                    LOG.info("{} execution of {} will be at: {}", firstExecution ? "First" : "Next", getName(),
+                            DateUtils.formatDate(nextExecutionDate));
+                }
+            }
+            else
+            {
+                LOG.warn("No future execution for the Cron expression: \"{}\"", cronExpression);
             }
         }
-        else
-        {
-            LOG.warn("No future execution for the Cron expression: \"{}\"", cronExpression);
-        }
-
     }
 
     /**

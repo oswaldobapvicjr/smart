@@ -16,6 +16,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeoutException;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -86,6 +87,15 @@ public class CronAgentTest
 
     private CronAgent agentMock = mock(CronAgent.class, Mockito.CALLS_REAL_METHODS);
 
+    @Before
+    public void before()
+    {
+        when(AGENT_EVERY_MINUTE.isStarted()).thenReturn(true);
+        when(AGENT_EVERY_30_MIN.isStarted()).thenReturn(true);
+        when(AGENT_EVERY_DAY_AT_2_AM.isStarted()).thenReturn(true);
+        when(AGENT_HOURLY_ON_WEEKEND.isStarted()).thenReturn(true);
+    }
+
     /**
      * Tests that a non-cron agent will not be parsed by this class
      */
@@ -118,6 +128,11 @@ public class CronAgentTest
     {
         PowerMockito.mockStatic(DateUtils.class);
         PowerMockito.when(DateUtils.now()).thenReturn(DATE_20_04_27T23_25_13);
+
+        when(AGENT_EVERY_MINUTE.isStarted()).thenReturn(false);
+        when(AGENT_EVERY_30_MIN.isStarted()).thenReturn(false);
+        when(AGENT_EVERY_DAY_AT_2_AM.isStarted()).thenReturn(false);
+        when(AGENT_HOURLY_ON_WEEKEND.isStarted()).thenReturn(false);
 
         AGENT_EVERY_DAY_AT_2_AM.start();
         assertEqualDatesIgnoringNanos(DATE_20_04_28T02_00_00, AGENT_EVERY_DAY_AT_2_AM.getNextExecutionDate());

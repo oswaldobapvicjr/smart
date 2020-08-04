@@ -21,7 +21,7 @@ import net.obvj.smart.jmx.client.AgentManagerJMXClient;
 
 /**
  * Unit tests for the {@link RunCommand} class
- * 
+ *
  * @author oswaldo.bapvic.jr
  * @since 2.0
  */
@@ -52,6 +52,7 @@ public class RunCommandTest
     @Test
     public void testCommandExecutionJMXCall() throws IOException
     {
+        when(jmx.getAgentStatusStr("AgentName")).thenReturn("{\"lastExecutionDuration\":\"5 second(s)\"}");
         command.setAgent("AgentName");
         command.run();
         Mockito.verify(jmx, Mockito.times(1)).runNow("AgentName");
