@@ -1,5 +1,8 @@
 package net.obvj.smart.console.enhanced.commands;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import net.obvj.smart.jmx.AgentManagerJMXMBean;
 import net.obvj.smart.jmx.client.AgentManagerJMXClient;
 import net.obvj.smart.util.ClientApplicationContextFacade;
@@ -45,6 +48,12 @@ public class RunCommand implements Runnable
             mBeanProxy.runNow(agent);
 
             parent.out.println("Success");
+
+            String status = mBeanProxy.getAgentStatusStr(agent);
+            JsonObject jsonObject = JsonParser.parseString(status).getAsJsonObject();
+            String lastExecutionDuration = jsonObject.get("lastExecutionDuration").getAsString();
+
+            parent.out.printf("Agent task finished in %s%n", lastExecutionDuration);
         }
         catch (IllegalStateException | IllegalArgumentException | UnsupportedOperationException e)
         {

@@ -41,6 +41,7 @@ public abstract class Agent implements Runnable
 
     private final AgentConfiguration configuration;
 
+    private State previousState;
     private State currentState;
 
     /*
@@ -117,6 +118,7 @@ public abstract class Agent implements Runnable
 
     protected void setState(State currentState)
     {
+        previousState = this.currentState;
         this.currentState = currentState;
     }
 
@@ -134,7 +136,7 @@ public abstract class Agent implements Runnable
      */
     public boolean isStarted()
     {
-        return currentState == State.STARTED;
+        return currentState == State.STARTED || (currentState == State.RUNNING && previousState == State.STARTED);
     }
 
     /**
@@ -257,7 +259,7 @@ public abstract class Agent implements Runnable
 
     public void run(boolean manualFlag)
     {
-        if (stopRequested && !manualFlag) return;
+        if (isStopRequested() && !manualFlag) return;
         if (isRunning())
         {
             if (manualFlag)
@@ -341,6 +343,14 @@ public abstract class Agent implements Runnable
     {
         int stopTimeoutSeconds = configuration.getStopTimeoutInSeconds();
         return stopTimeoutSeconds >= 0 ? stopTimeoutSeconds : Integer.MAX_VALUE;
+    }
+
+    /**
+     * @return {@code true} if a stop request has been sent for this agent
+     */
+    protected boolean isStopRequested()
+    {
+        return stopRequested;
     }
 
     public abstract String getStatusString();

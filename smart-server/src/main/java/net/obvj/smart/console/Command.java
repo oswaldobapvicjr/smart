@@ -12,6 +12,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import net.obvj.smart.agents.dto.AgentDTO;
 import net.obvj.smart.jmx.dto.ThreadDTO;
 import net.obvj.smart.manager.AgentManager;
@@ -140,8 +143,15 @@ public enum Command
                 LOG.info(message);
                 try
                 {
-                    ApplicationContextFacade.getBean(AgentManager.class).runNow(agent);
-                    out.println("Agent task finished. See agent logs for details.");
+                    AgentManager manager = ApplicationContextFacade.getBean(AgentManager.class);
+                    manager.runNow(agent);
+                    out.println("Success");
+
+                    String status = manager.getAgentStatusStr(agent);
+                    JsonObject jsonObject = JsonParser.parseString(status).getAsJsonObject();
+                    String lastExecutionDuration = jsonObject.get("lastExecutionDuration").getAsString();
+
+                    out.printf("Agent task finished in %s%n", lastExecutionDuration);
                 }
                 catch (IllegalArgumentException | IllegalStateException | UnsupportedOperationException e)
                 {
