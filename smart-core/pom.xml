@@ -11,15 +11,15 @@
         <version>2.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>smart-server</artifactId>
-    <name>smart-server</name>
+    <artifactId>smart-core</artifactId>
+    <name>smart-core</name>
 
     <dependencies>
 
         <!-- Project dependencies -->
-       <dependency>
+        <dependency>
             <groupId>net.obvj</groupId>
-            <artifactId>smart-core</artifactId>
+            <artifactId>smart-commons</artifactId>
             <version>${project.version}</version>
         </dependency>
 

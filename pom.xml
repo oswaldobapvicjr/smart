@@ -27,6 +27,7 @@
         <module>smart-commons</module>
         <module>smart-server</module>
         <module>smart-cli</module>
+        <module>smart-core</module>
     </modules>
 
     <dependencies>
