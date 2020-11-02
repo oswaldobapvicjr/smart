@@ -18,7 +18,7 @@
         <spring.version>5.2.1.RELEASE</spring.version>
         <logback.version>1.2.3</logback.version>
 
-        <junit.version>4.13</junit.version>
+        <junit.version>4.13.1</junit.version>
         <powermock.version>2.0.7</powermock.version>
         <junit-utils.version>1.1.1</junit-utils.version>
     </properties>
