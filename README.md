@@ -71,3 +71,11 @@ For example, the following agent is configured to execute every weekday at 2:00 
       <frequency>0 2 * * MON-FRI</frequency>
     </agent>
     ```
+
+---
+
+## :information_source: Information
+
+**This project has been archived**. It is now read-only and will probably receive no upgrades.
+
+If you want to add a similar functionality to your Java application, check **[this project](https://github.com/oswaldobapvicjr/agents)**.
